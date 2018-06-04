@@ -1,29 +1,27 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Layout } from 'antd';
 
 import Home from './containers/Home';
 import About from './containers/About';
+import TopNav from './components/TopNav';
+import PageFooter from './components/PageFooter';
 
 class App extends Component {
   render() {
     return (
-      <Router>
-        <div>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/about">About</Link>
-            </li>
-          </ul>
-
-          <hr />
-
-          <Route exact path="/" component={Home} />
-          <Route path="/about" component={About} />
-        </div>
-      </Router>
+      <BrowserRouter>
+        <Layout>
+          <TopNav />
+          <Layout.Content>
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route exact path="/about" component={About} />
+            </Switch>
+          </Layout.Content>
+          <PageFooter />
+        </Layout>
+      </BrowserRouter>
     );
   }
 }
