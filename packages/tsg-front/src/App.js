@@ -16,7 +16,7 @@ class App extends Component {
           <Layout.Content>
             <Switch>
               <Route exact path="/" component={Home} />
-              <Route exact path="/about" component={About} />
+              <Route path="/about" component={About} />
             </Switch>
           </Layout.Content>
           <PageFooter />

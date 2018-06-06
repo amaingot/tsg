@@ -1,6 +1,5 @@
 const webpack = require('webpack');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
@@ -37,6 +36,15 @@ module.exports = {
             loader: 'html-loader'
           }
         ]
+      },
+      {
+        test: /\.(png|jpg|gif)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {}
+          }
+        ]
       }
     ]
   },
@@ -46,16 +54,9 @@ module.exports = {
   },
   output: {
     filename: '[name].bundle.js',
-    chunkFilename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist')
   },
-  optimization: {
-    splitChunks: {
-      chunks: 'all'
-    }
-  },
   plugins: [
-    new CleanWebpackPlugin('dist', {}),
     new HtmlWebPackPlugin({
       template: './src/index.html',
       filename: './index.html'
