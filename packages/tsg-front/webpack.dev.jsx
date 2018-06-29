@@ -1,16 +1,8 @@
-const webpack = require('webpack');
-const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+import webpack from 'webpack';
+import path from 'path';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
 
-const bundleExtractPlugin = new ExtractTextPlugin({
-  filename: 'css/bundle.css',
-});
-
-const vendorsExtractPlugin = new ExtractTextPlugin({
-  filename: 'css/vendors.css',
-});
-
-module.exports = {
+export default {
   mode: 'development',
   entry: {
     index: './src/index.jsx',
@@ -61,10 +53,15 @@ module.exports = {
   output: {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
+    publicPath: 'http://localhost:9000/',
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    bundleExtractPlugin,
-    vendorsExtractPlugin,
+    new ExtractTextPlugin({
+      filename: 'css/bundle.css',
+    }),
+    new ExtractTextPlugin({
+      filename: 'css/vendors.css',
+    }),
   ],
 };

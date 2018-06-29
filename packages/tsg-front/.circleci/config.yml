@@ -17,6 +17,10 @@ jobs:
                 command: npm install
 
             - run:
+                name: JavaScript Linter
+                command: npm run lint:ci
+
+            - run:
                 name: Build Bundle for Distribution
                 command: npm run build
 
@@ -28,6 +32,11 @@ jobs:
             - run:
                 name: Clean up workspace
                 command: rm -rf node_modules
+            
+            - store_test_results:
+                path: reports
+            - store_artifacts:
+                path: reports
 
             - persist_to_workspace:
                 root: ./
