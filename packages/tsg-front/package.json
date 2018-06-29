@@ -7,7 +7,7 @@
     "dev": "./node_modules/.bin/webpack-dev-server --config webpack.dev.jsx --watch ",
     "build": "./node_modules/.bin/webpack --config webpack.prod.jsx",
     "lint": "./node_modules/.bin/eslint src/**.jsx src/**/**.jsx",
-    "lint:ci": "./node_modules/.bin/eslint --format junit -o reports/js-lint-results.xml src/**.jsx src/**/**.jsx"
+    "lint:ci": "./node_modules/.bin/eslint --format junit -o reports/junit/js-lint-results.xml src/**.jsx src/**/**.jsx"
   },
   "dependencies": {
     "antd": "^3.6.1",
