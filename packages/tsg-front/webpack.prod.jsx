@@ -6,7 +6,7 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 const GCLOUD_BUCKET = process.env.GCLOUD_BUCKET || '';
 const CIRCLE_BRANCH = process.env.CIRCLE_BRANCH || 'production';
 
-const ASSET_PATH = `https://storage.googleapis.com/${GCLOUD_BUCKET}/front-assets/${CIRCLE_BRANCH}`;
+const ASSET_PATH = `https://storage.googleapis.com/${GCLOUD_BUCKET}/front-assets/${CIRCLE_BRANCH}/`;
 
 export default {
   mode: 'production',
