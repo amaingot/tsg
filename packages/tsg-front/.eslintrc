@@ -23,7 +23,7 @@
     "vars-on-top": 2,
     "no-undef": 2,
     "no-undefined": 2,
-    "comma-dangle": [2, "never"],
+    "comma-dangle": [2, "always-multiline"],
     "spaced-comment": [2, "always"],
     "no-trailing-spaces": 2,
     "indent": ["error", 2],

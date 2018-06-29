@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Layout, Menu } from 'antd';
 
 import TopLogo from '../static/topLeftLogo.png';
+import Link from './Link';
 
 const MenuLogo = styled.img`
   width: 120px;
@@ -18,10 +18,10 @@ export default class TopNav extends Component {
         <MenuLogo src={TopLogo} />
         <Menu theme="dark" mode="horizontal" style={{ lineHeight: '64px' }}>
           <Menu.Item key="1">
-            <Link to="/">Home</Link>
+            <Link to="/" label="Home" />
           </Menu.Item>
           <Menu.Item key="2">
-            <Link to="/about">About</Link>
+            <Link to="/about" label="About" />
           </Menu.Item>
         </Menu>
       </Layout.Header>
