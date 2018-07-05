@@ -55,6 +55,9 @@ export default {
     path: path.resolve(__dirname, 'dist'),
     publicPath: 'http://localhost:9000/',
   },
+  performance: {
+    hints: false,
+  },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new ExtractTextPlugin({

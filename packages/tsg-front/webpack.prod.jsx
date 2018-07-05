@@ -80,6 +80,11 @@ export default {
       },
     },
   },
+  performance: {
+    hints: 'error',
+    maxEntrypointSize: 400000,
+    maxAssetSize: 1000000,
+  },
   plugins: [
     new CleanWebpackPlugin('dist', {}),
     new ExtractTextPlugin({
