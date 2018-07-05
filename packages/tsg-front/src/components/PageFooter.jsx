@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Layout from 'antd/lib/layout';
+import { Layout } from 'antd';
 
 export default class PageFooter extends Component {
   render() {

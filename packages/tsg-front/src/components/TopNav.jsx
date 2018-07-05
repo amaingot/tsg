@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import Menu from 'antd/lib/menu';
-import Layout from 'antd/lib/layout';
+import { Menu, Layout } from 'antd';
 
 import TopLogo from '../static/topLeftLogo.png';
 import Link from './Link';
