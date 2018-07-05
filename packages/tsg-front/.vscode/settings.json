@@ -1,6 +1,5 @@
 {
   "flow.enabled": false,
   "typescript.validate.enable": false,
-  "prettier.eslintIntegration": true,
   "editor.tabSize": 2
 }

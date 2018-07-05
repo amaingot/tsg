@@ -10,7 +10,6 @@ class Link extends PureComponent {
       <ReactRouterLink
         to={{
           pathname: to,
-          /* eslint-disable-next-line */
           search: App.webEnv === 'production' ? '' : `?env=${App.webEnv}`,
         }}
       >
