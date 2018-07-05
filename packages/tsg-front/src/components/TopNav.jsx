@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { Layout, Menu } from 'antd';
+import Menu from 'antd/lib/menu';
+import Layout from 'antd/lib/layout';
 
 import TopLogo from '../static/topLeftLogo.png';
 import Link from './Link';
@@ -16,7 +17,7 @@ export default class TopNav extends Component {
     return (
       <Layout.Header>
         <MenuLogo src={TopLogo} />
-        <Menu theme="dark" mode="horizontal" style={{ lineHeight: '64px' }}>
+        <Menu mode="horizontal" style={{ lineHeight: '64px' }}>
           <Menu.Item key="1">
             <Link to="/" label="Home" />
           </Menu.Item>
