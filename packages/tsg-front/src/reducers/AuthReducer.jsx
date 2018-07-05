@@ -1,57 +1,75 @@
+import Immutable from 'immutable';
 import jwtDecode from 'jwt-decode';
-import * as auth from '../actions/AuthActions';
+import * as AuthActions from '../actions/AuthActions';
 
-const initialState = {
-	access: undefined,
-	errors: {},
-};
+/**
+|--------------------------------------------------
+| Record
+|--------------------------------------------------
+*/
+export class AuthRecord extends Immutable.Record({
+	token: '',
+	username: undefined,
+	expires: undefined,
+	issued: undefined,
+	errors: undefined,
+}) {}
 
-export default (state = initialState, action) => {
+/**
+|--------------------------------------------------
+| Reviver
+|--------------------------------------------------
+*/
+export function reviveAuthRecord(token) {
+	const record = new AuthRecord({ token });
+	const decoded = Immutable.Map(jwtDecode(token));
+
+	return record
+		.set('username', decoded.get('username'))
+		.set('expires', decoded.get('exp'))
+		.set('expires', decoded.get('orig_iat'))
+		.set('errors', undefined);
+}
+
+/**
+|--------------------------------------------------
+| Reducer
+|--------------------------------------------------
+*/
+export default (state = new AuthRecord(), action) => {
 	switch (action.type) {
-		case auth.LOGIN_SUCCESS:
-			return {
-				access: {
-					token: action.payload.token,
-					...jwtDecode(action.payload.token),
-				},
-				errors: {},
-			};
+		case AuthActions.LOGIN_SUCCESS:
+		case AuthActions.TOKEN_RECEIVED:
+			return reviveAuthRecord(action.payload.token);
 
-		case auth.TOKEN_RECEIVED:
-			return {
-				...state,
-				access: {
-					token: action.payload.token,
-					...jwtDecode(action.payload.token),
-				},
-			};
+		case AuthActions.LOGIN_FAILURE:
+		case AuthActions.TOKEN_FAILURE:
+			return state
+				.set('token', '')
+				.set('decodedToken', undefined)
+				.set('errors', action.payload);
 
-		case auth.LOGIN_FAILURE:
-		case auth.TOKEN_FAILURE:
-			return {
-				access: undefined,
-				refresh: undefined,
-				errors: action.payload || {
-					non_field_errors: action.payload.statusText,
-				},
-			};
+		case AuthActions.LOGOUT:
+			return new AuthRecord();
 
 		default:
 			return state;
 	}
 };
 
+/**
+|--------------------------------------------------
+| Helpers
+|--------------------------------------------------
+*/
 export function accessToken(state) {
-	if (state.access) {
-		return state.access.token;
-	}
+	state.get('token', undefined);
 }
 
 export function isAccessTokenExpired(state) {
-	if (state.access && state.access.exp) {
-		return 1000 * state.access.exp - new Date().getTime() < 5000;
-	}
-	return true;
+	const exp = state.get('expires', 0);
+
+	return 1000 * exp - new Date().getTime() < 5000;
 }
 
 export function isAuthenticated(state) {
@@ -59,5 +77,5 @@ export function isAuthenticated(state) {
 }
 
 export function errors(state) {
-	return state.errors;
+	return state.get('errors', undefined);
 }

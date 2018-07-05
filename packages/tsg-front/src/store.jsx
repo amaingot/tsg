@@ -8,10 +8,10 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import rootReducer from './reducers';
 
 export default history => {
-	const persistedFilter = createFilter('auth', ['access', 'refresh']);
+	const persistedFilter = createFilter('auth');
 	const reducer = persistReducer(
 		{
-			key: 'polls',
+			key: 'tsg-auth',
 			storage: storage,
 			whitelist: ['auth'],
 			transforms: [persistedFilter],

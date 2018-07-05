@@ -24,10 +24,12 @@ const Login = props => {
 	}
 };
 
-const mapStateToProps = state => ({
-	errors: authErrors(state),
-	isAuthenticated: isAuthenticated(state),
-});
+const mapStateToProps = state => {
+	return {
+		errors: authErrors(state),
+		isAuthenticated: isAuthenticated(state),
+	};
+};
 
 const mapDispatchToProps = dispatch => ({
 	onSubmit: (username, password) => {
