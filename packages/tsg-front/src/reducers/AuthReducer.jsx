@@ -67,6 +67,8 @@ export function accessToken(state) {
 }
 
 export function isAccessTokenExpired(state) {
+	if (!accessToken(state)) return true;
+
 	const exp = state.get('expires', 0);
 
 	return 1000 * exp - new Date().getTime() < 5000;

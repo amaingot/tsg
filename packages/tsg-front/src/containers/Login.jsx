@@ -1,9 +1,28 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
+import styled from 'styled-components';
+
 import LoginForm from '../components/LoginForm';
 import { login } from '../actions/AuthActions';
 import { authErrors, isAuthenticated } from '../reducers';
+import frontLogo from '../static/frontpageLogo.png';
+
+const LoginContainer = styled.div`
+	width: 300px;
+	height: 300px;
+  position: absolute;
+  margin: auto;
+	top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+`;
+
+const BigImage = styled.img`
+	width: 100%;
+	margin-bottom: 20px;
+`;
 
 const Login = props => {
 	if (props.isAuthenticated) {
@@ -17,9 +36,10 @@ const Login = props => {
 		);
 	} else {
 		return (
-			<div className="login-page">
+			<LoginContainer>
+				<BigImage src={frontLogo} />
 				<LoginForm {...props} />
-			</div>
+			</LoginContainer>
 		);
 	}
 };

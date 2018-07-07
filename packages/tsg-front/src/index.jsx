@@ -1,29 +1,31 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Route, Switch } from 'react-router';
-import createHistory from 'history/createBrowserHistory';
-import { ConnectedRouter } from 'react-router-redux';
 import { Provider } from 'react-redux';
 
 import App from './App';
-import Login from './containers/Login';
-import PrivateRoute from './containers/PrivateRoute';
-import configureStore from './store';
 
-// import './index.css';
-// import 'bootstrap/dist/css/bootstrap.css';
+import { createBrowserHistory } from 'history';
+import { applyMiddleware, compose, createStore } from 'redux';
+import { connectRouter, routerMiddleware } from 'connected-react-router';
+// import { composeWithDevTools } from 'redux-devtools-extension';
 
-const history = createHistory();
-const store = configureStore(history);
+import rootReducer from './reducers';
 
-ReactDOM.render(
-	<Provider store={store}>
-		<ConnectedRouter history={history}>
-			<Switch>
-				<Route exact path="/login/" component={Login} />
-				<PrivateRoute path="/" component={App} />
-			</Switch>
-		</ConnectedRouter>
-	</Provider>,
-	document.getElementById('root-container')
+const history = createBrowserHistory();
+
+const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(
+	connectRouter(history)(rootReducer),
+	composeEnhancer(applyMiddleware(routerMiddleware(history)))
 );
+
+const render = () => {
+	ReactDOM.render(
+		<Provider store={store}>
+			<App history={history} />
+		</Provider>,
+		document.getElementById('root-container')
+	);
+};
+
+render();

@@ -1,47 +1,67 @@
-import React, { Component } from 'react';
-import { Alert, Button, Jumbotron, Form } from 'reactstrap';
-import TextInput from './TextInput';
+import React from 'react';
+import styled from 'styled-components';
+import { Form, Icon, Input, Button, Checkbox } from 'antd';
 
-export default class LoginForm extends Component {
-	state = {
-		username: '',
-		password: '',
-	};
+const FormItem = Form.Item;
 
-	handleInputChange = event => {
-		const target = event.target,
-			value = target.type === 'checkbox' ? target.checked : target.value,
-			name = target.name;
-		this.setState({
-			[name]: value,
+const StyledForm = styled(Form)`
+	max-width: 300px;
+`;
+
+const StyledButton = styled(Button)`
+	width: 100%;
+`;
+
+const ForgotLink = styled.a`
+	float: right;
+`;
+
+class LoginForm extends React.Component {
+	handleSubmit = e => {
+		e.preventDefault();
+		this.props.form.validateFields((err, values) => {
+			if (!err) {
+				console.log('Received values of form: ', values);
+			} else {
+				console.log('Received errors of form: ', err);
+			}
 		});
 	};
 
-	onSubmit = event => {
-		event.preventDefault();
-		this.props.onSubmit(this.state.username, this.state.password);
-	};
-
 	render() {
-		const errors = this.props.errors || {};
+		const { getFieldDecorator } = this.props.form;
+
 		return (
-			<Jumbotron className="container">
-				<Form onSubmit={this.onSubmit}>
-					<h1>Authentication</h1>
-					{errors.non_field_errors ? <Alert color="danger">{errors.non_field_errors}</Alert> : ''}
-					<TextInput name="username" label="Username" error={errors.username} onChange={this.handleInputChange} />
-					<TextInput
-						name="password"
-						label="Password"
-						error={errors.password}
-						type="password"
-						onChange={this.handleInputChange}
-					/>
-					<Button type="submit" color="primary" size="lg">
-						Log In
-					</Button>
-				</Form>
-			</Jumbotron>
+			<StyledForm onSubmit={this.handleSubmit}>
+				<FormItem>
+					{getFieldDecorator('userName', {
+						rules: [{ required: true, message: 'Please input your username!' }],
+					})(<Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Username" />)}
+				</FormItem>
+				<FormItem>
+					{getFieldDecorator('password', {
+						rules: [{ required: true, message: 'Please input your Password!' }],
+					})(
+						<Input
+							prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+							type="password"
+							placeholder="Password"
+						/>
+					)}
+				</FormItem> BM
+				<FormItem>
+					{getFieldDecorator('remember', {
+						valuePropName: 'checked',
+						initialValue: true,
+					})(<Checkbox>Remember me</Checkbox>)}
+					<ForgotLink href="">Forgot password</ForgotLink>
+					<StyledButton type="primary" htmlType="submit" className="login-form-button">
+						Log in
+					</StyledButton>
+				</FormItem>
+			</StyledForm>
 		);
 	}
 }
+
+export default Form.create()(LoginForm);
