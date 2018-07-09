@@ -1,5 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
+const fs = require('fs');
 
 module.exports = {
   entry: "./src/index.tsx",
@@ -48,6 +49,10 @@ module.exports = {
   devtool: "source-map",
   devServer: {
     historyApiFallback: true,
+    https: {
+      key: fs.readFileSync('certs/localhost.key'),
+      cert: fs.readFileSync('certs/localhost.crt'),
+    },
     port: 9000
   },
   plugins: [
@@ -57,6 +62,6 @@ module.exports = {
   output: {
     filename: "index.bundle.js",
     path: path.resolve(__dirname, "dist"),
-    publicPath: "http://localhost:9000/"
+    publicPath: "https://localhost:9000/"
   }
 };
