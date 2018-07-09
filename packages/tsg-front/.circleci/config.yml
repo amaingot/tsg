@@ -17,8 +17,8 @@ jobs:
                 command: npm install
 
             - run:
-                name: JavaScript Linter
-                command: npm run lint:ci
+                name: TypeScript Linter
+                command: mkdir reports && npm run lint:ci
 
             - run:
                 name: Build Bundle for Distribution
@@ -34,9 +34,9 @@ jobs:
                 command: rm -rf node_modules
             
             - store_test_results:
-                path: reports/junit
+                path: reports/
             - store_artifacts:
-                path: reports/junit
+                path: reports/
 
             - persist_to_workspace:
                 root: ./

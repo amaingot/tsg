@@ -1,2 +1,0 @@
-# Tennis Shop Guru Front End
-[![CircleCI](https://circleci.com/gh/amaingot/tsg-front/tree/master.svg?style=svg&circle-token=1ab0d6908dcd794c4bf2e8e3f5cc404fc4dfdefd)](https://circleci.com/gh/amaingot/tsg-front/tree/master)
