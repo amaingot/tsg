@@ -10,7 +10,7 @@
     "lint:fix": "./node_modules/.bin/tslint {src,test}/**/*.{ts,tsx} --fix",
     "lint:ci": "./node_modules/.bin/tslint {src,test}/**/*.{ts,tsx} --format junit --out reports/tslint.xml",
     "analyze": "./node_modules/.bin/webpack-dev-server --config webpack.analyze.js",
-    "fresh": "rm -rf node_modules dist",
+    "fresh": "rm -rf node_modules dist reports",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
