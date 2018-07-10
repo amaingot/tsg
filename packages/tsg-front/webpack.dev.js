@@ -1,6 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
-const fs = require('fs');
+const fs = require("fs");
 
 module.exports = {
   entry: "./src/index.tsx",
@@ -49,9 +49,11 @@ module.exports = {
   devtool: "source-map",
   devServer: {
     historyApiFallback: true,
+    hot: true,
+    headers: { 'Access-Control-Allow-Origin': '*' },
     https: {
-      key: fs.readFileSync('certs/localhost.key'),
-      cert: fs.readFileSync('certs/localhost.crt'),
+      key: fs.readFileSync("certs/localhost.key"),
+      cert: fs.readFileSync("certs/localhost.crt")
     },
     port: 9000
   },
