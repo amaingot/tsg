@@ -46,44 +46,32 @@ jobs:
     deploy-env:
         working_directory: ~/tsg-front
         docker:
-            - image: google/cloud-sdk
+            - image: circleci/python:2.7-jessie
         steps:
             - checkout
             - attach_workspace:
                 at: ./
             - run: 
-                name: Decode and Store Service Account
-                command: echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > ${HOME}/gcloud-service-key.json
+                name: Install awscli
+                command: sudo pip install awscli
             - run: 
-                name: Activate Google Could Service Account
-                command: gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-            - run: 
-                name: Set Google Could Project
-                command: gcloud --quiet config set project ${GCLOUD_PROJECT}
-            - run:
-                name: Copy Bundle to GCP Bucket
-                command: gsutil cp dist/** gs://${GCLOUD_BUCKET}/front-assets/${CIRCLE_BRANCH}
+                name: Deploy bundle to S3
+                command: aws s3 sync dist/ s3://tsg-static-files/front/${CIRCLE_BRANCH} --acl public-read
 
     deploy-prod:
         working_directory: ~/tsg-front
         docker:
-            - image: google/cloud-sdk
+            - image: circleci/python:2.7-jessie
         steps:
             - checkout
             - attach_workspace:
                 at: ./
             - run: 
-                name: Decode and Store Service Account
-                command: echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > ${HOME}/gcloud-service-key.json
+                name: Install awscli
+                command: sudo pip install awscli
             - run: 
-                name: Activate Google Could Service Account
-                command: gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-            - run: 
-                name: Set Google Could Project
-                command: gcloud --quiet config set project ${GCLOUD_PROJECT}
-            - run:
-                name: Copy Bundle to GCP Bucket
-                command: gsutil cp dist/** gs://${GCLOUD_BUCKET}/front-assets/production
+                name: Deploy bundle to S3
+                command: aws s3 sync dist/ s3://tsg-static-files/front/production --acl public-read
 
 workflows:
     version: 2

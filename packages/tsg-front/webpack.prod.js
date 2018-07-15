@@ -3,10 +3,10 @@ const webpack = require("webpack");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
-const GCLOUD_BUCKET = process.env.GCLOUD_BUCKET || "";
+const S3_BUCKET_URL = process.env.S3_BUCKET_URL || "";
 const CIRCLE_BRANCH = process.env.CIRCLE_BRANCH || "production";
 
-const ASSET_PATH = `https://storage.googleapis.com/${GCLOUD_BUCKET}/front-assets/${CIRCLE_BRANCH}/`;
+const ASSET_PATH = `${S3_BUCKET_URL}${CIRCLE_BRANCH}/`;
 
 module.exports = {
   entry: "./src/index.tsx",
@@ -63,7 +63,7 @@ module.exports = {
     // }),
     new webpack.DefinePlugin({
       "process.env.CIRCLE_BRANCH": JSON.stringify(CIRCLE_BRANCH),
-      "process.env.GCLOUD_BUCKET": JSON.stringify(GCLOUD_BUCKET)
+      "process.env.S3_BUCKET_URL": JSON.stringify(S3_BUCKET_URL)
     })
   ],
   output: {

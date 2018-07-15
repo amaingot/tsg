@@ -1,20 +1,10 @@
 {
   "defaultSeverity": "error",
-  "extends": [
-    "tslint:latest",
-    "tslint-react"
-  ],
+  "extends": ["tslint:latest", "tslint-react"],
   "jsRules": {},
   "rules": {
-    "quotemark": [
-      true,
-      "single",
-      "avoid-escape"
-    ],
-    "semicolon": [
-      true,
-      "always"
-    ],
+    "quotemark": [true, "single", "avoid-escape"],
+    "semicolon": [true, "always"],
     "trailing-comma": [
       true,
       {
@@ -22,15 +12,9 @@
         "singleline": "never"
       }
     ],
-    "no-shadowed-variable": [
-      false
-    ],
-    "jsx-no-lambda": [
-      false
-    ],
-    "member-ordering": [
-      false
-    ],
+    "no-shadowed-variable": [false],
+    "jsx-no-lambda": [false],
+    "member-ordering": [false],
     "space-before-function-paren": [
       true,
       {
@@ -39,24 +23,11 @@
         "asyncArrow": "always"
       }
     ],
-    "no-submodule-imports": [
-      false
-    ],
-    "object-literal-sort-keys": [
-      false
-    ],
-    "indent": [
-      true,
-      "spaces",
-      2
-    ],
-    "jsx-no-multiline-js": [
-      false
-    ],
-    "interface-name": [
-      true,
-      "never-prefix"
-    ]
+    "no-submodule-imports": [false],
+    "object-literal-sort-keys": [false],
+    "indent": [true, "spaces", 2],
+    "jsx-no-multiline-js": [false],
+    "interface-name": [true, "never-prefix"]
   },
   "rulesDirectory": []
 }
