@@ -24,7 +24,7 @@ class PrivateRoute extends React.Component<PrivateRouteProps> {
                 to={{
                   pathname: '/login',
                   state: { from: props.location },
-                  search: App.webEnv === 'production' ? '' : `?env=${App.webEnv}`
+                  search: App.webEnv === 'production' ? '' : `?env=${App.webEnv}`,
                 }}
               />
             )
@@ -35,7 +35,7 @@ class PrivateRoute extends React.Component<PrivateRouteProps> {
 }
 
 const mapStateToProps = (state: ApplicationState) => ({
-  isAuthenticated: !!state.auth.jwt
+  isAuthenticated: !!state.auth.jwt,
 });
 
 export default connect(mapStateToProps)(PrivateRoute);

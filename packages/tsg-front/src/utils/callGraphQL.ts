@@ -11,12 +11,12 @@ export default function (query: string, token?: string): Promise<GQLResponse> {
     method: 'POST',
     url: 'graphql',
     headers: {},
-    data: { query }
+    data: { query },
   };
 
   if (token) {
     axiosConfig.headers = {
-      Authorization: `JWT ${token}`
+      Authorization: `JWT ${token}`,
     };
   }
 
@@ -26,13 +26,13 @@ export default function (query: string, token?: string): Promise<GQLResponse> {
         return {
           data: null,
           gqlError: response.data.errors[0].message,
-          error: null
+          error: null,
         };
       }
       return {
         data: response.data.data,
         gqlError: null,
-        error: null
+        error: null,
       };
     })
     .catch((error) => {

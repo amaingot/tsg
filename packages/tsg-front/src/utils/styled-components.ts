@@ -6,7 +6,7 @@ const {
     css,
     injectGlobal,
     keyframes,
-    ThemeProvider
+    ThemeProvider,
 } = styledComponents as styledComponents.ThemedStyledComponentsModule<
 ThemeInterface
 >;

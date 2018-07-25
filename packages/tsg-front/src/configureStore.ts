@@ -9,7 +9,7 @@ import { ApplicationState, rootReducer, rootSaga } from './store';
 
 export default function configureStore(
   history: History,
-  initialState: ApplicationState
+  initialState: ApplicationState,
 ): Store<ApplicationState> {
   const composeEnhancers = composeWithDevTools({});
   const sagaMiddleware = createSagaMiddleware();
@@ -17,7 +17,7 @@ export default function configureStore(
   const store = createStore(
     connectRouter(history)(rootReducer),
     initialState,
-    composeEnhancers(applyMiddleware(routerMiddleware(history), sagaMiddleware))
+    composeEnhancers(applyMiddleware(routerMiddleware(history), sagaMiddleware)),
   );
 
   sagaMiddleware.run(rootSaga);

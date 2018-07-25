@@ -5,7 +5,7 @@ const initialState: AuthState = {
   user: undefined,
   jwt: undefined,
   errors: undefined,
-  loading: false
+  loading: false,
 };
 
 const reducer: Reducer<AuthState> = (state = initialState, action) => {
@@ -18,7 +18,7 @@ const reducer: Reducer<AuthState> = (state = initialState, action) => {
         ...state,
         loading: false,
         jwt: action.payload.jwt,
-        user: action.payload.user
+        user: action.payload.user,
       };
     }
     case AuthActionTypes.LOGIN_FAILURE: {

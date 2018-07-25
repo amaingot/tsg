@@ -29,7 +29,7 @@ class AccountDetailsPage extends React.Component<AccountDetailsPageProps, any> {
 
 const mapState2Props = (state: ApplicationState) => {
   return {
-    auth: state.auth
+    auth: state.auth,
   };
 };
 

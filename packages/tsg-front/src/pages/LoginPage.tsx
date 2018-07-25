@@ -36,7 +36,7 @@ class LoginPage extends React.Component<LoginPageProps> {
     <Redirect
       to={{
         pathname: '/',
-        search: App.webEnv === 'production' ? '' : `?env=${App.webEnv}`
+        search: App.webEnv === 'production' ? '' : `?env=${App.webEnv}`,
       }}
     />
   )
@@ -61,17 +61,17 @@ class LoginPage extends React.Component<LoginPageProps> {
 
 const mapState2Props = (state: ApplicationState) => {
   return {
-    auth: state.auth
+    auth: state.auth,
   };
 };
 
 const mapDispatch2Props = (dispatch: Dispatch) => {
   return {
-    login: (payload: LoginRequest) => dispatch(login(payload))
+    login: (payload: LoginRequest) => dispatch(login(payload)),
   };
 };
 
 export default connect(
   mapState2Props,
-  mapDispatch2Props
+  mapDispatch2Props,
 )(LoginPage);

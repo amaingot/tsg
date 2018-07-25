@@ -16,7 +16,7 @@ export function parseJwt(token: string): JWT {
   const jwt = {
     token,
     expiresAt: expiresDate,
-    issuedAt: issuedDate
+    issuedAt: issuedDate,
   };
 
   return jwt;
@@ -27,7 +27,7 @@ export function reviveEditableuser(user: object): EditableUserRecord {
   return {
     firstName: u.get('firstName', '') as string,
     lastName: u.get('lastName', '') as string,
-    email: u.get('email', '') as string
+    email: u.get('email', '') as string,
   };
 }
 
@@ -48,6 +48,6 @@ export function reviveUser(user: object): UserRecord {
     isActive: u.get('isActive', false) as boolean,
 
     lastLogin,
-    dateJoined
+    dateJoined,
   };
 }

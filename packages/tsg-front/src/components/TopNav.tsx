@@ -35,25 +35,23 @@ class TopNav extends React.Component<TopNavProps> {
   private renderLoggedInButtons = () => {
     const { logout } = this.props;
 
-    const accountLinks = [
-      (
-        <AccountItem key={0}>
-          <Link to='/account' label='Account' />
-        </AccountItem>
-      ),
-      (
-        <AccountItem key={1} onClick={() => logout()}>
-          Logout
-        </AccountItem>
-      )
-    ];
-    return accountLinks;
+    const accountLink = (
+      <AccountItem key={0}>
+        <Link to='/account' label='Account' />
+      </AccountItem>
+    );
+    const logoutLink = (
+      <AccountItem key={1} onClick={() => logout()}>
+        Logout
+      </AccountItem>
+    );
+    return [accountLink, logoutLink];
   }
 
   private renderNotLoggedInButtons = () => {
     const buttons = [
       { to: '/signup', label: 'Sign Up' },
-      { to: '/login', label: 'Login' }
+      { to: '/login', label: 'Login' },
     ];
 
     return buttons.map((props) => (
@@ -90,17 +88,17 @@ class TopNav extends React.Component<TopNavProps> {
 const mapState2Props = (state: ApplicationState) => {
   return {
     auth: state.auth,
-    isLoggedIn: !!state.auth.jwt
+    isLoggedIn: !!state.auth.jwt,
   };
 };
 
 const mapDispatch2Props = (dispatch: Dispatch) => {
   return {
-    logout: () => dispatch(logout())
+    logout: () => dispatch(logout()),
   };
 };
 
 export default connect(
   mapState2Props,
-  mapDispatch2Props
+  mapDispatch2Props,
 )(TopNav);

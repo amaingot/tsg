@@ -7,7 +7,7 @@ import {
   loginSuccess,
   updateUser,
   updateUserError,
-  updateUserSuccess
+  updateUserSuccess,
 } from './actions';
 import { generateLoginQuery, generateUpdateUserQuery } from './queries';
 import { parseJwt, reviveEditableuser, reviveUser } from './revivers';
@@ -40,7 +40,7 @@ function* handleLogin(action: ReturnType<typeof login>) {
 function* handleUpdateUser(action: ReturnType<typeof updateUser>) {
   try {
     const token = yield select(
-      (state: ApplicationState) => (state.auth.jwt ? state.auth.jwt.token : '')
+      (state: ApplicationState) => (state.auth.jwt ? state.auth.jwt.token : ''),
     );
 
     const query = generateUpdateUserQuery(action.payload);

@@ -39,7 +39,7 @@ export const enum AuthActionTypes {
   UPDATE_USER_REQUEST = '@@auth/UPDATE_USER_REQUEST',
   UPDATE_USER_SUCCESS = '@@auth/UPDATE_USER_SUCCESS',
   UPDATE_USER_FAILURE = '@@auth/UPDATE_USER_FAILURE',
-  LOGOUT = '@@auth/LOGOUT'
+  LOGOUT = '@@auth/LOGOUT',
 }
 
 export interface AuthState {

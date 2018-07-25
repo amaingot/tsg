@@ -36,7 +36,7 @@ class LoginForm extends React.Component<LoginFormProps> {
         this.props.onSubmit({
           username: values.userName,
           password: values.password,
-          stayLoggedIn: values.remeber
+          stayLoggedIn: values.remeber,
         });
       }
     });
@@ -49,31 +49,31 @@ class LoginForm extends React.Component<LoginFormProps> {
       <StyledForm onSubmit={this.handleSubmit}>
         <FormItem>
           {getFieldDecorator('userName', {
-            rules: [{ required: true, message: 'Please input your username!' }]
+            rules: [{ required: true, message: 'Please input your username!' }],
           })(
             <Input
               prefix={<Icon type='user' style={{ color: 'rgba(0,0,0,.25)' }} />}
               placeholder='Username'
               autoComplete='username'
-            />
+            />,
           )}
         </FormItem>
         <FormItem>
           {getFieldDecorator('password', {
-            rules: [{ required: true, message: 'Please input your Password!' }]
+            rules: [{ required: true, message: 'Please input your Password!' }],
           })(
             <Input
               prefix={<Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }} />}
               type='password'
               placeholder='Password'
               autoComplete='current-password'
-            />
+            />,
           )}
         </FormItem>
         <FormItem>
           {getFieldDecorator('remember', {
             valuePropName: 'checked',
-            initialValue: true
+            initialValue: true,
           })(<Checkbox>Remember me</Checkbox>)}
           <ForgotLink href=''>Forgot password</ForgotLink>
           <LoginSubmitButton children='Login' onClick={this.handleSubmit} />

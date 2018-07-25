@@ -13,5 +13,5 @@ const store = configureStore(history, initialState);
 
 ReactDOM.render(
   <Main store={store} history={history} />,
-  document.getElementById('root-container')
+  document.getElementById('root-container'),
 );

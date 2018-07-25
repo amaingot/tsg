@@ -4,7 +4,7 @@ import {
   EditableUserRecord,
   JWT,
   LoginRequest,
-  UserRecord
+  UserRecord,
 } from './types';
 
 export const login = (request: LoginRequest) =>

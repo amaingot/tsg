@@ -20,5 +20,5 @@ export const theme: ThemeInterface = {
     confetti: '#e0bf43',
     bunker: '#2c2c2c',
     aquaSqueeze: '#dce2d8',
-    eggshell: '#ffffff'
+    eggshell: '#ffffff',
 };

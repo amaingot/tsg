@@ -14,7 +14,7 @@ class Link extends React.PureComponent<LinkProps> {
       <ReactRouterLink
         to={{
           pathname: to,
-          search: App.webEnv === 'production' ? '' : `?env=${App.webEnv}`
+          search: App.webEnv === 'production' ? '' : `?env=${App.webEnv}`,
         }}
       >
         {label}

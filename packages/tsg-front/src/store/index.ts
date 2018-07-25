@@ -14,7 +14,7 @@ export interface ConnectedReduxProps<A extends Action = AnyAction> {
 }
 
 export const rootReducer = combineReducers<ApplicationState>({
-  auth: AuthReducer
+  auth: AuthReducer,
 });
 
 export function* rootSaga() {

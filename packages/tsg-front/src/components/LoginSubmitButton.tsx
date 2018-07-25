@@ -5,7 +5,7 @@ import styled from '../utils/styled-components';
 class UnstyledLoginSubmitButton extends React.Component<
   ButtonProps & any,
   any
-  > {
+> {
   public render() {
     return <Button htmlType='submit' {...this.props} />;
   }
