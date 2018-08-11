@@ -2,13 +2,13 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { Dispatch } from 'redux';
+import styled from 'styled-components';
 
-import LoginForm from '../components/LoginForm';
-import frontLogo from '../static/largeColorLogo.png';
-import { ApplicationState } from '../store';
-import { login } from '../store/auth/actions';
-import { AuthState, LoginRequest } from '../store/auth/types';
-import styled from '../utils/styled-components';
+import LoginForm from 'components/LoginForm';
+import frontLogo from 'static/largeColorLogo.png';
+import { login } from 'store/auth/actions';
+import { AuthState, LoginRequest } from 'store/auth/types';
+import { ApplicationState } from 'store/index';
 
 const LoginContainer = styled.div`
   width: 300px;
@@ -39,7 +39,7 @@ class LoginPage extends React.Component<LoginPageProps> {
         search: App.webEnv === 'production' ? '' : `?env=${App.webEnv}`,
       }}
     />
-  )
+  );
 
   public renderLogin = () => (
     <div>
@@ -48,7 +48,7 @@ class LoginPage extends React.Component<LoginPageProps> {
         <LoginForm onSubmit={this.props.login} />
       </LoginContainer>
     </div>
-  )
+  );
 
   public render() {
     if (this.props.auth.jwt) {
@@ -73,5 +73,5 @@ const mapDispatch2Props = (dispatch: Dispatch) => {
 
 export default connect(
   mapState2Props,
-  mapDispatch2Props,
+  mapDispatch2Props
 )(LoginPage);

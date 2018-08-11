@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import styled from '../utils/styled-components';
+import styled from 'styled-components';
 
 const Header = styled.h1`
   color: blue;

@@ -1,33 +1,35 @@
 {
   "defaultSeverity": "error",
-  "extends": ["tslint:latest", "tslint-react"],
+  "extends": [
+    "tslint:latest",
+    "tslint-react",
+    "tslint-plugin-prettier",
+    "tslint-config-prettier"
+  ],
   "jsRules": {},
   "rules": {
-    "quotemark": [true, "single", "avoid-escape"],
-    "semicolon": [true, "always"],
-    "trailing-comma": [
+    "prettier": [
       true,
       {
-        "multiline": "always",
-        "singleline": "never"
+        "printWidth": 100,
+        "tabWidth": 2,
+        "useTabs": false,
+        "singleQuote": true,
+        "trailingComma": "es5"
       }
     ],
-    "no-shadowed-variable": [false],
+    "no-implicit-dependencies": [
+      true,
+      "dev",
+      ["pages", "components", "static", "store", "utils"]
+    ],
+    "interface-name": [true, "never-prefix"],
+    "jsx-boolean-value": [false],
     "jsx-no-lambda": [false],
+    "max-classes-per-file": false,
     "member-ordering": [false],
-    "space-before-function-paren": [
-      true,
-      {
-        "anonymous": "always",
-        "named": "never",
-        "asyncArrow": "always"
-      }
-    ],
     "no-submodule-imports": [false],
-    "object-literal-sort-keys": [false],
-    "indent": [true, "spaces", 2],
-    "jsx-no-multiline-js": [false],
-    "interface-name": [true, "never-prefix"]
+    "object-literal-sort-keys": [false]
   },
   "rulesDirectory": []
 }

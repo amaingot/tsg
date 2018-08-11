@@ -6,7 +6,7 @@ export default class PageFooter extends React.Component {
   public render() {
     return (
       <Layout.Footer style={{ textAlign: 'center' }}>
-        TennisShopGuru ©2018 Created by Alex Maingot <a href='admin/'>Admin</a>
+        TennisShopGuru ©2018 Created by Alex Maingot blah <a href="admin/">Admin</a>
       </Layout.Footer>
     );
   }

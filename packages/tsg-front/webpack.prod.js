@@ -2,6 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const baseConfig = require("./webpack.config");
 
 const S3_BUCKET_URL = process.env.S3_BUCKET_URL || "";
 const CIRCLE_BRANCH = process.env.CIRCLE_BRANCH || "production";
@@ -9,49 +10,8 @@ const CIRCLE_BRANCH = process.env.CIRCLE_BRANCH || "production";
 const ASSET_PATH = `${S3_BUCKET_URL}${CIRCLE_BRANCH}/`;
 
 module.exports = {
-  entry: "./src/index.tsx",
+  ...baseConfig,
   mode: "production",
-  module: {
-    rules: [
-      // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
-      { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
-
-      // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-      { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
-      {
-        test: /\.css$/,
-        loader: "style-loader!css-loader"
-      },
-      {
-        test: /\.(less|css)$/,
-        use: [
-          {
-            loader: "style-loader" // creates style nodes from JS strings
-          },
-          {
-            loader: "css-loader" // translates CSS into CommonJS
-          },
-          {
-            loader: "less-loader",
-            options: { javascriptEnabled: true } // compiles Less to CSS
-          }
-        ]
-      },
-      {
-        test: /\.(png|jpg|gif)$/,
-        use: [
-          {
-            loader: "file-loader",
-            options: {}
-          }
-        ]
-      }
-    ]
-  },
-  resolve: {
-    // Add '.ts' and '.tsx' as resolvable extensions.
-    extensions: [".ts", ".tsx", ".js", ".json"]
-  },
   plugins: [
     new CleanWebpackPlugin("dist", {}),
     new webpack.NamedModulesPlugin(),

@@ -2,7 +2,7 @@ import Layout from 'antd/lib/layout';
 import 'antd/lib/layout/style';
 import * as React from 'react';
 
-import styled from '../utils/styled-components';
+import styled from 'styled-components';
 
 const MainContentWrapper = styled.div`
   margin: 0 auto;

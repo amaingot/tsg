@@ -1,9 +1,14 @@
 import { all, call, fork, put, takeEvery } from 'redux-saga/effects';
-import callGraphQL from '../../utils/callGraphQL';
-import { fetchCustomers, fetchCustomersError, fetchCustomersStart, fetchCustomersSuccess } from './actions';
-import { generateListCustomersQuery } from './queries';
-import { reviveCustomerList } from './revivers';
-import { CustomerActionTypes } from './types';
+import {
+  fetchCustomers,
+  fetchCustomersError,
+  fetchCustomersStart,
+  fetchCustomersSuccess,
+} from 'store/customer/actions';
+import { generateListCustomersQuery } from 'store/customer/queries';
+import { reviveCustomerList } from 'store/customer/revivers';
+import { CustomerActionTypes } from 'store/customer/types';
+import callGraphQL from 'utils/callGraphQL';
 
 function* handleFetchCustomers(action: ReturnType<typeof fetchCustomers>) {
   try {
@@ -19,7 +24,6 @@ function* handleFetchCustomers(action: ReturnType<typeof fetchCustomers>) {
       yield put(fetchCustomersError(res.gqlError));
     } else {
       // TODO: fix data access
-      debugger;
       const customers = yield call(reviveCustomerList, res.data.customers);
       yield put(fetchCustomersSuccess(customers));
     }

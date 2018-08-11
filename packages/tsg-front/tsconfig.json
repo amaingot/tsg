@@ -13,6 +13,21 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "suppressImplicitAnyIndexErrors": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "paths": {
+      "components/*": ["src/components/*"],
+      "pages/*": ["src/pages/*"],
+      "static/*": ["src/static/*"],
+      "store/*": ["src/store/*"],
+      "utils/*": ["src/utils/*"]
+    },
+    "plugins": [
+      {
+        "name": "typescript-styled-plugin",
+        "lint": {
+          "important": "error"
+        }
+      }
+    ]
   }
 }

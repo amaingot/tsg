@@ -1,6 +1,6 @@
 import { all, call, fork, put, select, takeEvery } from 'redux-saga/effects';
-import callGraphQL from '../../utils/callGraphQL';
-import { ApplicationState } from '../index';
+import { ApplicationState } from 'store/index';
+import callGraphQL from 'utils/callGraphQL';
 import {
   login,
   loginError,
@@ -40,7 +40,7 @@ function* handleLogin(action: ReturnType<typeof login>) {
 function* handleUpdateUser(action: ReturnType<typeof updateUser>) {
   try {
     const token = yield select(
-      (state: ApplicationState) => (state.auth.jwt ? state.auth.jwt.token : ''),
+      (state: ApplicationState) => (state.auth.jwt ? state.auth.jwt.token : '')
     );
 
     const query = generateUpdateUserQuery(action.payload);

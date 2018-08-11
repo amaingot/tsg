@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from '../utils/styled-components';
+import styled from 'styled-components';
 
 import Checkbox from 'antd/lib/checkbox';
 import 'antd/lib/checkbox/style';
@@ -10,8 +10,8 @@ import 'antd/lib/icon/style';
 import Input from 'antd/lib/input';
 import 'antd/lib/input/style';
 
-import { LoginRequest } from '../store/auth/types';
-import LoginSubmitButton from './LoginSubmitButton';
+import LoginSubmitButton from 'components/LoginSubmitButton';
+import { LoginRequest } from 'store/auth/types';
 
 const FormItem = Form.Item;
 
@@ -40,7 +40,7 @@ class LoginForm extends React.Component<LoginFormProps> {
         });
       }
     });
-  }
+  };
 
   public render() {
     const { getFieldDecorator } = this.props.form;
@@ -52,10 +52,10 @@ class LoginForm extends React.Component<LoginFormProps> {
             rules: [{ required: true, message: 'Please input your username!' }],
           })(
             <Input
-              prefix={<Icon type='user' style={{ color: 'rgba(0,0,0,.25)' }} />}
-              placeholder='Username'
-              autoComplete='username'
-            />,
+              prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              placeholder="Username"
+              autoComplete="username"
+            />
           )}
         </FormItem>
         <FormItem>
@@ -63,11 +63,11 @@ class LoginForm extends React.Component<LoginFormProps> {
             rules: [{ required: true, message: 'Please input your Password!' }],
           })(
             <Input
-              prefix={<Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }} />}
-              type='password'
-              placeholder='Password'
-              autoComplete='current-password'
-            />,
+              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              type="password"
+              placeholder="Password"
+              autoComplete="current-password"
+            />
           )}
         </FormItem>
         <FormItem>
@@ -75,8 +75,8 @@ class LoginForm extends React.Component<LoginFormProps> {
             valuePropName: 'checked',
             initialValue: true,
           })(<Checkbox>Remember me</Checkbox>)}
-          <ForgotLink href=''>Forgot password</ForgotLink>
-          <LoginSubmitButton children='Login' onClick={this.handleSubmit} />
+          <ForgotLink href="">Forgot password</ForgotLink>
+          <LoginSubmitButton children="Login" onClick={this.handleSubmit} />
         </FormItem>
       </StyledForm>
     );

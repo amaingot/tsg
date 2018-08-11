@@ -1,22 +1,21 @@
 import { action } from 'typesafe-actions';
+
 import {
   AuthActionTypes,
   EditableUserRecord,
   JWT,
   LoginRequest,
   UserRecord,
-} from './types';
+} from 'store/auth/types';
 
-export const login = (request: LoginRequest) =>
-  action(AuthActionTypes.LOGIN_REQUEST, request);
+export const login = (request: LoginRequest) => action(AuthActionTypes.LOGIN_REQUEST, request);
 
 export const logout = () => action(AuthActionTypes.LOGOUT);
 
 export const loginSuccess = (jwt: JWT, user: UserRecord) =>
   action(AuthActionTypes.LOGIN_SUCCESS, { jwt, user });
 
-export const loginError = (message: string) =>
-  action(AuthActionTypes.LOGIN_FAILURE, message);
+export const loginError = (message: string) => action(AuthActionTypes.LOGIN_FAILURE, message);
 
 export const updateUser = (newUser: EditableUserRecord) =>
   action(AuthActionTypes.UPDATE_USER_REQUEST, newUser);

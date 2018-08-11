@@ -16,18 +16,18 @@ class PrivateRoute extends React.Component<PrivateRouteProps> {
       <Route
         path={path}
         {...rest}
-        render={(props) =>
+        render={props =>
           isAuthenticated ? (
             <Component {...props} />
           ) : (
-              <Redirect
-                to={{
-                  pathname: '/login',
-                  state: { from: props.location },
-                  search: App.webEnv === 'production' ? '' : `?env=${App.webEnv}`,
-                }}
-              />
-            )
+            <Redirect
+              to={{
+                pathname: '/login',
+                state: { from: props.location },
+                search: App.webEnv === 'production' ? '' : `?env=${App.webEnv}`,
+              }}
+            />
+          )
         }
       />
     );

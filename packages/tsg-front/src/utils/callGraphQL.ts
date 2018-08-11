@@ -6,7 +6,7 @@ export interface GQLResponse {
   error: any;
 }
 
-export default function (query: string, token?: string): Promise<GQLResponse> {
+export default function(query: string, token?: string): Promise<GQLResponse> {
   const axiosConfig = {
     method: 'POST',
     url: 'graphql',
@@ -21,7 +21,7 @@ export default function (query: string, token?: string): Promise<GQLResponse> {
   }
 
   return axios(axiosConfig)
-    .then((response) => {
+    .then(response => {
       if (response.data.errors) {
         return {
           data: null,
@@ -35,7 +35,7 @@ export default function (query: string, token?: string): Promise<GQLResponse> {
         error: null,
       };
     })
-    .catch((error) => {
+    .catch(error => {
       return { data: null, gqlError: null, error };
     });
 }
