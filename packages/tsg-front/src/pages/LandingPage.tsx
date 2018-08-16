@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-// import Button from 'components/Button';
 import Footer from 'components/Footer';
 import GridContainer from 'components/GridContainer';
 import GridItem from 'components/GridItem';
@@ -49,7 +48,7 @@ export default class LandingPage extends React.Component {
           color="transparent"
           brand="Tennis Shop Guru"
           rightLinks={<HeaderLinks />}
-          fixed
+          fixed={true}
           changeColorOnScroll={{
             height: 400,
             color: 'white',
@@ -64,17 +63,6 @@ export default class LandingPage extends React.Component {
                   Tennis Shop Guru is a cloud based shop management system that organizes customer
                   string jobs and employee hours.
                 </h4>
-                <br />
-                {/* <Button
-                  buttonColor="danger"
-                  size="large"
-                  href="#"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <i className="fas fa-play" />
-                  Watch video
-                </Button> */}
               </GridItem>
             </GridContainer>
           </StyledContainer>
