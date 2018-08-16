@@ -16,6 +16,7 @@
     "noUnusedLocals": true,
     "paths": {
       "components/*": ["src/components/*"],
+      "styles/*": ["src/styles/*"],
       "pages/*": ["src/pages/*"],
       "static/*": ["src/static/*"],
       "store/*": ["src/store/*"],

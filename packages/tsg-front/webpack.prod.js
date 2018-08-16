@@ -24,7 +24,8 @@ module.exports = {
     new webpack.DefinePlugin({
       "process.env.CIRCLE_BRANCH": JSON.stringify(CIRCLE_BRANCH),
       "process.env.S3_BUCKET_URL": JSON.stringify(S3_BUCKET_URL)
-    })
+    }),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
   ],
   output: {
     filename: "index.bundle.js",

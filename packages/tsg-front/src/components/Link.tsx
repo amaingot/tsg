@@ -1,26 +1,37 @@
+import { History } from 'history';
 import * as React from 'react';
-import { Link as ReactRouterLink } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { ReduxShape } from 'store/index';
 
 interface LinkProps {
   to: string;
-  label: string;
+  children?: React.ReactNode;
+  router: History;
 }
 
 class Link extends React.PureComponent<LinkProps> {
-  public render() {
-    const { to, label } = this.props;
+  public onClick = () => {
+    const { router, to } = this.props;
 
-    return (
-      <ReactRouterLink
-        to={{
-          pathname: to,
-          search: App.webEnv === 'production' ? '' : `?env=${App.webEnv}`,
-        }}
-      >
-        {label}
-      </ReactRouterLink>
-    );
+    const newLocation = {
+      pathname: to,
+      search: App.webEnv === 'production' ? '' : `?env=${App.webEnv}`,
+    };
+
+    router.push(newLocation);
+  };
+
+  public render() {
+    const { children } = this.props;
+
+    return <div onClick={this.onClick}>{children}</div>;
   }
 }
 
-export default Link;
+const mapState2Props = (state: ReduxShape) => {
+  return {
+    router: state.router,
+  };
+};
+
+export default connect(mapState2Props)(Link);

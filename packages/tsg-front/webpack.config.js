@@ -14,7 +14,7 @@ module.exports = {
         loader: "style-loader!css-loader"
       },
       {
-        test: /\.(less|css)$/,
+        test: /\.(less|css|scss)$/,
         use: [
           {
             loader: "style-loader" // creates style nodes from JS strings
@@ -44,6 +44,7 @@ module.exports = {
     extensions: [".ts", ".tsx", ".js", ".json"],
     alias: {
       components: path.resolve(__dirname, "src/components/"),
+      styles: path.resolve(__dirname, "src/styles/"),
       pages: path.resolve(__dirname, "src/pages/"),
       static: path.resolve(__dirname, "src/static/"),
       store: path.resolve(__dirname, "src/store/"),

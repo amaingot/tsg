@@ -1,6 +1,13 @@
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
+const webpack = require("webpack");
+
+const baseConfig = require("./webpack.config");
 
 module.exports = {
-  plugins: [new BundleAnalyzerPlugin()]
+  ...baseConfig,
+  plugins: [
+    new BundleAnalyzerPlugin(),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+  ]
 };

@@ -7,10 +7,9 @@ import { Store } from 'redux';
 
 import { ApplicationState } from './store';
 
-import AccountDetailsPage from './pages/AccountDetailsPage';
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import PrivateRoute from './utils/PrivateRoute';
+import LandingPage from 'pages/LandingPage';
+
+import './styles.scss';
 
 // Any additional component props go here.
 interface MainProps {
@@ -26,9 +25,7 @@ export default class Main extends React.Component<MainProps> {
       <Provider store={store}>
         <ConnectedRouter history={history}>
           <Switch>
-            <Route exact={true} path="/" component={HomePage} />
-            <Route path="/login" component={LoginPage} />
-            <PrivateRoute path="/account" component={AccountDetailsPage} />
+            <Route exact={true} path="/" component={LandingPage} />
             <Route component={() => <div>Not Found</div>} />
           </Switch>
         </ConnectedRouter>
