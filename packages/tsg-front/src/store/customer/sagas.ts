@@ -40,8 +40,8 @@ function* watchFetchCustomers() {
   yield takeEvery(CustomerActionTypes.FETCH_CUSTOMERS, handleFetchCustomers);
 }
 
-function* authSaga() {
+function* customerSaga() {
   yield all([fork(watchFetchCustomers)]);
 }
 
-export default authSaga;
+export default customerSaga;

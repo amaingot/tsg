@@ -1,11 +1,11 @@
-import { Map } from 'immutable';
+import { fromJS } from 'immutable';
 import * as decodeJwt from 'jwt-decode';
 import * as moment from 'moment';
 import { EditableUserRecord, JWT, UserRecord } from './types';
 
 export function parseJwt(token: string): JWT {
   const decoded = decodeJwt(token);
-  const parsed = Map(decoded);
+  const parsed = fromJS(decoded);
 
   const expiresNum = parsed.get('exp', '') as number;
   const expiresDate = moment(expiresNum * 1000);
@@ -23,7 +23,7 @@ export function parseJwt(token: string): JWT {
 }
 
 export function reviveEditableuser(user: object): EditableUserRecord {
-  const u = Map(user);
+  const u = fromJS(user);
   return {
     firstName: u.get('firstName', '') as string,
     lastName: u.get('lastName', '') as string,
@@ -32,7 +32,7 @@ export function reviveEditableuser(user: object): EditableUserRecord {
 }
 
 export function reviveUser(user: object): UserRecord {
-  const u = Map(user);
+  const u = fromJS(user);
 
   const lastLogin = moment(u.get('lastLogin', 0) as number);
   const dateJoined = moment(u.get('dateJoined', 0) as number);

@@ -1,11 +1,11 @@
-import { connectRouter, routerMiddleware } from 'connected-react-router';
+import { routerMiddleware } from 'connected-react-router';
 import { History } from 'history';
 import { applyMiddleware, createStore, Store } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
 
 // Import the state interface and our combined reducers/sagas.
-import { ApplicationState, rootReducer, rootSaga } from 'store/index';
+import { ApplicationState, createRootReducer, rootSaga } from 'store/index';
 
 export default function configureStore(
   history: History,
@@ -15,7 +15,7 @@ export default function configureStore(
   const sagaMiddleware = createSagaMiddleware();
 
   const store = createStore(
-    connectRouter(history)(rootReducer),
+    createRootReducer(history),
     initialState,
     composeEnhancers(applyMiddleware(routerMiddleware(history), sagaMiddleware))
   );

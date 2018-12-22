@@ -28,4 +28,4 @@ const reducer: Reducer<CustomerState> = (state = initialState, action) => {
   }
 };
 
-export { reducer as AuthReducer };
+export { reducer as CustomerReducer };

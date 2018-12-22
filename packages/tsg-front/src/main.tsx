@@ -7,8 +7,6 @@ import { Store } from 'redux';
 
 import { ApplicationState } from './store';
 
-import LandingPage from 'pages/LandingPage';
-
 import './styles.scss';
 
 // Any additional component props go here.
@@ -25,7 +23,6 @@ export default class Main extends React.Component<MainProps> {
       <Provider store={store}>
         <ConnectedRouter history={history}>
           <Switch>
-            <Route exact={true} path="/" component={LandingPage} />
             <Route component={() => <div>Not Found</div>} />
           </Switch>
         </ConnectedRouter>

@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import { CustomerRecord } from './types';
 
 export function reviveCustomer(customer: object): CustomerRecord {
-  const c = Map(customer);
+  const c = fromJS(customer);
 
   const lastUpdated = moment(c.get('lastUpdated', 0) as number);
   const createdAt = moment(c.get('createdAt', 0) as number);

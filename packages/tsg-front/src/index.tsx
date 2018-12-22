@@ -1,4 +1,4 @@
-import createHistory from 'history/createBrowserHistory';
+import { createBrowserHistory } from 'history';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
@@ -6,7 +6,7 @@ import configureStore from './configureStore';
 
 import Main from './main';
 
-const history = createHistory();
+const history = createBrowserHistory();
 
 const initialState = window.initialReduxState;
 const store = configureStore(history, initialState);
