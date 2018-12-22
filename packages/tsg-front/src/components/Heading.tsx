@@ -1,12 +1,18 @@
 import cx from 'classnames';
 import React from 'react';
 
-// @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
 
 import headingStyle from 'styles/jss/components/headingStyle';
+import { CommonProps } from 'utils/commonProps';
 
-function Heading({ ...props }) {
+interface Props extends CommonProps {
+  title?: React.ReactNode;
+  category?: React.ReactNode;
+  textAlign?: 'right' | 'left' | 'center';
+}
+
+const Heading: React.SFC<Props> = ({ ...props }) => {
   const { textAlign, category, title, classes } = props;
   const heading =
     classes.heading +
@@ -23,13 +29,6 @@ function Heading({ ...props }) {
     );
   }
   return null;
-}
-
-Heading.propTypes = {
-  classes: PropTypes.object.isRequired,
-  title: PropTypes.node,
-  category: PropTypes.node,
-  textAlign: PropTypes.oneOf(['right', 'left', 'center']),
 };
 
 export default withStyles(headingStyle)(Heading);

@@ -7,9 +7,15 @@ import ListItem from '@material-ui/core/ListItem';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 import footerStyle from 'styles/jss/components/footerStyle';
+import { CommonProps } from 'utils/commonProps';
 
-function Footer({ ...props }) {
-  const { classes, fluid, white, rtlActive } = props;
+interface Props extends CommonProps {
+  fluid?: boolean;
+  white?: boolean;
+}
+
+const Footer: React.SFC<Props> = ({ ...props }) => {
+  const { classes, fluid, white } = props;
   const container = cx({
     [classes.container]: !fluid,
     [classes.containerFluid]: fluid,
@@ -31,43 +37,36 @@ function Footer({ ...props }) {
           <List className={classes.list}>
             <ListItem className={classes.inlineBlock}>
               <a href="#home" className={block}>
-                {rtlActive ? 'الصفحة الرئيسية' : 'Home'}
+                Home
               </a>
             </ListItem>
             <ListItem className={classes.inlineBlock}>
               <a href="#company" className={block}>
-                {rtlActive ? 'شركة' : 'Company'}
+                Company
               </a>
             </ListItem>
             <ListItem className={classes.inlineBlock}>
               <a href="#portfolio" className={block}>
-                {rtlActive ? 'بعدسة' : 'Portfolio'}
+                Portfolio
               </a>
             </ListItem>
             <ListItem className={classes.inlineBlock}>
               <a href="#blog" className={block}>
-                {rtlActive ? 'مدونة' : 'Blog'}
+                Blog
               </a>
             </ListItem>
           </List>
         </div>
         <p className={classes.right}>
-          &copy; {1900 + new Date().getYear()}{' '}
+          &copy; {1900 + new Date().getFullYear()}{' '}
           <a href="https://www.creative-tim.com" className={anchor}>
-            {rtlActive ? 'توقيت الإبداعية' : 'Creative Tim'}
+            Creative Tim
           </a>
-          {rtlActive ? ', مصنوعة مع الحب لشبكة الإنترنت أفضل' : ', made with love for a better web'}
+          , made with love for a better web
         </p>
       </div>
     </footer>
   );
-}
-
-Footer.propTypes = {
-  classes: PropTypes.object.isRequired,
-  fluid: PropTypes.bool,
-  white: PropTypes.bool,
-  rtlActive: PropTypes.bool,
 };
 
 export default withStyles(footerStyle)(Footer);

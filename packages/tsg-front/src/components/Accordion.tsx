@@ -11,7 +11,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import accordionStyle from 'styles/jss/components/accordionStyle';
 
-interface AccordionProps extends WithStyles {
+interface Props extends WithStyles {
   active: number;
   collapses: Array<{
     title: string;
@@ -19,12 +19,12 @@ interface AccordionProps extends WithStyles {
   }>;
 }
 
-interface AccordionState {
+interface State {
   active: number;
 }
 
-class Accordion extends React.Component<AccordionProps, AccordionState> {
-  constructor(props: AccordionProps) {
+class Accordion extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       active: props.active,

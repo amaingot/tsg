@@ -5,11 +5,34 @@ import React from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 // core components
-import Badge from 'components/Badge/Badge';
+import Badge from 'components/Badge';
 
 import timelineStyle from 'styles/jss/components/timelineStyle';
+import { CommonProps } from 'utils/commonProps';
 
-function Timeline({ ...props }) {
+interface Props extends CommonProps {
+  stories: Array<{
+    inverted: string;
+    badgeColor: string;
+    badgeIcon: React.SFC<any>;
+    title: string;
+    titleColor?:
+      | 'primary'
+      | 'warning'
+      | 'danger'
+      | 'success'
+      | 'info'
+      | 'rose'
+      | 'gray'
+      | undefined;
+    body?: React.ReactNode;
+    footerTitle?: React.ReactNode;
+    footer?: React.ReactNode;
+  }>;
+  simple?: boolean;
+}
+
+const Timeline: React.SFC<Props> = ({ ...props }) => {
   const { classes, stories, simple } = props;
   const timelineClass =
     classes.timeline +
@@ -60,12 +83,6 @@ function Timeline({ ...props }) {
       })}
     </ul>
   );
-}
-
-Timeline.propTypes = {
-  classes: PropTypes.object.isRequired,
-  stories: PropTypes.arrayOf(PropTypes.object).isRequired,
-  simple: PropTypes.bool,
 };
 
 export default withStyles(timelineStyle)(Timeline);

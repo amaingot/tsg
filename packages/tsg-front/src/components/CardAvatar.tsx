@@ -1,15 +1,19 @@
-// nodejs library to set properties for components
-// @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
-// nodejs library that concatenates classes
 import classNames from 'classnames';
 import React from 'react';
-// @material-ui/icons
-// core components
-
 import cardAvatarStyle from 'styles/jss/components/cardAvatarStyle';
+import { CommonProps } from 'utils/commonProps';
 
-function CardAvatar({ ...props }) {
+interface Props extends CommonProps {
+  children?: React.ReactNode;
+  className?: string;
+  profile?: boolean;
+  plain?: boolean;
+  testimonial?: boolean;
+  testimonialFooter?: boolean;
+}
+
+const CardAvatar: React.SFC<Props> = ({ ...props }) => {
   const {
     classes,
     children,
@@ -26,22 +30,13 @@ function CardAvatar({ ...props }) {
     [classes.cardAvatarPlain]: plain,
     [classes.cardAvatarTestimonial]: testimonial,
     [classes.cardAvatarTestimonialFooter]: testimonialFooter,
-    [className]: className !== undefined,
+    [className || '']: className !== undefined,
   });
   return (
     <div className={cardAvatarClasses} {...rest}>
       {children}
     </div>
   );
-}
-
-CardAvatar.propTypes = {
-  children: PropTypes.node.isRequired,
-  className: PropTypes.string,
-  profile: PropTypes.bool,
-  plain: PropTypes.bool,
-  testimonial: PropTypes.bool,
-  testimonialFooter: PropTypes.bool,
 };
 
 export default withStyles(cardAvatarStyle)(CardAvatar);

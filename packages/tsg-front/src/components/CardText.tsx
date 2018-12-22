@@ -1,32 +1,27 @@
-// nodejs library to set properties for components
-// @material-ui/core components
-import withStyles from '@material-ui/core/styles/withStyles';
-// nodejs library that concatenates classes
+import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import classNames from 'classnames';
 import React from 'react';
-// @material-ui/icons
 
-// core components
 import cardTextStyle from 'styles/jss/components/cardTextStyle';
 
-function CardText({ ...props }) {
+interface Props extends WithStyles {
+  children?: React.ReactNode;
+  className?: string;
+  color?: 'warning' | 'success' | 'danger' | 'info' | 'primary' | 'rose';
+}
+
+const CardText: React.SFC<Props> = ({ ...props }) => {
   const { classes, className, children, color, ...rest } = props;
   const cardTextClasses = classNames({
     [classes.cardText]: true,
     [classes[color + 'CardHeader']]: color,
-    [className]: className !== undefined,
+    [className || '']: className !== undefined,
   });
   return (
     <div className={cardTextClasses} {...rest}>
       {children}
     </div>
   );
-}
-
-CardText.propTypes = {
-  classes: PropTypes.object.isRequired,
-  className: PropTypes.string,
-  color: PropTypes.oneOf(['warning', 'success', 'danger', 'info', 'primary', 'rose']),
 };
 
 export default withStyles(cardTextStyle)(CardText);

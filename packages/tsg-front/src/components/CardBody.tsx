@@ -1,15 +1,22 @@
-// nodejs library to set properties for components
-// @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
-// nodejs library that concatenates classes
 import classNames from 'classnames';
 import React from 'react';
-// @material-ui/icons
 
-// core components
 import cardBodyStyle from 'styles/jss/components/cardBodyStyle';
+import { CommonProps } from 'utils/commonProps';
 
-function CardBody({ ...props }) {
+interface CardBodyProps extends CommonProps {
+  background?: boolean;
+  plain?: boolean;
+  formHorizontal?: boolean;
+  pricing?: boolean;
+  signup?: boolean;
+  color?: boolean;
+  profile?: boolean;
+  calendar?: boolean;
+}
+
+const CardBody: React.SFC<CardBodyProps> = ({ ...props }) => {
   const {
     classes,
     className,
@@ -34,26 +41,13 @@ function CardBody({ ...props }) {
     [classes.cardBodyColor]: color,
     [classes.cardBodyProfile]: profile,
     [classes.cardBodyCalendar]: calendar,
-    [className]: className !== undefined,
+    [className || '']: className !== undefined,
   });
   return (
     <div className={cardBodyClasses} {...rest}>
       {children}
     </div>
   );
-}
-
-CardBody.propTypes = {
-  classes: PropTypes.object.isRequired,
-  className: PropTypes.string,
-  background: PropTypes.bool,
-  plain: PropTypes.bool,
-  formHorizontal: PropTypes.bool,
-  pricing: PropTypes.bool,
-  signup: PropTypes.bool,
-  color: PropTypes.bool,
-  profile: PropTypes.bool,
-  calendar: PropTypes.bool,
 };
 
 export default withStyles(cardBodyStyle)(CardBody);

@@ -4,8 +4,14 @@ import React from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 import typographyStyle from 'styles/jss/components/typographyStyle';
+import { CommonProps } from 'utils/commonProps';
 
-function Quote({ ...props }) {
+interface Props extends CommonProps {
+  text: React.ReactNode;
+  author: React.ReactNode;
+}
+
+function Quote(props: Props) {
   const { classes, text, author } = props;
   return (
     <blockquote className={classes.defaultFontStyle + ' ' + classes.quote}>
@@ -14,11 +20,5 @@ function Quote({ ...props }) {
     </blockquote>
   );
 }
-
-// Quote.propTypes = {
-//   classes: PropTypes.object.isRequired,
-//   text: PropTypes.node,
-//   author: PropTypes.node,
-// };
 
 export default withStyles(typographyStyle)(Quote);

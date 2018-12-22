@@ -10,10 +10,18 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import Close from '@material-ui/icons/Close';
 
 import snackbarContentStyle from 'styles/jss/components/snackbarContentStyle';
+import { CommonProps } from 'utils/commonProps';
 
-function SnackbarContent({ ...props }) {
+interface Props extends CommonProps {
+  message: React.ReactNode;
+  color?: 'info' | 'success' | 'warning' | 'danger' | 'primary' | 'rose';
+  close?: boolean;
+  icon: React.SFC<any>;
+}
+
+const SnackbarContent: React.SFC<Props> = ({ ...props }) => {
   const { classes, message, color, close, icon } = props;
-  let action = [];
+  let action: any[] = [];
   const messageClasses = cx({
     [classes.iconMessage]: icon !== undefined,
   });
@@ -42,24 +50,16 @@ function SnackbarContent({ ...props }) {
         </div>
       }
       classes={{
-        root: classes.root + ' ' + classes[color],
+        root: classes.root + ' ' + classes[color || 'info'],
         message: classes.message,
       }}
       action={action}
     />
   );
-}
+};
 
 SnackbarContent.defaultProps = {
   color: 'info',
-};
-
-SnackbarContent.propTypes = {
-  classes: PropTypes.object.isRequired,
-  message: PropTypes.node.isRequired,
-  color: PropTypes.oneOf(['info', 'success', 'warning', 'danger', 'primary', 'rose']),
-  close: PropTypes.bool,
-  icon: PropTypes.func,
 };
 
 export default withStyles(snackbarContentStyle)(SnackbarContent);

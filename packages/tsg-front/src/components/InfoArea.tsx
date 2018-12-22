@@ -4,12 +4,20 @@ import React from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 import infoStyle from 'styles/jss/components/infoStyle';
+import { CommonProps } from 'utils/commonProps';
 
-function InfoArea({ ...props }) {
+interface Props extends CommonProps {
+  icon: React.SFC<any>;
+  title: string;
+  description: string;
+  iconColor?: 'primary' | 'warning' | 'danger' | 'success' | 'info' | 'rose' | 'gray';
+}
+
+const InfoArea: React.SFC<Props> = ({ ...props }) => {
   const { classes, title, description, iconColor } = props;
   return (
     <div className={classes.infoArea}>
-      <div className={classes.iconWrapper + ' ' + classes[iconColor]}>
+      <div className={classes.iconWrapper + ' ' + classes[iconColor || 'gray']}>
         <props.icon className={classes.icon} />
       </div>
       <div className={classes.descriptionWrapper}>
@@ -18,18 +26,10 @@ function InfoArea({ ...props }) {
       </div>
     </div>
   );
-}
+};
 
 InfoArea.defaultProps = {
   iconColor: 'gray',
-};
-
-InfoArea.propTypes = {
-  classes: PropTypes.object.isRequired,
-  icon: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  iconColor: PropTypes.oneOf(['primary', 'warning', 'danger', 'success', 'info', 'rose', 'gray']),
 };
 
 export default withStyles(infoStyle)(InfoArea);

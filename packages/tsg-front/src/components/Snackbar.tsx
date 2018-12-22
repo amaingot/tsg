@@ -10,10 +10,21 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import Close from '@material-ui/icons/Close';
 
 import snackbarContentStyle from 'styles/jss/components/snackbarContentStyle';
+import { CommonProps } from 'utils/commonProps';
 
-function Snackbar({ ...props }) {
+interface Props extends CommonProps {
+  message: React.ReactNode;
+  color?: 'info' | 'success' | 'warning' | 'danger' | 'primary' | 'rose';
+  close?: boolean;
+  icon: React.SFC<any>;
+  place?: 'tl' | 'tr' | 'tc' | 'br' | 'bl' | 'bc';
+  open?: boolean;
+  closeNotification: () => void;
+}
+
+const Snackbar: React.SFC<Props> = ({ ...props }) => {
   const { classes, message, color, close, icon, place, open } = props;
-  let action = [];
+  let action: any[] = [];
   const messageClasses = cx({
     [classes.iconMessage]: icon !== undefined,
   });
@@ -47,40 +58,34 @@ function Snackbar({ ...props }) {
         anchorOriginTopLeft: classes.top40,
       }}
       anchorOrigin={{
-        vertical: place.indexOf('t') === -1 ? 'bottom' : 'top',
+        vertical: place && place.indexOf('t') === -1 ? 'bottom' : 'top',
         horizontal:
-          place.indexOf('l') !== -1 ? 'left' : place.indexOf('c') !== -1 ? 'center' : 'right',
+          place && place.indexOf('l') !== -1
+            ? 'left'
+            : place && place.indexOf('c') !== -1
+            ? 'center'
+            : 'right',
       }}
-      open={open}
+      open={!!open}
       message={
         <div>
-          {icon !== undefined ? <props.icon className={iconClasses} /> : null}
+          {icon ? <props.icon className={iconClasses} /> : null}
           <span className={messageClasses}>{message}</span>
         </div>
       }
       action={action}
       ContentProps={{
         classes: {
-          root: classes.root + ' ' + classes[color],
+          root: classes.root + ' ' + classes[color || 'info'],
           message: classes.message,
         },
       }}
     />
   );
-}
+};
 
 Snackbar.defaultProps = {
   color: 'info',
-};
-
-Snackbar.propTypes = {
-  classes: PropTypes.object.isRequired,
-  message: PropTypes.node.isRequired,
-  color: PropTypes.oneOf(['info', 'success', 'warning', 'danger', 'primary', 'rose']),
-  close: PropTypes.bool,
-  icon: PropTypes.func,
-  place: PropTypes.oneOf(['tl', 'tr', 'tc', 'br', 'bl', 'bc']),
-  open: PropTypes.bool,
 };
 
 export default withStyles(snackbarContentStyle)(Snackbar);

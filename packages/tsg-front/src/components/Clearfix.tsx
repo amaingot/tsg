@@ -1,9 +1,9 @@
 import React from 'react';
 
-// mterial-ui components
-import withStyles from '@material-ui/core/styles/withStyles';
+import withStyles, { StyleRules } from '@material-ui/core/styles/withStyles';
+import { CommonProps } from 'utils/commonProps';
 
-const style = {
+const style: StyleRules<string> = {
   clearfix: {
     '&:after,&:before': {
       display: 'table',
@@ -15,13 +15,9 @@ const style = {
   },
 };
 
-function Clearfix({ ...props }) {
+const Clearfix: React.SFC<CommonProps> = ({ ...props }) => {
   const { classes } = props;
   return <div className={classes.clearfix} />;
-}
-
-Clearfix.propTypes = {
-  classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(style)(Clearfix);

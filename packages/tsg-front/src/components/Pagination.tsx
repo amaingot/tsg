@@ -6,8 +6,19 @@ import Button from '@material-ui/core/Button';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 import paginationStyle from 'styles/jss/components/paginationStyle';
+import { CommonProps } from 'utils/commonProps';
 
-function Pagination({ ...props }) {
+interface Props extends CommonProps {
+  pages: Array<{
+    active: boolean;
+    disabled: boolean;
+    text: number | 'PREV' | 'NEXT' | '...';
+    onClick: React.MouseEventHandler;
+  }>;
+  color: 'primary' | 'info' | 'success' | 'warning' | 'danger';
+}
+
+const Pagination: React.SFC<Props> = ({ ...props }) => {
   const { classes, pages, color } = props;
   return (
     <ul className={classes.pagination}>
@@ -25,7 +36,7 @@ function Pagination({ ...props }) {
               </Button>
             ) : (
               <Button
-                onClick={() => console.log("you've clicked " + prop.text)}
+                // onClick={() => console.log("you've clicked " + prop.text)}
                 className={paginationLink}
               >
                 {prop.text}
@@ -36,24 +47,10 @@ function Pagination({ ...props }) {
       })}
     </ul>
   );
-}
+};
 
 Pagination.defaultProps = {
   color: 'primary',
-};
-
-Pagination.propTypes = {
-  classes: PropTypes.object.isRequired,
-  pages: PropTypes.arrayOf(
-    PropTypes.shape({
-      active: PropTypes.bool,
-      disabled: PropTypes.bool,
-      text: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf(['PREV', 'NEXT', '...'])])
-        .isRequired,
-      onClick: PropTypes.func,
-    })
-  ).isRequired,
-  color: PropTypes.oneOf(['primary', 'info', 'success', 'warning', 'danger']),
 };
 
 export default withStyles(paginationStyle)(Pagination);

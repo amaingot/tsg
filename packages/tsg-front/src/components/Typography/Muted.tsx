@@ -4,10 +4,11 @@ import React from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 import typographyStyle from 'styles/jss/components/typographyStyle';
+import { CommonProps } from 'utils/commonProps';
 
-function Muted({ ...props }) {
+const Muted: React.SFC<CommonProps> = ({ ...props }) => {
   const { classes, children } = props;
   return <div className={classes.defaultFontStyle + ' ' + classes.mutedText}>{children}</div>;
-}
+};
 
 export default withStyles(typographyStyle)(Muted);

@@ -1,17 +1,30 @@
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-// @material-ui/core components
-import withStyles from '@material-ui/core/styles/withStyles';
-// nodejs library to set properties for components
-// nodejs library that concatenates classes
 import classNames from 'classnames';
 import React from 'react';
 
-import customInputStyle from 'styles/jss/components/customInputStyle';
+import FormControl, { FormControlProps } from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import Input, { InputProps } from '@material-ui/core/Input';
+import InputLabel, { InputLabelProps } from '@material-ui/core/InputLabel';
 
-function CustomInput({ ...props }) {
+import withStyles from '@material-ui/core/styles/withStyles';
+
+import customInputStyle from 'styles/jss/components/customInputStyle';
+import { CommonProps } from 'utils/commonProps';
+
+interface Props extends CommonProps {
+  labelText?: React.ReactNode;
+  labelProps?: InputLabelProps;
+  id?: string;
+  inputProps?: InputProps;
+  formControlProps?: FormControlProps;
+  inputRootCustomClasses?: string;
+  error?: boolean;
+  success?: boolean;
+  white?: boolean;
+  helpText?: React.ReactNode;
+}
+
+const CustomInput: React.SFC<Props> = ({ ...props }) => {
   const {
     classes,
     formControlProps,
@@ -37,18 +50,16 @@ function CustomInput({ ...props }) {
     [classes.whiteUnderline]: white,
   });
   const marginTop = classNames({
-    [inputRootCustomClasses]: inputRootCustomClasses !== undefined,
+    [inputRootCustomClasses || '']: inputRootCustomClasses !== undefined,
   });
   const inputClasses = classNames({
     [classes.input]: true,
     [classes.whiteInput]: white,
   });
-  let formControlClasses;
-  if (formControlProps !== undefined) {
-    formControlClasses = classNames(formControlProps.className, classes.formControl);
-  } else {
-    formControlClasses = classes.formControl;
-  }
+  const formControlClasses = formControlProps
+    ? classNames(formControlProps.className, classes.formControl)
+    : classes.formControl;
+
   const helpTextClasses = classNames({
     [classes.labelRootError]: error,
     [classes.labelRootSuccess]: success && !error,
@@ -77,20 +88,6 @@ function CustomInput({ ...props }) {
       ) : null}
     </FormControl>
   );
-}
-
-CustomInput.propTypes = {
-  classes: PropTypes.object.isRequired,
-  labelText: PropTypes.node,
-  labelProps: PropTypes.object,
-  id: PropTypes.string,
-  inputProps: PropTypes.object,
-  formControlProps: PropTypes.object,
-  inputRootCustomClasses: PropTypes.string,
-  error: PropTypes.bool,
-  success: PropTypes.bool,
-  white: PropTypes.bool,
-  helpText: PropTypes.node,
 };
 
 export default withStyles(customInputStyle)(CustomInput);

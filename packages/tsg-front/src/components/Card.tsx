@@ -8,8 +8,23 @@ import React from 'react';
 
 // core components
 import cardStyle from 'styles/jss/components/cardStyle';
+import { CommonProps } from 'utils/commonProps';
 
-function Card({ ...props }) {
+interface Props extends CommonProps {
+  plain?: boolean;
+  profile?: boolean;
+  blog?: boolean;
+  raised?: boolean;
+  background?: boolean;
+  pricing?: boolean;
+  testimonial?: boolean;
+  color?: 'primary' | 'info' | 'success' | 'warning' | 'danger' | 'rose';
+  product?: boolean;
+  chart?: boolean;
+  login?: boolean;
+}
+
+const Card: React.SFC<Props> = ({ ...props }) => {
   const {
     classes,
     className,
@@ -36,34 +51,18 @@ function Card({ ...props }) {
     [classes.cardBackground]: background,
     [classes.cardPricingColor]:
       (pricing && color !== undefined) || (pricing && background !== undefined),
-    [classes[color]]: color,
+    [classes[color || 'primary']]: color,
     [classes.cardPricing]: pricing,
     [classes.cardProduct]: product,
     [classes.cardChart]: chart,
     [classes.cardLogin]: login,
-    [className]: className !== undefined,
+    [className || '']: className !== undefined,
   });
   return (
     <div className={cardClasses} {...rest}>
       {children}
     </div>
   );
-}
-
-Card.propTypes = {
-  classes: PropTypes.object.isRequired,
-  className: PropTypes.string,
-  plain: PropTypes.bool,
-  profile: PropTypes.bool,
-  blog: PropTypes.bool,
-  raised: PropTypes.bool,
-  background: PropTypes.bool,
-  pricing: PropTypes.bool,
-  testimonial: PropTypes.bool,
-  color: PropTypes.oneOf(['primary', 'info', 'success', 'warning', 'danger', 'rose']),
-  product: PropTypes.bool,
-  chart: PropTypes.bool,
-  login: PropTypes.bool,
 };
 
 export default withStyles(cardStyle)(Card);

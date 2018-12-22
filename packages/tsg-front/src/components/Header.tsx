@@ -13,55 +13,36 @@ import MoreVert from '@material-ui/icons/MoreVert';
 import ViewList from '@material-ui/icons/ViewList';
 
 // core components
-import Button from 'components/CustomButtons/Button';
+import Button from 'components/Button';
 import HeaderLinks from './HeaderLinks';
 
 import headerStyle from 'styles/jss/components/headerStyle';
+import { CommonProps } from 'utils/commonProps';
 
-function Header({ ...props }) {
-  function makeBrand() {
-    let name;
-    props.routes.map((prop, key) => {
-      if (prop.collapse) {
-        prop.views.map((prop, key) => {
-          if (prop.path === props.location.pathname) {
-            name = prop.name;
-          }
-          return null;
-        });
-      }
-      if (prop.path === props.location.pathname) {
-        name = prop.name;
-      }
-      return null;
-    });
-    if (name) {
-      return name;
-    } else {
-      return 'Default Brand Name';
-    }
-  }
-  const { classes, color, rtlActive } = props;
+interface Props extends CommonProps {
+  color?: 'primary' | 'info' | 'success' | 'warning' | 'danger';
+  sidebarMinimize: React.MouseEventHandler;
+  handleDrawerToggle: React.MouseEventHandler;
+  miniActive: boolean;
+}
+
+const Header: React.SFC<Props> = ({ ...props }) => {
+  const { classes, color } = props;
   const appBarClasses = cx({
-    [' ' + classes[color]]: color,
+    [' ' + classes[color || 'primary']]: color,
   });
-  const sidebarMinimize =
-    classes.sidebarMinimize +
-    ' ' +
-    cx({
-      [classes.sidebarMinimizeRTL]: rtlActive,
-    });
+
   return (
     <AppBar className={classes.appBar + appBarClasses}>
       <Toolbar className={classes.container}>
         <Hidden smDown implementation="css">
-          <div className={sidebarMinimize}>
+          <div className={classes.sidebarMinimize}>
             {props.miniActive ? (
-              <Button justIcon round color="white" onClick={props.sidebarMinimize}>
+              <Button justIcon round myColor="white" onClick={props.sidebarMinimize}>
                 <ViewList className={classes.sidebarMiniIcon} />
               </Button>
             ) : (
-              <Button justIcon round color="white" onClick={props.sidebarMinimize}>
+              <Button justIcon round myColor="white" onClick={props.sidebarMinimize}>
                 <MoreVert className={classes.sidebarMiniIcon} />
               </Button>
             )}
@@ -69,17 +50,17 @@ function Header({ ...props }) {
         </Hidden>
         <div className={classes.flex}>
           {/* Here we create navbar brand, based on route name */}
-          <Button href="#" className={classes.title} color="transparent">
-            {makeBrand()}
+          <Button href="#" className={classes.title} myColor="transparent">
+            Tennis Shop Guru
           </Button>
         </div>
         <Hidden smDown implementation="css">
-          <HeaderLinks rtlActive={rtlActive} />
+          <HeaderLinks />
         </Hidden>
         <Hidden mdUp implementation="css">
           <Button
             className={classes.appResponsive}
-            color="transparent"
+            myColor="transparent"
             justIcon
             aria-label="open drawer"
             onClick={props.handleDrawerToggle}
@@ -90,12 +71,6 @@ function Header({ ...props }) {
       </Toolbar>
     </AppBar>
   );
-}
-
-Header.propTypes = {
-  classes: PropTypes.object.isRequired,
-  color: PropTypes.oneOf(['primary', 'info', 'success', 'warning', 'danger']),
-  rtlActive: PropTypes.bool,
 };
 
 export default withStyles(headerStyle)(Header);

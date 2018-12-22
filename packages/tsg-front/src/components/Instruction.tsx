@@ -5,20 +5,29 @@ import React from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 // core components
-import GridContainer from 'components/Grid/GridContainer';
-import GridItem from 'components/Grid/GridItem';
+import GridContainer from 'components/GridContainer';
+import GridItem from 'components/GridItem';
 
 import instructionStyle from 'styles/jss/components/instructionStyle';
+import { CommonProps } from 'utils/commonProps';
 
-function Instruction({ ...props }) {
+interface Props extends CommonProps {
+  title: React.ReactNode;
+  text: React.ReactNode;
+  image?: string;
+  imageAlt?: string;
+  imageClassName?: string;
+}
+
+const Instruction: React.SFC<Props> = ({ ...props }) => {
   const { classes, title, text, image, className, imageClassName, imageAlt } = props;
   const instructionClasses = cx({
     [classes.instruction]: true,
-    [className]: className !== undefined,
+    [className || '']: className !== undefined,
   });
   const pictureClasses = cx({
     [classes.picture]: true,
-    [imageClassName]: imageClassName !== undefined,
+    [imageClassName || '']: imageClassName !== undefined,
   });
   return (
     <div className={instructionClasses}>
@@ -35,20 +44,10 @@ function Instruction({ ...props }) {
       </GridContainer>
     </div>
   );
-}
+};
 
 Instruction.defaultProps = {
   imageAlt: '...',
-};
-
-Instruction.propTypes = {
-  classes: PropTypes.object.isRequired,
-  title: PropTypes.node.isRequired,
-  text: PropTypes.node.isRequired,
-  image: PropTypes.string.isRequired,
-  imageAlt: PropTypes.string,
-  className: PropTypes.string,
-  imageClassName: PropTypes.string,
 };
 
 export default withStyles(instructionStyle)(Instruction);
