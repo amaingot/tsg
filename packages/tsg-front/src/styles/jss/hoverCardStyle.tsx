@@ -1,4 +1,6 @@
-const hoverCardStyle = {
+import { StyleRules } from '@material-ui/core/styles';
+
+const hoverCardStyle: StyleRules<string> = {
   cardHover: {
     '&:hover': {
       '& $cardHeaderHover': {

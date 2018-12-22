@@ -1,8 +1,10 @@
+import { StyleRules } from '@material-ui/core/styles';
+
 // ##############################
 // // // Button Group styles
 // #############################
 
-const buttonGroupStyle = {
+const buttonGroupStyle: StyleRules<string> = {
   buttonGroup: {
     position: 'relative',
     margin: '10px 1px',

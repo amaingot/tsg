@@ -2,56 +2,57 @@
 // // // App styles
 // #############################
 
+import { StyleRulesCallback, Theme } from '@material-ui/core';
 import {
-  drawerWidth,
+  containerFluid,
   drawerMiniWidth,
+  drawerWidth,
   transition,
-  containerFluid
-} from "styles/jss/material-dashboard-pro-react";
+} from 'styles/jss/material-dashboard-pro-react';
 
-const appStyle = theme => ({
+const appStyle: StyleRulesCallback<string> = (theme: Theme) => ({
   wrapper: {
-    position: "relative",
-    top: "0",
-    height: "100vh",
-    "&:after": {
-      display: "table",
-      clear: "both",
-      content: '" "'
-    }
+    position: 'relative',
+    top: '0',
+    height: '100vh',
+    '&:after': {
+      display: 'table',
+      clear: 'both',
+      content: '" "',
+    },
   },
   mainPanel: {
-    transitionProperty: "top, bottom, width",
-    transitionDuration: ".2s, .2s, .35s",
-    transitionTimingFunction: "linear, linear, ease",
-    [theme.breakpoints.up("md")]: {
-      width: `calc(100% - ${drawerWidth}px)`
+    transitionProperty: 'top, bottom, width',
+    transitionDuration: '.2s, .2s, .35s',
+    transitionTimingFunction: 'linear, linear, ease',
+    [theme.breakpoints.up('md')]: {
+      width: `calc(100% - ${drawerWidth}px)`,
     },
-    overflow: "auto",
-    position: "relative",
-    float: "right",
+    overflow: 'auto',
+    position: 'relative',
+    float: 'right',
     ...transition,
-    maxHeight: "100%",
-    width: "100%",
-    overflowScrolling: "touch"
+    maxHeight: '100%',
+    width: '100%',
+    overflowScrolling: 'touch',
   },
   content: {
-    marginTop: "70px",
-    padding: "30px 15px",
-    minHeight: "calc(100vh - 123px)"
+    marginTop: '70px',
+    padding: '30px 15px',
+    minHeight: 'calc(100vh - 123px)',
   },
   container: { ...containerFluid },
   map: {
-    marginTop: "70px"
+    marginTop: '70px',
   },
   mainPanelSidebarMini: {
-    [theme.breakpoints.up("md")]: {
-      width: `calc(100% - ${drawerMiniWidth}px)`
-    }
+    [theme.breakpoints.up('md')]: {
+      width: `calc(100% - ${drawerMiniWidth}px)`,
+    },
   },
   mainPanelWithPerfectScrollbar: {
-    overflow: "hidden !important"
-  }
+    overflow: 'hidden !important',
+  },
 });
 
 export default appStyle;

@@ -1,45 +1,47 @@
-const pagesStyle = theme => ({
+import { StyleRulesCallback, Theme } from '@material-ui/core';
+
+const pagesStyle: StyleRulesCallback<string> = (theme: Theme) => ({
   wrapper: {
-    height: "auto",
-    minHeight: "100vh",
-    position: "relative",
-    top: "0"
+    height: 'auto',
+    minHeight: '100vh',
+    position: 'relative',
+    top: '0',
   },
   fullPage: {
-    padding: "120px 0",
-    position: "relative",
-    minHeight: "100vh",
-    display: "flex!important",
-    margin: "0",
-    border: "0",
-    color: "#fff",
-    alignItems: "center",
-    backgroundSize: "cover",
-    backgroundPosition: "center center",
-    height: "100%",
-    [theme.breakpoints.down("sm")]: {
-      minHeight: "fit-content!important"
+    padding: '120px 0',
+    position: 'relative',
+    minHeight: '100vh',
+    display: 'flex!important',
+    margin: '0',
+    border: '0',
+    color: '#fff',
+    alignItems: 'center',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center center',
+    height: '100%',
+    [theme.breakpoints.down('sm')]: {
+      minHeight: 'fit-content!important',
     },
-    "& footer": {
-      position: "absolute",
-      bottom: "0",
-      width: "100%",
-      border: "none !important"
+    '& footer': {
+      position: 'absolute',
+      bottom: '0',
+      width: '100%',
+      border: 'none !important',
     },
-    "&:before": {
-      backgroundColor: "rgba(0, 0, 0, 0.65)"
+    '&:before': {
+      backgroundColor: 'rgba(0, 0, 0, 0.65)',
     },
-    "&:before,&:after": {
-      display: "block",
+    '&:before,&:after': {
+      display: 'block',
       content: '""',
-      position: "absolute",
-      width: "100%",
-      height: "100%",
-      top: "0",
-      left: "0",
-      zIndex: 2
-    }
-  }
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      top: '0',
+      left: '0',
+      zIndex: 2,
+    },
+  },
 });
 
 export default pagesStyle;

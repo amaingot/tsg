@@ -1,11 +1,12 @@
+import { StyleRules } from '@material-ui/core/styles';
 import {
   dangerColor,
   grayColor,
   primaryColor,
   roseColor,
-} from 'assets/jss/material-dashboard-pro-react';
+} from 'styles/jss/material-dashboard-pro-react';
 
-const customCheckboxRadioSwitch = {
+const customCheckboxRadioSwitch: StyleRules<string> = {
   checkRoot: {
     padding: '14px',
   },
@@ -49,7 +50,7 @@ const customCheckboxRadioSwitch = {
   disabledCheckboxAndRadio: {
     '& $checkedIcon,& $uncheckedIcon,& $radioChecked,& $radioUnchecked': {
       borderColor: '#000000',
-      opacity: '0.26',
+      opacity: 0.26,
       color: '#000000',
     },
   },
@@ -155,14 +156,14 @@ const customCheckboxRadioSwitch = {
   },
   switchIconChecked: {
     borderColor: '#9c27b0',
-    transform: 'translateX(0px)!important',
+    transform: 'translateX(0px) !important',
   },
   switchBar: {
     width: '30px',
     height: '15px',
     backgroundColor: 'rgb(80, 80, 80)',
     borderRadius: '15px',
-    opacity: '0.7!important',
+    ['opacity' as string]: '0.7 !important',
   },
   switchChecked: {
     '& + $switchBar': {

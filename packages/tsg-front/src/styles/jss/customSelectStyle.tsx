@@ -1,6 +1,7 @@
-import { primaryBoxShadow, primaryColor } from 'assets/jss/material-dashboard-pro-react';
+import { StyleRules } from '@material-ui/core/styles';
+import { primaryBoxShadow, primaryColor } from 'styles/jss/material-dashboard-pro-react';
 
-const customSelectStyle = {
+const customSelectStyle: StyleRules<string> = {
   select: {
     padding: '12px 0 7px',
     fontSize: '.75rem',
@@ -110,7 +111,7 @@ const customSelectStyle = {
     },
   },
   selectPaper: {
-    boxSizing: 'borderBox',
+    boxSizing: 'border-box',
     borderRadius: '4px',
     padding: '0',
     minWidth: '100%',

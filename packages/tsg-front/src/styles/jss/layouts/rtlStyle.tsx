@@ -2,51 +2,52 @@
 // // // App styles
 // #############################
 
+import { StyleRulesCallback, Theme } from '@material-ui/core';
 import {
-  drawerWidth,
+  containerFluid,
   drawerMiniWidth,
+  drawerWidth,
   transition,
-  containerFluid
-} from "styles/jss/material-dashboard-pro-react";
+} from 'styles/jss/material-dashboard-pro-react';
 
-const appStyle = theme => ({
+const appStyle: StyleRulesCallback<string> = (theme: Theme) => ({
   wrapper: {
-    direction: "rtl",
-    position: "relative",
-    top: "0",
-    height: "100vh",
-    "&:after": {
-      display: "table",
-      clear: "both",
-      content: '" "'
-    }
+    direction: 'rtl',
+    position: 'relative',
+    top: '0',
+    height: '100vh',
+    '&:after': {
+      display: 'table',
+      clear: 'both',
+      content: '" "',
+    },
   },
   mainPanel: {
-    transitionProperty: "top, bottom, width",
-    transitionDuration: ".2s, .2s, .35s",
-    transitionTimingFunction: "linear, linear, ease",
-    [theme.breakpoints.up("md")]: {
-      width: `calc(100% - ${drawerWidth}px)`
+    transitionProperty: 'top, bottom, width',
+    transitionDuration: '.2s, .2s, .35s',
+    transitionTimingFunction: 'linear, linear, ease',
+    [theme.breakpoints.up('md')]: {
+      width: `calc(100% - ${drawerWidth}px)`,
     },
-    overflow: "auto",
-    position: "relative",
-    float: "left",
+    overflow: 'auto',
+    position: 'relative',
+    float: 'left',
     ...transition,
-    maxHeight: "100%",
-    width: "100%",
-    overflowScrolling: "touch"
+    maxHeight: '100%',
+    width: '100%',
+    overflowScrolling: 'touch',
   },
   content: {
-    marginTop: "70px",
-    padding: "30px 15px",
-    minHeight: "calc(100% - 123px)"
+    marginTop: '70px',
+    padding: '30px 15px',
+    minHeight: 'calc(100% - 123px)',
   },
   container: { ...containerFluid },
   mainPanelSidebarMini: {
-    [theme.breakpoints.up("md")]: {
-      width: `calc(100% - ${drawerMiniWidth}px)`
-    }
-  }
+    [theme.breakpoints.up('md')]: {
+      width: `calc(100% - ${drawerMiniWidth}px)`,
+    },
+  },
 });
 
 export default appStyle;

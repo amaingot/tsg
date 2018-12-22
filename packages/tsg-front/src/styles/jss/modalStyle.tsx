@@ -1,8 +1,10 @@
+import { StyleRulesCallback, Theme } from '@material-ui/core';
+
 // ##############################
 // // // Modal component styles
 // #############################
 
-const modalStyle = theme => ({
+const modalStyle: StyleRulesCallback<string> = (theme: Theme) => ({
   modalRoot: {
     overflow: 'auto',
     alignItems: 'unset',
@@ -41,7 +43,7 @@ const modalStyle = theme => ({
     background: '0 0',
     border: '0',
     fontSize: 'inherit',
-    opacity: '.9',
+    opacity: 0.9,
     textShadow: 'none',
     fontWeight: 700,
     lineHeight: '1',

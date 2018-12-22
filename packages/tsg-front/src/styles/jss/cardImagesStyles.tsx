@@ -1,4 +1,6 @@
-const cardImagesStyles = {
+import { StyleRules } from '@material-ui/core/styles';
+
+const cardImagesStyles: StyleRules<string> = {
   cardImgTop: {
     width: '100%',
     borderTopLeftRadius: 'calc(.25rem - 1px)',
