@@ -29,6 +29,7 @@
     "max-classes-per-file": false,
     "member-ordering": [false],
     "no-submodule-imports": [false],
+    "no-string-literal": [false],
     "object-literal-sort-keys": [false]
   },
   "rulesDirectory": []

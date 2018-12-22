@@ -7,6 +7,7 @@ import { Store } from 'redux';
 
 import { ApplicationState } from './store';
 
+import TestPage from 'pages/TestPage';
 import './styles.scss';
 
 // Any additional component props go here.
@@ -23,6 +24,7 @@ export default class Main extends React.Component<MainProps> {
       <Provider store={store}>
         <ConnectedRouter history={history}>
           <Switch>
+            <Route path="/" exact component={TestPage} />
             <Route component={() => <div>Not Found</div>} />
           </Switch>
         </ConnectedRouter>

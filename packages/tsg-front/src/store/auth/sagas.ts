@@ -39,8 +39,8 @@ function* handleLogin(action: ReturnType<typeof login>) {
 
 function* handleUpdateUser(action: ReturnType<typeof updateUser>) {
   try {
-    const token = yield select(
-      (state: ApplicationState) => (state.auth.jwt ? state.auth.jwt.token : '')
+    const token = yield select((state: ApplicationState) =>
+      state.auth.jwt ? state.auth.jwt.token : ''
     );
 
     const query = generateUpdateUserQuery(action.payload);
