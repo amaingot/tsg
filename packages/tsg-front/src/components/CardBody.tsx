@@ -31,6 +31,7 @@ const CardBody: React.SFC<CardBodyProps> = ({ ...props }) => {
     calendar,
     ...rest
   } = props;
+
   const cardBodyClasses = classNames({
     [classes.cardBody]: true,
     [classes.cardBodyBackground]: background,
@@ -43,6 +44,7 @@ const CardBody: React.SFC<CardBodyProps> = ({ ...props }) => {
     [classes.cardBodyCalendar]: calendar,
     [className || '']: className !== undefined,
   });
+
   return (
     <div className={cardBodyClasses} {...rest}>
       {children}

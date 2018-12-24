@@ -5,8 +5,6 @@ import cardAvatarStyle from 'styles/jss/components/cardAvatarStyle';
 import { CommonProps } from 'utils/commonProps';
 
 interface Props extends CommonProps {
-  children?: React.ReactNode;
-  className?: string;
   profile?: boolean;
   plain?: boolean;
   testimonial?: boolean;

@@ -12,6 +12,7 @@ interface Props extends CommonProps {
 
 const CustomLinearProgress: React.SFC<Props> = ({ ...props }) => {
   const { classes, color, ...rest } = props;
+
   return (
     <LinearProgress
       {...rest}

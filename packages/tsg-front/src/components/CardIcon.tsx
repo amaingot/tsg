@@ -6,8 +6,6 @@ import cardIconStyle from 'styles/jss/components/cardIconStyle';
 import { CommonProps } from 'utils/commonProps';
 
 interface Props extends CommonProps {
-  children?: React.ReactNode;
-  className?: string;
   color?: 'warning' | 'success' | 'danger' | 'info' | 'primary' | 'rose';
 }
 

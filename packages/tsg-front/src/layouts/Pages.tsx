@@ -2,7 +2,7 @@ import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 
 // @material-ui/core components
-import withStyles from '@material-ui/core/styles/withStyles';
+import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 
 // core components
 import Footer from 'components/Footer/Footer';

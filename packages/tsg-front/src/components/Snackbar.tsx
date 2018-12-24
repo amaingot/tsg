@@ -16,7 +16,7 @@ interface Props extends CommonProps {
   message: React.ReactNode;
   color?: 'info' | 'success' | 'warning' | 'danger' | 'primary' | 'rose';
   close?: boolean;
-  icon: React.SFC<any>;
+  icon: React.ComponentType<any>;
   place?: 'tl' | 'tr' | 'tc' | 'br' | 'bl' | 'bc';
   open?: boolean;
   closeNotification: () => void;

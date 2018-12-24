@@ -42,6 +42,7 @@ const Card: React.SFC<Props> = ({ ...props }) => {
     login,
     ...rest
   } = props;
+
   const cardClasses = classNames({
     [classes.card]: true,
     [classes.cardPlain]: plain,
@@ -58,6 +59,7 @@ const Card: React.SFC<Props> = ({ ...props }) => {
     [classes.cardLogin]: login,
     [className || '']: className !== undefined,
   });
+
   return (
     <div className={cardClasses} {...rest}>
       {children}

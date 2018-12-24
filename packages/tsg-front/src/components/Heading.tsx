@@ -18,13 +18,14 @@ const Heading: React.SFC<Props> = ({ ...props }) => {
     classes.heading +
     ' ' +
     cx({
-      [classes[textAlign + 'TextAlign']]: textAlign !== undefined,
+      [classes[textAlign + 'TextAlign']]: !!textAlign,
     });
-  if (title !== undefined || category !== undefined) {
+
+  if (title || category) {
     return (
       <div className={heading}>
-        {title !== undefined ? <h3 className={classes.title}>{title}</h3> : null}
-        {category !== undefined ? <p className={classes.category}>{category}</p> : null}
+        {title ? <h3 className={classes.title}>{title}</h3> : null}
+        {category ? <p className={classes.category}>{category}</p> : null}
       </div>
     );
   }

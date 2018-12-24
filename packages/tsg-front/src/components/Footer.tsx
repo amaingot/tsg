@@ -21,15 +21,18 @@ const Footer: React.SFC<Props> = ({ ...props }) => {
     [classes.containerFluid]: fluid,
     [classes.whiteColor]: white,
   });
+
   const anchor =
     classes.a +
     cx({
       [' ' + classes.whiteColor]: white,
     });
+
   const block = cx({
     [classes.block]: true,
     [classes.whiteColor]: white,
   });
+
   return (
     <footer className={classes.footer}>
       <div className={container}>

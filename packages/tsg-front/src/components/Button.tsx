@@ -7,7 +7,7 @@ import withStyles, { ClassNameMap, WithStyles } from '@material-ui/core/styles/w
 
 import buttonStyle from 'styles/jss/components/buttonStyle';
 
-interface Props extends MuiButtonProps {
+export interface ButtonProps extends MuiButtonProps {
   myColor?:
     | 'primary'
     | 'info'
@@ -39,7 +39,7 @@ interface Props extends MuiButtonProps {
   muiClasses?: Partial<ClassNameMap<ButtonClassKey>>;
 }
 
-function RegularButton(props: Props & WithStyles) {
+function RegularButton(props: ButtonProps & WithStyles) {
   const {
     classes,
     myColor,

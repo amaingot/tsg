@@ -3,7 +3,7 @@ import React from 'react';
 // @material-ui/core components
 import Icon from '@material-ui/core/Icon';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import withStyles from '@material-ui/core/styles/withStyles';
+import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 
 // @material-ui/icons
 import Email from '@material-ui/icons/Email';

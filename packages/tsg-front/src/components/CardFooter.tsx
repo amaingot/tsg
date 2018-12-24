@@ -29,6 +29,7 @@ const CardFooter: React.SFC<Props> = ({ ...props }) => {
     product,
     ...rest
   } = props;
+
   const cardFooterClasses = classNames({
     [classes.cardFooter]: true,
     [classes.cardFooterPlain]: plain,
@@ -39,6 +40,7 @@ const CardFooter: React.SFC<Props> = ({ ...props }) => {
     [classes.cardFooterChart]: chart || product,
     [className || '']: className !== undefined,
   });
+
   return (
     <div className={cardFooterClasses} {...rest}>
       {children}

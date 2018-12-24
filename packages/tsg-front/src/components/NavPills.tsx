@@ -10,30 +10,60 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 
 // core components
-import GridContainer from 'components/Grid/GridContainer';
-import GridItem from 'components/Grid/GridItem';
+import GridContainer from 'components/GridContainer';
+import GridItem from 'components/GridItem';
 
 import navPillsStyle from 'styles/jss/components/navPillsStyle';
+import { CommonProps } from 'utils/commonProps';
 
-class NavPills extends React.Component {
-  constructor(props) {
+interface Props extends CommonProps {
+  active?: number;
+  tabs: Array<{
+    tabButton: string;
+    tabIcon: React.SFC<any>;
+    tabContent: React.ReactNode;
+  }>;
+  color?: string; // 'primary' | 'warning' | 'danger' | 'success' | 'info' | 'rose';
+  direction?: string;
+  horizontal?: {
+    tabsGrid: object;
+    contentGrid: object;
+  };
+  alignCenter?: boolean;
+}
+
+interface State {
+  active?: number;
+}
+
+class NavPills extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       active: props.active,
     };
   }
-  public handleChange = (event, active) => {
+
+  public static defaultProps = {
+    active: 0,
+    color: 'primary',
+  };
+
+  public handleChange = (event: React.ChangeEvent<{}>, active: any) => {
     this.setState({ active });
   };
-  public handleChangeIndex = index => {
+
+  public handleChangeIndex = (index: number) => {
     this.setState({ active: index });
   };
+
   public render() {
     const { classes, tabs, direction, color, horizontal, alignCenter } = this.props;
     const flexContainerClasses = classNames({
       [classes.flexContainer]: true,
       [classes.horizontalDisplay]: horizontal !== undefined,
     });
+
     const tabButtons = (
       <Tabs
         classes={{
@@ -48,8 +78,8 @@ class NavPills extends React.Component {
       >
         {tabs.map((prop, key) => {
           const icon = {};
-          if (prop.tabIcon !== undefined) {
-            icon.icon = <prop.tabIcon className={classes.tabIcon} />;
+          if (prop.tabIcon) {
+            icon['icon'] = <prop.tabIcon className={classes.tabIcon} />;
           }
           const pillsClasses = classNames({
             [classes.pills]: true,
@@ -65,13 +95,14 @@ class NavPills extends React.Component {
                 root: pillsClasses,
                 labelContainer: classes.labelContainer,
                 label: classes.label,
-                selected: classes[color],
+                selected: classes[color || 'primary'],
               }}
             />
           );
         })}
       </Tabs>
     );
+
     const tabContent = (
       <div className={classes.contentWrapper}>
         <SwipeableViews
@@ -89,6 +120,7 @@ class NavPills extends React.Component {
         </SwipeableViews>
       </div>
     );
+
     return horizontal !== undefined ? (
       <GridContainer>
         <GridItem {...horizontal.tabsGrid}>{tabButtons}</GridItem>
@@ -102,30 +134,5 @@ class NavPills extends React.Component {
     );
   }
 }
-
-NavPills.defaultProps = {
-  active: 0,
-  color: 'primary',
-};
-
-NavPills.propTypes = {
-  classes: PropTypes.object.isRequired,
-  // index of the default active pill
-  active: PropTypes.number,
-  tabs: PropTypes.arrayOf(
-    PropTypes.shape({
-      tabButton: PropTypes.string,
-      tabIcon: PropTypes.func,
-      tabContent: PropTypes.node,
-    })
-  ).isRequired,
-  color: PropTypes.oneOf(['primary', 'warning', 'danger', 'success', 'info', 'rose']),
-  direction: PropTypes.string,
-  horizontal: PropTypes.shape({
-    tabsGrid: PropTypes.object,
-    contentGrid: PropTypes.object,
-  }),
-  alignCenter: PropTypes.bool,
-};
 
 export default withStyles(navPillsStyle)(NavPills);

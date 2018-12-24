@@ -32,6 +32,7 @@ const CardHeader: React.SFC<Props> = ({ ...props }) => {
     text,
     ...rest
   } = props;
+
   const cardHeaderClasses = classNames({
     [classes.cardHeader]: true,
     [classes[color + 'CardHeader']]: color,
@@ -44,6 +45,7 @@ const CardHeader: React.SFC<Props> = ({ ...props }) => {
     [classes.cardHeaderText]: text,
     [className || '']: className !== undefined,
   });
+
   return (
     <div className={cardHeaderClasses} {...rest}>
       {children}

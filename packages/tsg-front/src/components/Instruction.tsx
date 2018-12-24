@@ -25,10 +25,12 @@ const Instruction: React.SFC<Props> = ({ ...props }) => {
     [classes.instruction]: true,
     [className || '']: className !== undefined,
   });
+
   const pictureClasses = cx({
     [classes.picture]: true,
     [imageClassName || '']: imageClassName !== undefined,
   });
+
   return (
     <div className={instructionClasses}>
       <GridContainer>

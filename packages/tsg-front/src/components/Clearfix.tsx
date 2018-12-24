@@ -17,6 +17,7 @@ const style: StyleRules<string> = {
 
 const Clearfix: React.SFC<CommonProps> = ({ ...props }) => {
   const { classes } = props;
+
   return <div className={classes.clearfix} />;
 };
 

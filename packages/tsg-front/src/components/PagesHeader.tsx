@@ -1,4 +1,5 @@
 import cx from 'classnames';
+import { RouterState } from 'connected-react-router';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
@@ -18,35 +19,49 @@ import Dashboard from '@material-ui/icons/Dashboard';
 import Menu from '@material-ui/icons/Menu';
 
 // core components
-import Button from 'components/CustomButtons/Button';
+import Button from 'components/Button';
 
-import pagesRoutes from 'routes/pages';
-
+import { connect } from 'react-redux';
+import { ApplicationState } from 'store/index';
 import pagesHeaderStyle from 'styles/jss/components/pagesHeaderStyle';
+import { CommonProps } from 'utils/commonProps';
 
-class PagesHeader extends React.Component {
-  constructor(props) {
+interface Props extends CommonProps {
+  color?: 'primary' | 'info' | 'success' | 'warning' | 'danger';
+  router: RouterState;
+}
+
+interface State {
+  open: boolean;
+}
+
+class PagesHeader extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       open: false,
     };
   }
+
   public handleDrawerToggle = () => {
     this.setState({ open: !this.state.open });
   };
+
   // verifies if routeName is the one active (in browser input)
-  public activeRoute(routeName) {
-    return this.props.location.pathname.indexOf(routeName) > -1 ? true : false;
-  }
-  public componentDidUpdate(e) {
-    if (e.history.location.pathname !== e.location.pathname) {
+  // public activeRoute(routeName) {
+  //   return this.props.location.pathname.indexOf(routeName) > -1 ? true : false;
+  // }
+
+  public componentDidUpdate(prevProps: Props) {
+    if (prevProps.router.location.pathname !== this.props.router.location.pathname) {
       this.setState({ open: false });
     }
   }
+
   public render() {
     const { classes, color } = this.props;
     const appBarClasses = cx({
-      [' ' + classes[color]]: color,
+      [' ' + classes[color || 'primary']]: color,
     });
     const list = (
       <List className={classes.list}>
@@ -62,7 +77,7 @@ class PagesHeader extends React.Component {
             />
           </NavLink>
         </ListItem>
-        {pagesRoutes.map((prop, key) => {
+        {/* {pagesRoutes.map((prop, key) => {
           if (prop.redirect) {
             return null;
           }
@@ -85,7 +100,7 @@ class PagesHeader extends React.Component {
               </NavLink>
             </ListItem>
           );
-        })}
+        })} */}
       </List>
     );
     return (
@@ -93,14 +108,14 @@ class PagesHeader extends React.Component {
         <Toolbar className={classes.container}>
           <Hidden smDown>
             <div className={classes.flex}>
-              <Button href="#" className={classes.title} color="transparent">
+              <Button href="#" className={classes.title} myColor="transparent">
                 Material Dashboard Pro React
               </Button>
             </div>
           </Hidden>
           <Hidden mdUp>
             <div className={classes.flex}>
-              <Button href="#" className={classes.title} color="transparent">
+              <Button href="#" className={classes.title} myColor="transparent">
                 MD Pro React
               </Button>
             </div>
@@ -109,7 +124,7 @@ class PagesHeader extends React.Component {
           <Hidden mdUp>
             <Button
               className={classes.sidebarButton}
-              color="transparent"
+              myColor="transparent"
               justIcon
               aria-label="open drawer"
               onClick={this.handleDrawerToggle}
@@ -141,9 +156,8 @@ class PagesHeader extends React.Component {
   }
 }
 
-PagesHeader.propTypes = {
-  classes: PropTypes.object.isRequired,
-  color: PropTypes.oneOf(['primary', 'info', 'success', 'warning', 'danger']),
+const mapState2Props = (state: ApplicationState) => {
+  return { router: state.router };
 };
 
-export default withStyles(pagesHeaderStyle)(PagesHeader);
+export default withStyles(pagesHeaderStyle)(connect(mapState2Props)(PagesHeader));

@@ -4,14 +4,15 @@ import React from 'react';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
+import withStyles from '@material-ui/core/styles/withStyles';
 
 // @material-ui/icons
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import accordionStyle from 'styles/jss/components/accordionStyle';
+import { CommonProps } from 'utils/commonProps';
 
-interface Props extends WithStyles {
+interface Props extends CommonProps {
   active: number;
   collapses: Array<{
     title: string;
