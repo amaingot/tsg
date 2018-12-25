@@ -20,6 +20,7 @@ interface Props extends CommonProps {
 
 const Pagination: React.SFC<Props> = ({ ...props }) => {
   const { classes, pages, color } = props;
+
   return (
     <ul className={classes.pagination}>
       {pages.map((prop, key) => {

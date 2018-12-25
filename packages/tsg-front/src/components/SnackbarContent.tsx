@@ -25,6 +25,7 @@ const SnackbarContent: React.SFC<Props> = ({ ...props }) => {
   const messageClasses = cx({
     [classes.iconMessage]: icon !== undefined,
   });
+
   if (close !== undefined) {
     action = [
       <IconButton className={classes.iconButton} key="close" aria-label="Close" color="inherit">
@@ -32,6 +33,7 @@ const SnackbarContent: React.SFC<Props> = ({ ...props }) => {
       </IconButton>,
     ];
   }
+
   const iconClasses = cx({
     [classes.icon]: classes.icon,
     [classes.infoIcon]: color === 'info',

@@ -3,20 +3,55 @@ import React from 'react';
 
 // @material-ui/core components
 import withStyles from '@material-ui/core/styles/withStyles';
-import Card from 'components/Card/Card';
 // core components
-import Button from 'components/CustomButtons/Button';
+import Button from 'components/Button';
+import Card from 'components/Card';
 
 import wizardStyle from 'styles/jss/components/wizardStyle';
+import { CommonProps } from 'utils/commonProps';
 
-class Wizard extends React.Component {
-  constructor(props) {
+interface Props extends CommonProps {
+  steps: Array<{
+    stepName: string;
+    stepComponent: React.ComponentType<any>;
+    stepId: string;
+  }>;
+  color: string; // 'primary' | 'warning' | 'danger' | 'success' | 'info' | 'rose';
+  title?: string;
+  subtitle?: string;
+  previousButtonClasses?: string;
+  previousButtonText?: string;
+  nextButtonClasses?: string;
+  nextButtonText?: string;
+  finishButtonClasses?: string;
+  finishButtonText?: string;
+  finishButtonClick?: React.MouseEventHandler;
+  validate?: boolean;
+}
+
+interface State {
+  currentStep: number;
+  color: string;
+  nextButton: boolean;
+  previousButton: boolean;
+  finishButton: boolean;
+  width: string;
+  movingTabStyle: {
+    transition: string;
+  };
+  allStates: any;
+}
+
+class Wizard extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
-    let width;
+    let width: string;
+
     if (this.props.steps.length === 1) {
       width = '100%';
     } else {
       if (window.innerWidth < 600) {
+        /* tslint:disable-next-line */
         if (this.props.steps.length !== 3) {
           width = '50%';
         } else {
@@ -30,6 +65,7 @@ class Wizard extends React.Component {
         }
       }
     }
+
     this.state = {
       currentStep: 0,
       color: this.props.color,
@@ -42,24 +78,38 @@ class Wizard extends React.Component {
       },
       allStates: {},
     };
-    this.navigationStepChange = this.navigationStepChange.bind(this);
-    this.refreshAnimation = this.refreshAnimation.bind(this);
-    this.previousButtonClick = this.previousButtonClick.bind(this);
-    this.previousButtonClick = this.previousButtonClick.bind(this);
-    this.finishButtonClick = this.finishButtonClick.bind(this);
-    this.updateWidth = this.updateWidth.bind(this);
+
+    this.wizard = React.createRef<HTMLDivElement>();
   }
+
+  public wizard: React.RefObject<HTMLDivElement>;
+
+  public static defaultProps = {
+    color: 'rose',
+    title: 'Here should go your title',
+    subtitle: 'And this would be your subtitle',
+    previousButtonText: 'Previous',
+    previousButtonClasses: '',
+    nextButtonClasses: '',
+    nextButtonText: 'Next',
+    finishButtonClasses: '',
+    finishButtonText: 'Finish',
+  };
+
   public componentDidMount() {
     this.refreshAnimation(0);
     window.addEventListener('resize', this.updateWidth);
   }
+
   public componentWillUnmount() {
     window.removeEventListener('resize', this.updateWidth);
   }
-  public updateWidth() {
+
+  public updateWidth = () => {
     this.refreshAnimation(this.state.currentStep);
-  }
-  public navigationStepChange(key) {
+  };
+
+  public navigationStepChange = (key: number) => () => {
     if (this.props.steps) {
       let validationState = true;
       if (key > this.state.currentStep) {
@@ -93,8 +143,9 @@ class Wizard extends React.Component {
         this.refreshAnimation(key);
       }
     }
-  }
-  public nextButtonClick() {
+  };
+
+  public nextButtonClick = () => {
     if (
       (this.props.validate &&
         ((this[this.props.steps[this.state.currentStep].stepId].isValidated !== undefined &&
@@ -123,8 +174,8 @@ class Wizard extends React.Component {
       });
       this.refreshAnimation(key);
     }
-  }
-  public previousButtonClick() {
+  };
+  public previousButtonClick = () => {
     if (this[this.props.steps[this.state.currentStep].stepId].sendState !== undefined) {
       this.setState({
         allStates: [
@@ -147,8 +198,8 @@ class Wizard extends React.Component {
       });
       this.refreshAnimation(key);
     }
-  }
-  public finishButtonClick() {
+  };
+  public finishButtonClick = (e: React.MouseEvent) => {
     if (
       this.props.validate &&
       ((this[this.props.steps[this.state.currentStep].stepId].isValidated !== undefined &&
@@ -156,53 +207,64 @@ class Wizard extends React.Component {
         this[this.props.steps[this.state.currentStep].stepId].isValidated === undefined) &&
       this.props.finishButtonClick !== undefined
     ) {
-      this.props.finishButtonClick();
+      this.props.finishButtonClick(e);
     }
-  }
-  public refreshAnimation(index) {
+  };
+  public refreshAnimation = (index: number) => {
     const total = this.props.steps.length;
-    let li_width = 100 / total;
-    const total_steps = this.props.steps.length;
-    let move_distance = this.refs.wizard.children[0].offsetWidth / total_steps;
-    let index_temp = index;
-    let vertical_level = 0;
+    let liWidth = 100 / total;
+    const totalSteps = this.props.steps.length;
+    let moveDistance =
+      (this.wizard.current &&
+        this.wizard.current.firstChild &&
+        this.wizard.current.firstChild['offsetWidth'] / totalSteps) ||
+      1;
+    let indexTemp = index;
+    let verticalLevel = 0;
 
-    const mobile_device = window.innerWidth < 600 && total > 3;
+    const mobileDevice = window.innerWidth < 600 && total > 3;
 
-    if (mobile_device) {
-      move_distance = this.refs.wizard.children[0].offsetWidth / 2;
-      index_temp = index % 2;
-      li_width = 50;
+    if (mobileDevice) {
+      moveDistance =
+        (this.wizard.current &&
+          this.wizard.current.firstChild &&
+          this.wizard.current.firstChild['offsetWidth'] / 2) ||
+        1;
+      indexTemp = index % 2;
+      liWidth = 50;
     }
 
-    this.setState({ width: li_width + '%' });
+    this.setState({ width: liWidth + '%' });
 
-    const step_width = move_distance;
-    move_distance = move_distance * index_temp;
+    const stepWidth = moveDistance;
+    moveDistance = moveDistance * indexTemp;
 
     const current = index + 1;
 
-    if (current === 1 || (mobile_device === true && index % 2 === 0)) {
-      move_distance -= 8;
-    } else if (current === total_steps || (mobile_device === true && index % 2 === 1)) {
-      move_distance += 8;
+    if (current === 1 || (mobileDevice === true && index % 2 === 0)) {
+      moveDistance -= 8;
+    } else if (current === totalSteps || (mobileDevice === true && index % 2 === 1)) {
+      moveDistance += 8;
     }
 
-    if (mobile_device) {
-      vertical_level = parseInt(index / 2, 10);
-      vertical_level = vertical_level * 38;
+    if (mobileDevice) {
+      // It was this: verticalLevel = parseInt(index / 2, 10);
+      verticalLevel = index / 2;
+      verticalLevel = verticalLevel * 38;
     }
     const movingTabStyle = {
-      width: step_width,
-      transform: 'translate3d(' + move_distance + 'px, ' + vertical_level + 'px, 0)',
+      width: stepWidth,
+      transform: 'translate3d(' + moveDistance + 'px, ' + verticalLevel + 'px, 0)',
       transition: 'all 0.5s cubic-bezier(0.29, 1.42, 0.79, 1)',
     };
     this.setState({ movingTabStyle });
-  }
+  };
+
   public render() {
     const { classes, title, subtitle, color, steps } = this.props;
+
     return (
-      <div className={classes.wizardContainer} ref="wizard">
+      <div className={classes.wizardContainer} ref={this.wizard}>
         <Card className={classes.card}>
           <div className={classes.wizardHeader}>
             <h3 className={classes.title}>{title}</h3>
@@ -213,10 +275,7 @@ class Wizard extends React.Component {
               {steps.map((prop, key) => {
                 return (
                   <li className={classes.steps} key={key} style={{ width: this.state.width }}>
-                    <a
-                      className={classes.stepsAnchor}
-                      onClick={() => this.navigationStepChange(key)}
-                    >
+                    <a className={classes.stepsAnchor} onClick={this.navigationStepChange(key)}>
                       {prop.stepName}
                     </a>
                   </li>
@@ -239,7 +298,7 @@ class Wizard extends React.Component {
               return (
                 <div className={stepContentClasses} key={key}>
                   <prop.stepComponent
-                    innerRef={node => (this[prop.stepId] = node)}
+                    innerRef={(node: any) => (this[prop.stepId] = node)}
                     allStates={this.state.allStates}
                   />
                 </div>
@@ -260,18 +319,18 @@ class Wizard extends React.Component {
             <div className={classes.right}>
               {this.state.nextButton ? (
                 <Button
-                  color="rose"
+                  myColor="rose"
                   className={this.props.nextButtonClasses}
-                  onClick={() => this.nextButtonClick()}
+                  onClick={this.nextButtonClick}
                 >
                   {this.props.nextButtonText}
                 </Button>
               ) : null}
               {this.state.finishButton ? (
                 <Button
-                  color="rose"
-                  className={this.finishButtonClasses}
-                  onClick={() => this.finishButtonClick()}
+                  myColor="rose"
+                  className={this.props.finishButtonClasses}
+                  onClick={this.finishButtonClick}
                 >
                   {this.props.finishButtonText}
                 </Button>
@@ -284,39 +343,5 @@ class Wizard extends React.Component {
     );
   }
 }
-
-Wizard.defaultProps = {
-  color: 'rose',
-  title: 'Here should go your title',
-  subtitle: 'And this would be your subtitle',
-  previousButtonText: 'Previous',
-  previousButtonClasses: '',
-  nextButtonClasses: '',
-  nextButtonText: 'Next',
-  finishButtonClasses: '',
-  finishButtonText: 'Finish',
-};
-
-Wizard.propTypes = {
-  classes: PropTypes.object.isRequired,
-  steps: PropTypes.arrayOf(
-    PropTypes.shape({
-      stepName: PropTypes.string.isRequired,
-      stepComponent: PropTypes.func.isRequired,
-      stepId: PropTypes.string.isRequired,
-    })
-  ).isRequired,
-  color: PropTypes.oneOf(['primary', 'warning', 'danger', 'success', 'info', 'rose']),
-  title: PropTypes.string,
-  subtitle: PropTypes.string,
-  previousButtonClasses: PropTypes.string,
-  previousButtonText: PropTypes.string,
-  nextButtonClasses: PropTypes.string,
-  nextButtonText: PropTypes.string,
-  finishButtonClasses: PropTypes.string,
-  finishButtonText: PropTypes.string,
-  finishButtonClick: PropTypes.func,
-  validate: PropTypes.bool,
-};
 
 export default withStyles(wizardStyle)(Wizard);

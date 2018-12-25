@@ -16,12 +16,23 @@ import Close from '@material-ui/icons/Close';
 import Edit from '@material-ui/icons/Edit';
 
 import tasksStyle from 'styles/jss/components/tasksStyle';
+import { CommonProps } from 'utils/commonProps';
 
-class Tasks extends React.Component {
+interface Props extends CommonProps {
+  tasksIndexes: number[];
+  checkedIndexes: number[];
+  tasks: React.ReactNode[];
+}
+
+interface State {
+  checked: number[];
+}
+
+class Tasks extends React.Component<Props, State> {
   public state = {
     checked: this.props.checkedIndexes,
   };
-  public handleToggle = value => () => {
+  public handleToggle = (value: number) => () => {
     const { checked } = this.state;
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
@@ -86,12 +97,5 @@ class Tasks extends React.Component {
     );
   }
 }
-
-Tasks.propTypes = {
-  classes: PropTypes.object.isRequired,
-  tasksIndexes: PropTypes.arrayOf(PropTypes.number),
-  checkedIndexes: PropTypes.arrayOf(PropTypes.number),
-  tasks: PropTypes.arrayOf(PropTypes.node),
-};
 
 export default withStyles(tasksStyle)(Tasks);

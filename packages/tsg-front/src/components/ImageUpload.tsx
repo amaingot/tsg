@@ -2,27 +2,44 @@ import React from 'react';
 // used for making the prop types of this component
 
 // core components
-import Button from 'components/CustomButtons/Button';
+import Button from 'components/Button';
 
-import defaultImage from 'assets/img/image_placeholder.jpg';
-import defaultAvatar from 'assets/img/placeholder.jpg';
+import defaultImage from 'static/material-images/image_placeholder.jpg';
+import defaultAvatar from 'static/material-images/placeholder.jpg';
 
-class ImageUpload extends React.Component {
-  constructor(props) {
+interface Props {
+  avatar: boolean;
+  addButtonProps: object;
+  changeButtonProps: object;
+  removeButtonProps: object;
+}
+
+interface State {
+  file?: object;
+  imagePreviewUrl: any;
+}
+
+class ImageUpload extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
-      file: null,
+      file: undefined,
       imagePreviewUrl: this.props.avatar ? defaultAvatar : defaultImage,
     };
-    this.handleImageChange = this.handleImageChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleClick = this.handleClick.bind(this);
-    this.handleRemove = this.handleRemove.bind(this);
+    this.fileInput = React.createRef();
   }
-  public handleImageChange(e) {
+
+  public fileInput: React.RefObject<HTMLInputElement>;
+
+  public handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
+    if (!e.currentTarget.files) {
+      // TODO: handle gracefully
+      return;
+    }
+
     const reader = new FileReader();
-    const file = e.target.files[0];
+    const file = e.currentTarget.files[0];
     reader.onloadend = () => {
       this.setState({
         file,
@@ -30,43 +47,53 @@ class ImageUpload extends React.Component {
       });
     };
     reader.readAsDataURL(file);
-  }
-  public handleSubmit(e) {
+  };
+
+  public handleSubmit = (e: React.MouseEvent<{}>) => {
     e.preventDefault();
     // this.state.file is the file/image uploaded
     // in this function you can save the image (this.state.file) on form submit
     // you have to call it yourself
-  }
-  public handleClick() {
-    this.refs.fileInput.click();
-  }
+  };
+
+  public handleClick = () => {
+    if (this.fileInput.current) {
+      this.fileInput.current.click();
+    }
+  };
+
   public handleRemove() {
     this.setState({
-      file: null,
+      file: undefined,
       imagePreviewUrl: this.props.avatar ? defaultAvatar : defaultImage,
     });
-    this.refs.fileInput.value = null;
+
+    if (this.fileInput.current) {
+      this.fileInput.current.value = '';
+    }
   }
+
   public render() {
     const { avatar, addButtonProps, changeButtonProps, removeButtonProps } = this.props;
+
     return (
       <div className="fileinput text-center">
-        <input type="file" onChange={this.handleImageChange} ref="fileInput" />
+        <input type="file" onChange={this.handleImageChange} ref={this.fileInput} />
         <div className={'thumbnail' + (avatar ? ' img-circle' : '')}>
           <img src={this.state.imagePreviewUrl} alt="..." />
         </div>
         <div>
           {this.state.file === null ? (
-            <Button {...addButtonProps} onClick={() => this.handleClick()}>
+            <Button {...addButtonProps} onClick={this.handleClick}>
               {avatar ? 'Add Photo' : 'Select image'}
             </Button>
           ) : (
             <span>
-              <Button {...changeButtonProps} onClick={() => this.handleClick()}>
+              <Button {...changeButtonProps} onClick={this.handleClick}>
                 Change
               </Button>
               {avatar ? <br /> : null}
-              <Button {...removeButtonProps} onClick={() => this.handleRemove()}>
+              <Button {...removeButtonProps} onClick={this.handleRemove}>
                 <i className="fas fa-times" /> Remove
               </Button>
             </span>
@@ -76,12 +103,5 @@ class ImageUpload extends React.Component {
     );
   }
 }
-
-ImageUpload.propTypes = {
-  avatar: PropTypes.bool,
-  addButtonProps: PropTypes.object,
-  changeButtonProps: PropTypes.object,
-  removeButtonProps: PropTypes.object,
-};
 
 export default ImageUpload;
