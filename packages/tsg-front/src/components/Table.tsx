@@ -10,28 +10,67 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
 import tableStyle from 'styles/jss/components/tableStyle';
+import { CommonProps } from 'utils/commonProps';
 
-function CustomTable({ ...props }) {
+type Color = 'warning' | 'primary' | 'danger' | 'success' | 'info' | 'rose' | 'gray';
+
+interface Props extends CommonProps {
+  tableHeaderColor?: Color;
+  tableHead?: React.ReactNode[];
+  tableData?: Array<{
+    color?: string;
+    colspan?: number;
+    data: React.ReactNode[];
+    purchase?: boolean;
+    total?: boolean;
+    amount?: React.ReactNode;
+  }>;
+  hover?: boolean;
+  coloredColls?: number[];
+  colorsColls?: Color[];
+  customCellClasses?: string[];
+  customClassesForCells?: number[];
+  customHeadCellClasses?: string[];
+  customHeadClassesForCells?: number[];
+  striped?: boolean;
+  tableShopping?: boolean;
+}
+
+const defaultProps: Props = {
+  classes: {},
+  tableHeaderColor: 'gray',
+  hover: false,
+  colorsColls: [],
+  coloredColls: [],
+  striped: false,
+  customCellClasses: [],
+  customClassesForCells: [],
+  customHeadCellClasses: [],
+  customHeadClassesForCells: [],
+};
+
+const CustomTable: React.SFC<Props> = (props: Props = defaultProps) => {
   const {
     classes,
     tableHead,
     tableData,
     tableHeaderColor,
     hover,
-    colorsColls,
-    coloredColls,
-    customCellClasses,
-    customClassesForCells,
+    colorsColls = [],
+    coloredColls = [],
+    customCellClasses = [],
+    customClassesForCells = [],
     striped,
     tableShopping,
-    customHeadCellClasses,
-    customHeadClassesForCells,
+    customHeadCellClasses = [],
+    customHeadClassesForCells = [],
   } = props;
+
   return (
     <div className={classes.tableResponsive}>
       <Table className={classes.table}>
         {tableHead !== undefined ? (
-          <TableHead className={classes[tableHeaderColor]}>
+          <TableHead className={classes[tableHeaderColor || 'gray']}>
             <TableRow className={classes.tableRow}>
               {tableHead.map((prop, key) => {
                 const tableCellClasses =
@@ -55,119 +94,85 @@ function CustomTable({ ...props }) {
           </TableHead>
         ) : null}
         <TableBody>
-          {tableData.map((prop, key) => {
-            let rowColor = '';
-            let rowColored = false;
-            if (prop.color !== undefined) {
-              rowColor = prop.color;
-              rowColored = true;
-              prop = prop.data;
-            }
-            const tableRowClasses = cx({
-              [classes.tableRowHover]: hover,
-              [classes[rowColor + 'Row']]: rowColored,
-              [classes.tableStripedRow]: striped && key % 2 === 0,
-            });
-            if (prop.total) {
-              return (
-                <TableRow key={key} hover={hover} className={tableRowClasses}>
-                  <TableCell className={classes.tableCell} colSpan={prop.colspan} />
-                  <TableCell className={classes.tableCell + ' ' + classes.tableCellTotal}>
-                    Total
-                  </TableCell>
-                  <TableCell className={classes.tableCell + ' ' + classes.tableCellAmount}>
-                    {prop.amount}
-                  </TableCell>
-                  {tableHead.length - (prop.colspan - 0 + 2) > 0 ? (
-                    <TableCell
-                      className={classes.tableCell}
-                      colSpan={tableHead.length - (prop.colspan - 0 + 2)}
-                    />
-                  ) : null}
-                </TableRow>
-              );
-            }
-            if (prop.purchase) {
-              return (
-                <TableRow key={key} hover={hover} className={tableRowClasses}>
-                  <TableCell className={classes.tableCell} colSpan={prop.colspan} />
-                  <TableCell
-                    className={classes.tableCell + ' ' + classes.right}
-                    colSpan={prop.col.colspan}
-                  >
-                    {prop.col.text}
-                  </TableCell>
-                </TableRow>
-              );
-            }
-            return (
-              <TableRow
-                key={key}
-                hover={hover}
-                className={classes.tableRow + ' ' + tableRowClasses}
-              >
-                {prop.map((prop, key) => {
-                  const tableCellClasses =
-                    classes.tableCell +
-                    ' ' +
-                    cx({
-                      [classes[colorsColls[coloredColls.indexOf(key)]]]:
-                        coloredColls.indexOf(key) !== -1,
-                      [customCellClasses[customClassesForCells.indexOf(key)]]:
-                        customClassesForCells.indexOf(key) !== -1,
-                    });
-                  return (
-                    <TableCell className={tableCellClasses} key={key}>
-                      {prop}
+          {tableData &&
+            tableData.map((row, key) => {
+              let rowColor = '';
+              let rowColored = false;
+
+              if (row.color) {
+                rowColor = row.color;
+                rowColored = true;
+              }
+
+              const tableRowClasses = cx({
+                [classes.tableRowHover]: hover,
+                [classes[rowColor + 'Row']]: rowColored,
+                [classes.tableStripedRow]: striped && key % 2 === 0,
+              });
+
+              if (row.total) {
+                return (
+                  <TableRow key={key} hover={hover} className={tableRowClasses}>
+                    <TableCell className={classes.tableCell} colSpan={row.colspan} />
+                    <TableCell className={classes.tableCell + ' ' + classes.tableCellTotal}>
+                      Total
                     </TableCell>
-                  );
-                })}
-              </TableRow>
-            );
-          })}
+                    <TableCell className={classes.tableCell + ' ' + classes.tableCellAmount}>
+                      {row.amount}
+                    </TableCell>
+                    {tableHead && tableHead.length - ((row.colspan || 1) + 2) > 0 ? (
+                      <TableCell
+                        className={classes.tableCell}
+                        colSpan={tableHead.length - ((row.colspan || 1) + 2)}
+                      />
+                    ) : null}
+                  </TableRow>
+                );
+              }
+
+              // if (row.purchase) {
+              //   return (
+              //     <TableRow key={key} hover={hover} className={tableRowClasses}>
+              //       <TableCell className={classes.tableCell} colSpan={row.colspan} />
+              //       <TableCell
+              //         className={classes.tableCell + ' ' + classes.right}
+              //         colSpan={row.col.colspan}
+              //       >
+              //         {row.col.text}
+              //       </TableCell>
+              //     </TableRow>
+              //   );
+              // }
+
+              return (
+                <TableRow
+                  key={key}
+                  hover={hover}
+                  className={classes.tableRow + ' ' + tableRowClasses}
+                >
+                  {row.data.map((cell, cellIndex) => {
+                    const tableCellClasses =
+                      classes.tableCell +
+                      ' ' +
+                      cx({
+                        [classes[colorsColls[coloredColls.indexOf(cellIndex)]]]:
+                          coloredColls.indexOf(cellIndex) !== -1,
+                        [customCellClasses[customClassesForCells.indexOf(cellIndex)]]:
+                          customClassesForCells.indexOf(cellIndex) !== -1,
+                      });
+                    return (
+                      <TableCell className={tableCellClasses} key={cellIndex}>
+                        {cell}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
         </TableBody>
       </Table>
     </div>
   );
-}
-
-CustomTable.defaultProps = {
-  tableHeaderColor: 'gray',
-  hover: false,
-  colorsColls: [],
-  coloredColls: [],
-  striped: false,
-  customCellClasses: [],
-  customClassesForCells: [],
-  customHeadCellClasses: [],
-  customHeadClassesForCells: [],
-};
-
-CustomTable.propTypes = {
-  classes: PropTypes.object.isRequired,
-  tableHeaderColor: PropTypes.oneOf([
-    'warning',
-    'primary',
-    'danger',
-    'success',
-    'info',
-    'rose',
-    'gray',
-  ]),
-  tableHead: PropTypes.arrayOf(PropTypes.string),
-  // Of(PropTypes.arrayOf(PropTypes.node)) || Of(PropTypes.object),
-  tableData: PropTypes.array,
-  hover: PropTypes.bool,
-  coloredColls: PropTypes.arrayOf(PropTypes.number),
-  // Of(["warning","primary","danger","success","info","rose","gray"]) - colorsColls
-  colorsColls: PropTypes.array,
-  customCellClasses: PropTypes.arrayOf(PropTypes.string),
-  customClassesForCells: PropTypes.arrayOf(PropTypes.number),
-  customHeadCellClasses: PropTypes.arrayOf(PropTypes.string),
-  customHeadClassesForCells: PropTypes.arrayOf(PropTypes.number),
-  striped: PropTypes.bool,
-  // this will cause some changes in font
-  tableShopping: PropTypes.bool,
 };
 
 export default withStyles(tableStyle)(CustomTable);
