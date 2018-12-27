@@ -18,6 +18,7 @@ class Pages extends React.Component<WithStyles> {
   public componentDidMount() {
     document.body.style.overflow = 'unset';
   }
+
   public render() {
     const { classes, ...rest } = this.props;
     return (

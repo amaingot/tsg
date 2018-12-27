@@ -7,7 +7,7 @@ import infoStyle from 'styles/jss/components/infoStyle';
 import { CommonProps } from 'utils/commonProps';
 
 interface Props extends CommonProps {
-  icon: React.SFC<any>;
+  icon: React.ComponentType<any>;
   title: string;
   description: string;
   iconColor?: 'primary' | 'warning' | 'danger' | 'success' | 'info' | 'rose' | 'gray';

@@ -4,7 +4,7 @@ export interface RouteType {
   pathTo?: string;
   redirect?: boolean;
   collapse?: boolean;
-  icon: string | React.ComponentType<any>;
+  icon?: string | React.ComponentType<any>;
   state?: string;
   short?: string;
   mini?: string;

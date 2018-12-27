@@ -3,26 +3,26 @@ import { RouteType } from 'routes/index';
 import LoginPage from 'pages/Login';
 // import LockScreenPage from 'views/Pages/LockScreenPage.jsx';
 // import PricingPage from 'views/Pages/PricingPage.jsx';
-// import RegisterPage from 'views/Pages/RegisterPage.jsx';
+import RegisterPage from 'pages/Register';
 
 // @material-ui/icons
 import Fingerprint from '@material-ui/icons/Fingerprint';
 // import LockOpen from '@material-ui/icons/LockOpen';
 // import MonetizationOn from '@material-ui/icons/MonetizationOn';
-// import PersonAdd from '@material-ui/icons/PersonAdd';
+import PersonAdd from '@material-ui/icons/PersonAdd';
 
 const pagesRoutes: RouteType[] = [
-  // {
-  //   path: '/pages/register-page',
-  //   name: 'Register Page',
-  //   short: 'Register',
-  //   mini: 'RP',
-  //   icon: PersonAdd,
-  //   component: RegisterPage,
-  // },
+  {
+    path: '/pages/register-page',
+    name: 'Register',
+    short: 'Register',
+    mini: 'RP',
+    icon: PersonAdd,
+    component: RegisterPage,
+  },
   {
     path: '/pages/login-page',
-    name: 'Login Page',
+    name: 'Login',
     short: 'Login',
     mini: 'LP',
     icon: Fingerprint,
@@ -44,12 +44,12 @@ const pagesRoutes: RouteType[] = [
   //   icon: LockOpen,
   //   component: LockScreenPage,
   // },
-  // {
-  //   redirect: true,
-  //   path: '/pages',
-  //   pathTo: '/pages/register-page',
-  //   name: 'Register Page',
-  // },
+  {
+    redirect: true,
+    path: '/pages',
+    pathTo: '/pages/register-page',
+    name: 'Register Page',
+  },
 ];
 
 export default pagesRoutes;

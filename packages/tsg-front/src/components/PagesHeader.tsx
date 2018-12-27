@@ -1,6 +1,7 @@
 import cx from 'classnames';
-import { RouterState } from 'connected-react-router';
+import { Location } from 'history';
 import React from 'react';
+import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
 // @material-ui/core components
@@ -21,14 +22,14 @@ import Menu from '@material-ui/icons/Menu';
 // core components
 import Button from 'components/Button';
 
-import { connect } from 'react-redux';
+import pageRoutes from 'routes/pages';
 import { ApplicationState } from 'store/index';
 import pagesHeaderStyle from 'styles/jss/components/pagesHeaderStyle';
 import { CommonProps } from 'utils/commonProps';
 
 interface Props extends CommonProps {
   color?: 'primary' | 'info' | 'success' | 'warning' | 'danger';
-  router: RouterState;
+  location: Location;
 }
 
 interface State {
@@ -48,22 +49,20 @@ class PagesHeader extends React.Component<Props, State> {
   };
 
   // verifies if routeName is the one active (in browser input)
-  // public activeRoute(routeName) {
-  //   return this.props.location.pathname.indexOf(routeName) > -1 ? true : false;
-  // }
+  public activeRoute = (routeName: string) => {
+    return this.props.location.pathname.indexOf(routeName) > -1 ? true : false;
+  };
 
   public componentDidUpdate(prevProps: Props) {
-    if (prevProps.router.location.pathname !== this.props.router.location.pathname) {
+    if (prevProps.location.pathname !== this.props.location.pathname) {
       this.setState({ open: false });
     }
   }
 
-  public render() {
-    const { classes, color } = this.props;
-    const appBarClasses = cx({
-      [' ' + classes[color || 'primary']]: color,
-    });
-    const list = (
+  public renderList() {
+    const { classes } = this.props;
+
+    return (
       <List className={classes.list}>
         <ListItem className={classes.listItem}>
           <NavLink to={'/dashboard'} className={classes.navLink}>
@@ -77,32 +76,42 @@ class PagesHeader extends React.Component<Props, State> {
             />
           </NavLink>
         </ListItem>
-        {/* {pagesRoutes.map((prop, key) => {
-          if (prop.redirect) {
+        {pageRoutes.map((route, routeIndex) => {
+          if (route.redirect) {
             return null;
           }
           const navLink =
             classes.navLink +
             cx({
-              [' ' + classes.navLinkActive]: this.activeRoute(prop.path),
+              [' ' + classes.navLinkActive]: this.activeRoute(route.path),
             });
           return (
-            <ListItem key={key} className={classes.listItem}>
-              <NavLink to={prop.path} className={navLink}>
-                <ListItemIcon className={classes.listItemIcon}>
-                  <prop.icon />
-                </ListItemIcon>
+            <ListItem key={routeIndex} className={classes.listItem}>
+              <NavLink to={route.path} className={navLink}>
+                {route.icon && (
+                  <ListItemIcon className={classes.listItemIcon}>
+                    <route.icon />
+                  </ListItemIcon>
+                )}
                 <ListItemText
-                  primary={prop.short}
+                  primary={route.short}
                   disableTypography={true}
                   className={classes.listItemText}
                 />
               </NavLink>
             </ListItem>
           );
-        })} */}
+        })}
       </List>
     );
+  }
+
+  public render() {
+    const { classes, color } = this.props;
+    const appBarClasses = cx({
+      [' ' + classes[color || 'primary']]: color,
+    });
+
     return (
       <AppBar position="static" className={classes.appBar + appBarClasses}>
         <Toolbar className={classes.container}>
@@ -120,7 +129,7 @@ class PagesHeader extends React.Component<Props, State> {
               </Button>
             </div>
           </Hidden>
-          <Hidden smDown>{list}</Hidden>
+          <Hidden smDown>{this.renderList()}</Hidden>
           <Hidden mdUp>
             <Button
               className={classes.sidebarButton}
@@ -146,7 +155,7 @@ class PagesHeader extends React.Component<Props, State> {
                   keepMounted: true, // Better open performance on mobile.
                 }}
               >
-                {list}
+                {this.renderList()}
               </Drawer>
             </Hidden>
           </Hidden>
@@ -157,7 +166,7 @@ class PagesHeader extends React.Component<Props, State> {
 }
 
 const mapState2Props = (state: ApplicationState) => {
-  return { router: state.router };
+  return { location: state.router.location };
 };
 
 export default withStyles(pagesHeaderStyle)(connect(mapState2Props)(PagesHeader));
