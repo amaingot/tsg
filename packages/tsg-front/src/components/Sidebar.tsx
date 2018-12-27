@@ -2,7 +2,6 @@ import cx from 'classnames';
 import { Location } from 'history';
 import React from 'react';
 import { connect } from 'react-redux';
-import { NavLink } from 'react-router-dom';
 
 // @material-ui/core components
 import Collapse from '@material-ui/core/Collapse';
@@ -25,6 +24,7 @@ import { RouteType } from 'routes/index';
 import avatar from 'static/material-images/faces/avatar.jpg';
 import { ApplicationState } from 'store/index';
 import { CommonProps } from 'utils/commonProps';
+import CustomLink from 'utils/CustomLink';
 
 interface SidebarProps extends CommonProps {
   bgColor?: string; // 'white' | 'black' | 'blue';
@@ -138,13 +138,19 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
               return (
                 <ListItem key={index} className={classes.item}>
-                  <NavLink
+                  <CustomLink
                     to={'#'}
                     className={navLinkClassesCollapse}
                     onClick={() => this.openCollapse(route.state || '')}
                   >
                     <ListItemIcon className={classes.itemIcon}>
-                      {typeof route.icon === 'string' ? <Icon>{route.icon}</Icon> : <route.icon />}
+                      {typeof route.icon === 'string' ? (
+                        <Icon>{route.icon}</Icon>
+                      ) : route.icon ? (
+                        <route.icon />
+                      ) : (
+                        <var />
+                      )}
                     </ListItemIcon>
                     <ListItemText
                       primary={route.name}
@@ -160,7 +166,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
                       disableTypography={true}
                       className={itemTextCollapse}
                     />
-                  </NavLink>
+                  </CustomLink>
                   <Collapse in={this.state[route.state || '']} unmountOnExit>
                     <List className={classes.list + ' ' + classes.collapseList}>
                       {route.views &&
@@ -176,14 +182,14 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
                             });
                           return (
                             <ListItem key={viewIndex} className={classes.collapseItem}>
-                              <NavLink to={view.path} className={collapseItemLink}>
+                              <CustomLink to={view.path} className={collapseItemLink}>
                                 <span className={classes.collapseItemMini}>{view.mini}</span>
                                 <ListItemText
                                   primary={view.name}
                                   disableTypography={true}
                                   className={collapseItemText}
                                 />
-                              </NavLink>
+                              </CustomLink>
                             </ListItem>
                           );
                         })}
@@ -207,16 +213,18 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
             return (
               <ListItem key={index} className={classes.item}>
-                <NavLink to={route.path} className={navLinkClasses}>
-                  <ListItemIcon className={classes.itemIcon}>
-                    {typeof route.icon === 'string' ? <Icon>{route.icon}</Icon> : <route.icon />}
-                  </ListItemIcon>
+                <CustomLink to={route.path} className={navLinkClasses}>
+                  {route.icon && (
+                    <ListItemIcon className={classes.itemIcon}>
+                      {typeof route.icon === 'string' ? <Icon>{route.icon}</Icon> : <route.icon />}
+                    </ListItemIcon>
+                  )}
                   <ListItemText
                     primary={route.name}
                     disableTypography={true}
                     className={itemText}
                   />
-                </NavLink>
+                </CustomLink>
               </ListItem>
             );
           })}
@@ -255,7 +263,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
         </div>
         <List className={classes.list}>
           <ListItem className={classes.item + ' ' + classes.userItem}>
-            <NavLink
+            <CustomLink
               to={'#'}
               className={classes.itemLink + ' ' + classes.userCollapseButton}
               onClick={() => this.openCollapse('openAvatar')}
@@ -276,38 +284,38 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
                 disableTypography={true}
                 className={itemText + ' ' + classes.userItemText}
               />
-            </NavLink>
+            </CustomLink>
             <Collapse in={this.state.openAvatar} unmountOnExit>
               <List className={classes.list + ' ' + classes.collapseList}>
                 <ListItem className={classes.collapseItem}>
-                  <NavLink to="#" className={classes.itemLink + ' ' + classes.userCollapseLinks}>
+                  <CustomLink to="#" className={classes.itemLink + ' ' + classes.userCollapseLinks}>
                     <span className={classes.collapseItemMini}>MP</span>
                     <ListItemText
                       primary="My Profile"
                       disableTypography={true}
                       className={collapseItemText}
                     />
-                  </NavLink>
+                  </CustomLink>
                 </ListItem>
                 <ListItem className={classes.collapseItem}>
-                  <NavLink to="#" className={classes.itemLink + ' ' + classes.userCollapseLinks}>
+                  <CustomLink to="#" className={classes.itemLink + ' ' + classes.userCollapseLinks}>
                     <span className={classes.collapseItemMini}>EP</span>
                     <ListItemText
                       primary="Edit Profile"
                       disableTypography={true}
                       className={collapseItemText}
                     />
-                  </NavLink>
+                  </CustomLink>
                 </ListItem>
                 <ListItem className={classes.collapseItem}>
-                  <NavLink to="#" className={classes.itemLink + ' ' + classes.userCollapseLinks}>
+                  <CustomLink to="#" className={classes.itemLink + ' ' + classes.userCollapseLinks}>
                     <span className={classes.collapseItemMini}>S</span>
                     <ListItemText
                       primary="Settings"
                       disableTypography={true}
                       className={collapseItemText}
                     />
-                  </NavLink>
+                  </CustomLink>
                 </ListItem>
               </List>
             </Collapse>

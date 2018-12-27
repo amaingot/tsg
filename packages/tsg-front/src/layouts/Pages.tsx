@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Switch } from 'react-router-dom';
 
 // @material-ui/core components
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
@@ -9,6 +9,8 @@ import Footer from 'components/Footer';
 import PagesHeader from 'components/PagesHeader';
 
 import pagesRoutes from 'routes/pages';
+import CustomRedirect from 'utils/CustomRedirect';
+import CustomRoute from 'utils/CustomRoute';
 
 import pagesStyle from 'styles/jss/layouts/pagesStyle';
 
@@ -32,9 +34,9 @@ class Pages extends React.Component<WithStyles> {
                   return null;
                 }
                 if (prop.redirect) {
-                  return <Redirect from={prop.path} to={prop.pathTo || ''} key={key} />;
+                  return <CustomRedirect from={prop.path} to={prop.pathTo || ''} key={key} />;
                 }
-                return <Route path={prop.path} component={prop.component} key={key} />;
+                return <CustomRoute path={prop.path} component={prop.component} key={key} />;
               })}
             </Switch>
             <Footer white />

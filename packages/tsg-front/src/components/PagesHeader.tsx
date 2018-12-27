@@ -2,7 +2,6 @@ import cx from 'classnames';
 import { Location } from 'history';
 import React from 'react';
 import { connect } from 'react-redux';
-import { NavLink } from 'react-router-dom';
 
 // @material-ui/core components
 import AppBar from '@material-ui/core/AppBar';
@@ -26,6 +25,7 @@ import pageRoutes from 'routes/pages';
 import { ApplicationState } from 'store/index';
 import pagesHeaderStyle from 'styles/jss/components/pagesHeaderStyle';
 import { CommonProps } from 'utils/commonProps';
+import CustomLink from 'utils/CustomLink';
 
 interface Props extends CommonProps {
   color?: 'primary' | 'info' | 'success' | 'warning' | 'danger';
@@ -65,7 +65,7 @@ class PagesHeader extends React.Component<Props, State> {
     return (
       <List className={classes.list}>
         <ListItem className={classes.listItem}>
-          <NavLink to={'/dashboard'} className={classes.navLink}>
+          <CustomLink to={'/dashboard'} className={classes.navLink}>
             <ListItemIcon className={classes.listItemIcon}>
               <Dashboard />
             </ListItemIcon>
@@ -74,7 +74,7 @@ class PagesHeader extends React.Component<Props, State> {
               disableTypography={true}
               className={classes.listItemText}
             />
-          </NavLink>
+          </CustomLink>
         </ListItem>
         {pageRoutes.map((route, routeIndex) => {
           if (route.redirect) {
@@ -87,7 +87,7 @@ class PagesHeader extends React.Component<Props, State> {
             });
           return (
             <ListItem key={routeIndex} className={classes.listItem}>
-              <NavLink to={route.path} className={navLink}>
+              <CustomLink to={route.path} className={navLink}>
                 {route.icon && (
                   <ListItemIcon className={classes.listItemIcon}>
                     <route.icon />
@@ -98,7 +98,7 @@ class PagesHeader extends React.Component<Props, State> {
                   disableTypography={true}
                   className={classes.listItemText}
                 />
-              </NavLink>
+              </CustomLink>
             </ListItem>
           );
         })}

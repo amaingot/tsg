@@ -4,7 +4,7 @@ import PerfectScrollbar from 'perfect-scrollbar';
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Switch } from 'react-router-dom';
 
 // @material-ui/core components
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
@@ -21,19 +21,21 @@ import appStyle from 'styles/jss/layouts/dashboardStyle';
 
 import logo from 'static/material-images/logo-white.svg';
 import image from 'static/material-images/sidebar-2.jpg';
+import CustomRedirect from 'utils/CustomRedirect';
+import CustomRoute from 'utils/CustomRoute';
 
 const switchRoutes = (
   <Switch>
     {dashboardRoutes.map((route, routeIndex) => {
-      if (route.redirect) {
-        return <Redirect from={route.path} to={route.pathTo || ''} key={routeIndex} />;
+      if (route.redirect && route.pathTo) {
+        return <CustomRedirect from={route.path} to={route.pathTo} key={routeIndex} />;
       }
       if (route.collapse && route.views) {
         return route.views.map((view, viewIndex) => {
-          return <Route path={view.path} component={view.component} key={viewIndex} />;
+          return <CustomRoute path={view.path} component={view.component} key={viewIndex} />;
         });
       }
-      return <Route path={route.path} component={route.component} key={routeIndex} />;
+      return <CustomRoute path={route.path} component={route.component} key={routeIndex} />;
     })}
   </Switch>
 );
