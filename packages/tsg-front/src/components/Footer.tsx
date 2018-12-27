@@ -8,6 +8,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 
 import footerStyle from 'styles/jss/components/footerStyle';
 import { CommonProps } from 'utils/commonProps';
+import CustomLink from 'utils/CustomLink';
 
 interface Props extends CommonProps {
   fluid?: boolean;
@@ -39,33 +40,29 @@ const Footer: React.SFC<Props> = ({ ...props }) => {
         <div className={classes.left}>
           <List className={classes.list}>
             <ListItem className={classes.inlineBlock}>
-              <a href="#home" className={block}>
+              <CustomLink to="/" className={block}>
                 Home
-              </a>
+              </CustomLink>
             </ListItem>
+            {' | '}
             <ListItem className={classes.inlineBlock}>
-              <a href="#company" className={block}>
-                Company
-              </a>
+              <CustomLink to="/About" className={block}>
+                About
+              </CustomLink>
             </ListItem>
+            {' | '}
             <ListItem className={classes.inlineBlock}>
-              <a href="#portfolio" className={block}>
-                Portfolio
-              </a>
-            </ListItem>
-            <ListItem className={classes.inlineBlock}>
-              <a href="#blog" className={block}>
-                Blog
-              </a>
+              <CustomLink to="/contact" className={block}>
+                Contact
+              </CustomLink>
             </ListItem>
           </List>
         </div>
         <p className={classes.right}>
-          &copy; {1900 + new Date().getFullYear()}{' '}
-          <a href="https://www.creative-tim.com" className={anchor}>
-            Creative Tim
+          &copy; {new Date().getFullYear()}{' '}
+          <a href="#" className={anchor}>
+            Centre Court, Inc.
           </a>
-          , made with love for a better web
         </p>
       </div>
     </footer>

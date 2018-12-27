@@ -52,7 +52,7 @@ const CustomInput: React.SFC<Props> = ({ ...props }) => {
   });
 
   const marginTop = classNames({
-    [inputRootCustomClasses || '']: inputRootCustomClasses !== undefined,
+    [inputRootCustomClasses || '']: !!inputRootCustomClasses,
   });
 
   const inputClasses = classNames({
@@ -71,7 +71,7 @@ const CustomInput: React.SFC<Props> = ({ ...props }) => {
 
   return (
     <FormControl {...formControlProps} className={formControlClasses}>
-      {labelText !== undefined ? (
+      {labelText ? (
         <InputLabel className={classes.labelRoot + ' ' + labelClasses} htmlFor={id} {...labelProps}>
           {labelText}
         </InputLabel>
@@ -86,7 +86,7 @@ const CustomInput: React.SFC<Props> = ({ ...props }) => {
         id={id}
         {...inputProps}
       />
-      {helpText !== undefined ? (
+      {helpText ? (
         <FormHelperText id={id + '-text'} className={helpTextClasses}>
           {helpText}
         </FormHelperText>

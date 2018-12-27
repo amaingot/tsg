@@ -14,7 +14,7 @@ import CustomRoute from 'utils/CustomRoute';
 
 import pagesStyle from 'styles/jss/layouts/pagesStyle';
 
-import bgImage from 'static/material-images/register.jpg';
+import bgImage from 'static/images/tenniscourt2.jpg';
 
 class Pages extends React.Component<WithStyles> {
   public componentDidMount() {

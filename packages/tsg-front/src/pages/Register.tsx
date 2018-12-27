@@ -68,13 +68,13 @@ class RegisterPage extends React.Component<WithStyles, State> {
                 <GridContainer justify="center">
                   <GridItem xs={12} sm={12} md={5}>
                     <InfoArea
-                      title="Marketing"
+                      title="Graphs"
                       description="We've created the marketing campaign of the website. It was a very interesting collaboration."
                       icon={Timeline}
                       iconColor="rose"
                     />
                     <InfoArea
-                      title="Fully Coded in HTML5"
+                      title="Now in pretty code"
                       description="We've developed the website with HTML5 and CSS3. The client has access to the code using GitHub."
                       icon={Code}
                       iconColor="primary"
@@ -87,7 +87,7 @@ class RegisterPage extends React.Component<WithStyles, State> {
                     />
                   </GridItem>
                   <GridItem xs={12} sm={8} md={5}>
-                    <div className={classes.center}>
+                    {/* <div className={classes.center}>
                       <Button justIcon round myColor="twitter">
                         <i className="fab fa-twitter" />
                       </Button>
@@ -101,7 +101,7 @@ class RegisterPage extends React.Component<WithStyles, State> {
                       </Button>
                       {` `}
                       <h4 className={classes.socialTitle}>or be classical</h4>
-                    </div>
+                    </div> */}
                     <form className={classes.form}>
                       <CustomInput
                         formControlProps={{

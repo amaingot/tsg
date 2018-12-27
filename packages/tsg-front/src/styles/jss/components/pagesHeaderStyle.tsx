@@ -127,9 +127,9 @@ const pagesHeaderStyle: StyleRulesCallback<string> = (theme: Theme) => ({
   },
   listItemIcon: {
     marginTop: '-3px',
-    top: '0px',
+    top: '-1px',
     position: 'relative',
-    marginRight: '3px',
+    marginRight: '7px',
     width: '20px',
     height: '20px',
     verticalAlign: 'middle',

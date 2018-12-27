@@ -15,7 +15,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import Toolbar from '@material-ui/core/Toolbar';
 
 // @material-ui/icons
-import Dashboard from '@material-ui/icons/Dashboard';
+import Home from '@material-ui/icons/Home';
 import Menu from '@material-ui/icons/Menu';
 
 // core components
@@ -65,9 +65,9 @@ class PagesHeader extends React.Component<Props, State> {
     return (
       <List className={classes.list}>
         <ListItem className={classes.listItem}>
-          <CustomLink to={'/dashboard'} className={classes.navLink}>
+          <CustomLink to={'/'} className={classes.navLink}>
             <ListItemIcon className={classes.listItemIcon}>
-              <Dashboard />
+              <Home />
             </ListItemIcon>
             <ListItemText
               primary={'Dashboard'}
@@ -118,14 +118,14 @@ class PagesHeader extends React.Component<Props, State> {
           <Hidden smDown>
             <div className={classes.flex}>
               <Button href="#" className={classes.title} myColor="transparent">
-                Material Dashboard Pro React
+                Tennis Shop Guru
               </Button>
             </div>
           </Hidden>
           <Hidden mdUp>
             <div className={classes.flex}>
               <Button href="#" className={classes.title} myColor="transparent">
-                MD Pro React
+                TennisShop Guru
               </Button>
             </div>
           </Hidden>

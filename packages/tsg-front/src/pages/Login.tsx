@@ -7,7 +7,6 @@ import withStyles from '@material-ui/core/styles/withStyles';
 
 // @material-ui/icons
 import Email from '@material-ui/icons/Email';
-import Face from '@material-ui/icons/Face';
 // import LockOutline from "@material-ui/icons/LockOutline";
 
 // core components
@@ -56,40 +55,13 @@ class LoginPage extends React.Component<CommonProps, State> {
           <GridItem xs={12} sm={6} md={4}>
             <form>
               <Card login className={classes[this.state.cardAnimaton]}>
-                <CardHeader className={`${classes.cardHeader} ${classes.textCenter}`} color="rose">
-                  <h4 className={classes.cardTitle}>Log in</h4>
-                  <div className={classes.socialLine}>
-                    {['fab fa-facebook-square', 'fab fa-twitter', 'fab fa-google-plus'].map(
-                      (prop, key) => {
-                        return (
-                          <Button
-                            myColor="transparent"
-                            justIcon
-                            key={key}
-                            className={classes.customButtonClass}
-                          >
-                            <i className={prop} />
-                          </Button>
-                        );
-                      }
-                    )}
-                  </div>
+                <CardHeader
+                  className={`${classes.cardHeader} ${classes.textCenter}`}
+                  color="primary"
+                >
+                  <h3 className={classes.cardTitle}>Log in</h3>
                 </CardHeader>
                 <CardBody>
-                  <CustomInput
-                    labelText="First Name.."
-                    id="firstname"
-                    formControlProps={{
-                      fullWidth: true,
-                    }}
-                    inputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <Face className={classes.inputAdornmentIcon} />
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
                   <CustomInput
                     labelText="Email..."
                     id="email"
@@ -120,7 +92,7 @@ class LoginPage extends React.Component<CommonProps, State> {
                   />
                 </CardBody>
                 <CardFooter className={classes.justifyContentCenter}>
-                  <Button myColor="rose" simple mySize="lg" block>
+                  <Button myColor="primary" simple mySize="lg" block>
                     Let's Go
                   </Button>
                 </CardFooter>
