@@ -13,7 +13,7 @@ import PersonAdd from '@material-ui/icons/PersonAdd';
 
 const pagesRoutes: RouteType[] = [
   {
-    path: '/register-page',
+    path: '/register',
     name: 'Register',
     short: 'Register',
     mini: 'RP',
@@ -21,7 +21,7 @@ const pagesRoutes: RouteType[] = [
     component: RegisterPage,
   },
   {
-    path: '/login-page',
+    path: '/login',
     name: 'Login',
     short: 'Login',
     mini: 'LP',
@@ -37,7 +37,7 @@ const pagesRoutes: RouteType[] = [
     component: PricingPage,
   },
   // {
-  //   path: '/pages/lock-screen-page',
+  //   path: '/pages/lock-screen',
   //   name: 'Lock Screen Page',
   //   short: 'Lock',
   //   mini: 'LSP',
@@ -47,7 +47,7 @@ const pagesRoutes: RouteType[] = [
   // {
   //   redirect: true,
   //   path: '/pages',
-  //   pathTo: '/pages/register-page',
+  //   pathTo: '/pages/register',
   //   name: 'Register Page',
   // },
 ];

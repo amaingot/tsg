@@ -9,10 +9,10 @@ module.exports = {
 
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
       { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
-      {
-        test: /\.css$/,
-        loader: "style-loader!css-loader"
-      },
+      // {
+      //   test: /\.css$/,
+      //   loader: "style-loader!css-loader"
+      // },
       {
         test: /\.(less|css|scss)$/,
         use: [
@@ -29,7 +29,11 @@ module.exports = {
         ]
       },
       {
-        test: /\.(png|jpg|gif)$/,
+        test: /\.svg$/,
+        loader: "svg-inline-loader"
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif)$/,
         use: [
           {
             loader: "file-loader",
@@ -44,6 +48,7 @@ module.exports = {
     extensions: [".ts", ".tsx", ".js", ".json"],
     alias: {
       components: path.resolve(__dirname, "src/components/"),
+      layouts: path.resolve(__dirname, "src/layouts/"),
       styles: path.resolve(__dirname, "src/styles/"),
       pages: path.resolve(__dirname, "src/pages/"),
       routes: path.resolve(__dirname, "src/routes/"),
