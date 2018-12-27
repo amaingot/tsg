@@ -5,12 +5,12 @@ import { login } from 'store/auth/actions';
 import { LoginRequest } from 'store/auth/types';
 import { ApplicationState } from 'store/index';
 
-export interface TestPageProps {
+export interface Props {
   loggedIn: boolean;
   login: (loginRequest: LoginRequest) => void;
 }
 
-class TestPage extends React.Component<TestPageProps, any> {
+class TestPage extends React.Component<Props> {
   public render() {
     return (
       <div>

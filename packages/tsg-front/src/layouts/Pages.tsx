@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser';
 import React from 'react';
 import { Switch } from 'react-router-dom';
 
@@ -19,6 +20,15 @@ import bgImage from 'static/images/tenniscourt2.jpg';
 class Pages extends React.Component<WithStyles> {
   public componentDidMount() {
     document.body.style.overflow = 'unset';
+  }
+
+  public componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    Sentry.withScope(scope => {
+      Object.keys(errorInfo).forEach(key => {
+        scope.setExtra(key, errorInfo[key]);
+      });
+      Sentry.captureException(error);
+    });
   }
 
   public render() {

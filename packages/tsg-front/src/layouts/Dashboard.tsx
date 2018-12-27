@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser';
 import cx from 'classnames';
 import { Location } from 'history';
 import PerfectScrollbar from 'perfect-scrollbar';
@@ -72,6 +73,15 @@ class Dashboard extends React.Component<Props, State> {
       document.body.style.overflow = 'hidden';
     }
     window.addEventListener('resize', this.resizeFunction);
+  }
+
+  public componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    Sentry.withScope(scope => {
+      Object.keys(errorInfo).forEach(key => {
+        scope.setExtra(key, errorInfo[key]);
+      });
+      Sentry.captureException(error);
+    });
   }
 
   public componentWillUnmount() {
