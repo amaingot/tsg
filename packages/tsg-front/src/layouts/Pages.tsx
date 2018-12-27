@@ -5,16 +5,16 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 
 // core components
-import Footer from 'components/Footer/Footer';
-import PagesHeader from 'components/Header/PagesHeader';
+import Footer from 'components/Footer';
+import PagesHeader from 'components/PagesHeader';
 
 import pagesRoutes from 'routes/pages';
 
 import pagesStyle from 'styles/jss/layouts/pagesStyle';
 
-import bgImage from 'assets/img/register.jpeg';
+import bgImage from 'static/material-images/register.jpg';
 
-class Pages extends React.Component {
+class Pages extends React.Component<WithStyles> {
   public componentDidMount() {
     document.body.style.overflow = 'unset';
   }
@@ -31,7 +31,7 @@ class Pages extends React.Component {
                   return null;
                 }
                 if (prop.redirect) {
-                  return <Redirect from={prop.path} to={prop.pathTo} key={key} />;
+                  return <Redirect from={prop.path} to={prop.pathTo || ''} key={key} />;
                 }
                 return <Route path={prop.path} component={prop.component} key={key} />;
               })}
@@ -43,9 +43,5 @@ class Pages extends React.Component {
     );
   }
 }
-
-Pages.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
 
 export default withStyles(pagesStyle)(Pages);

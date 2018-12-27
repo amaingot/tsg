@@ -1,7 +1,7 @@
 import React from 'react';
 
 // @material-ui/core components
-import Grid from '@material-ui/core/Grid';
+import Grid, { GridProps } from '@material-ui/core/Grid';
 import withStyles, { StyleRules } from '@material-ui/core/styles/withStyles';
 import { CommonProps } from 'utils/commonProps';
 
@@ -19,7 +19,7 @@ const style: StyleRules<string> = {
   },
 };
 
-const GridContainer: React.SFC<CommonProps> = ({ ...props }) => {
+const GridContainer: React.SFC<CommonProps & GridProps> = ({ ...props }) => {
   const { classes, children, className, ...rest } = props;
   return (
     <Grid container {...rest} className={classes.grid + ' ' + className}>

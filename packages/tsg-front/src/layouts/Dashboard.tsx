@@ -1,55 +1,69 @@
 import cx from 'classnames';
-// creates a beautiful scrollbar
+import { Location } from 'history';
 import PerfectScrollbar from 'perfect-scrollbar';
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import React from 'react';
+import { connect } from 'react-redux';
 import { Redirect, Route, Switch } from 'react-router-dom';
 
 // @material-ui/core components
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 
 // core components
-import Footer from 'components/Footer/Footer';
-import Header from 'components/Header/Header';
-import Sidebar from 'components/Sidebar/Sidebar';
+import Footer from 'components/Footer';
+import Header from 'components/Header';
+import Sidebar from 'components/Sidebar';
 
 import dashboardRoutes from 'routes/dashboard';
+import { ApplicationState } from 'store/index';
 
 import appStyle from 'styles/jss/layouts/dashboardStyle';
 
-import logo from 'assets/img/logo-white.svg';
-import image from 'assets/img/sidebar-2.jpg';
+import logo from 'static/material-images/logo-white.svg';
+import image from 'static/material-images/sidebar-2.jpg';
 
 const switchRoutes = (
   <Switch>
-    {dashboardRoutes.map((prop, key) => {
-      if (prop.redirect) {
-        return <Redirect from={prop.path} to={prop.pathTo} key={key} />;
+    {dashboardRoutes.map((route, routeIndex) => {
+      if (route.redirect) {
+        return <Redirect from={route.path} to={route.pathTo || ''} key={routeIndex} />;
       }
-      if (prop.collapse) {
-        return prop.views.map((prop, key) => {
-          return <Route path={prop.path} component={prop.component} key={key} />;
+      if (route.collapse && route.views) {
+        return route.views.map((view, viewIndex) => {
+          return <Route path={view.path} component={view.component} key={viewIndex} />;
         });
       }
-      return <Route path={prop.path} component={prop.component} key={key} />;
+      return <Route path={route.path} component={route.component} key={routeIndex} />;
     })}
   </Switch>
 );
 
-let ps;
+interface Props extends WithStyles {
+  location: Location;
+}
 
-class Dashboard extends React.Component {
-  constructor(props) {
+interface State {
+  mobileOpen: boolean;
+  miniActive: boolean;
+}
+
+let ps: PerfectScrollbar;
+
+class Dashboard extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       mobileOpen: false,
       miniActive: false,
     };
-    this.resizeFunction = this.resizeFunction.bind(this);
+    this.mainPanel = React.createRef<HTMLDivElement>();
   }
+
+  public mainPanel: React.RefObject<HTMLDivElement>;
+
   public componentDidMount() {
-    if (navigator.platform.indexOf('Win') > -1) {
-      ps = new PerfectScrollbar(this.refs.mainPanel, {
+    if (navigator.platform.indexOf('Win') > -1 && this.mainPanel.current) {
+      ps = new PerfectScrollbar(this.mainPanel.current, {
         suppressScrollX: true,
         suppressScrollY: false,
       });
@@ -57,37 +71,44 @@ class Dashboard extends React.Component {
     }
     window.addEventListener('resize', this.resizeFunction);
   }
+
   public componentWillUnmount() {
     if (navigator.platform.indexOf('Win') > -1) {
       ps.destroy();
     }
     window.removeEventListener('resize', this.resizeFunction);
   }
-  public componentDidUpdate(e) {
-    if (e.history.location.pathname !== e.location.pathname) {
-      this.refs.mainPanel.scrollTop = 0;
+
+  public componentDidUpdate(prevProps: Props) {
+    if (this.props.location.pathname !== prevProps.location.pathname && this.mainPanel.current) {
+      this.mainPanel.current.scrollTop = 0;
       if (this.state.mobileOpen) {
         this.setState({ mobileOpen: false });
       }
     }
   }
+
   public handleDrawerToggle = () => {
     this.setState({ mobileOpen: !this.state.mobileOpen });
   };
+
   public getRoute() {
     return this.props.location.pathname !== '/maps/full-screen-maps';
   }
+
   public sidebarMinimize() {
     this.setState({ miniActive: !this.state.miniActive });
   }
-  public resizeFunction() {
+
+  public resizeFunction = () => {
     if (window.innerWidth >= 960) {
       this.setState({ mobileOpen: false });
     }
-  }
+  };
+
   public render() {
     const { classes, ...rest } = this.props;
-    const mainPanel =
+    const mainPanelClasses =
       classes.mainPanel +
       ' ' +
       cx({
@@ -108,11 +129,10 @@ class Dashboard extends React.Component {
           miniActive={this.state.miniActive}
           {...rest}
         />
-        <div className={mainPanel} ref="mainPanel">
+        <div className={mainPanelClasses} ref={this.mainPanel}>
           <Header
-            sidebarMinimize={this.sidebarMinimize.bind(this)}
+            sidebarMinimize={this.sidebarMinimize}
             miniActive={this.state.miniActive}
-            routes={dashboardRoutes}
             handleDrawerToggle={this.handleDrawerToggle}
             {...rest}
           />
@@ -131,8 +151,10 @@ class Dashboard extends React.Component {
   }
 }
 
-Dashboard.propTypes = {
-  classes: PropTypes.object.isRequired,
+const mapState2Props = (state: ApplicationState) => {
+  return {
+    location: state.router.location,
+  };
 };
 
-export default withStyles(appStyle)(Dashboard);
+export default connect(mapState2Props)(withStyles(appStyle)(Dashboard));

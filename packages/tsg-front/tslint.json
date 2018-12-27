@@ -21,7 +21,7 @@
     "no-implicit-dependencies": [
       true,
       "dev",
-      ["pages", "styles", "components", "static", "store", "utils"]
+      ["pages", "styles", "components", "routes", "static", "store", "utils"]
     ],
     "interface-name": [true, "never-prefix"],
     "jsx-boolean-value": [false],

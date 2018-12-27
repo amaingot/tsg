@@ -10,7 +10,6 @@ import { ApplicationState } from './store';
 import TestPage from 'pages/TestPage';
 import './styles.scss';
 
-// Any additional component props go here.
 interface MainProps {
   store: Store<ApplicationState>;
   history: History;

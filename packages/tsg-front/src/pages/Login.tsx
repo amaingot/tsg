@@ -3,7 +3,7 @@ import React from 'react';
 // @material-ui/core components
 import Icon from '@material-ui/core/Icon';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
+import withStyles from '@material-ui/core/styles/withStyles';
 
 // @material-ui/icons
 import Email from '@material-ui/icons/Email';
@@ -11,33 +11,38 @@ import Face from '@material-ui/icons/Face';
 // import LockOutline from "@material-ui/icons/LockOutline";
 
 // core components
-import Card from 'components/Card/Card';
-import CardBody from 'components/Card/CardBody';
-import CardFooter from 'components/Card/CardFooter';
-import CardHeader from 'components/Card/CardHeader';
-import Button from 'components/CustomButtons/Button';
-import CustomInput from 'components/CustomInput/CustomInput';
-import GridContainer from 'components/Grid/GridContainer';
-import GridItem from 'components/Grid/GridItem';
+import Button from 'components/Button';
+import Card from 'components/Card';
+import CardBody from 'components/CardBody';
+import CardFooter from 'components/CardFooter';
+import CardHeader from 'components/CardHeader';
+import CustomInput from 'components/CustomInput';
+import GridContainer from 'components/GridContainer';
+import GridItem from 'components/GridItem';
 
 import loginPageStyle from 'styles/jss/views/loginPageStyle';
+import { CommonProps } from 'utils/commonProps';
 
-class LoginPage extends React.Component {
-  constructor(props) {
+interface State {
+  cardAnimaton: string;
+}
+
+class LoginPage extends React.Component<CommonProps, State> {
+  constructor(props: CommonProps) {
     super(props);
     // we use this to make the card to appear after the page has been rendered
     this.state = {
       cardAnimaton: 'cardHidden',
     };
   }
+
+  public timeOutFunction: any;
+
   public componentDidMount() {
     // we add a hidden class to the card and after 700 ms we delete it and the transition appears
-    this.timeOutFunction = setTimeout(
-      function() {
-        this.setState({ cardAnimaton: '' });
-      }.bind(this),
-      700
-    );
+    this.timeOutFunction = setTimeout(() => {
+      this.setState({ cardAnimaton: '' });
+    }, 700);
   }
   public componentWillUnmount() {
     clearTimeout(this.timeOutFunction);
@@ -58,7 +63,7 @@ class LoginPage extends React.Component {
                       (prop, key) => {
                         return (
                           <Button
-                            color="transparent"
+                            myColor="transparent"
                             justIcon
                             key={key}
                             className={classes.customButtonClass}
@@ -115,7 +120,7 @@ class LoginPage extends React.Component {
                   />
                 </CardBody>
                 <CardFooter className={classes.justifyContentCenter}>
-                  <Button color="rose" simple size="lg" block>
+                  <Button myColor="rose" simple mySize="lg" block>
                     Let's Go
                   </Button>
                 </CardFooter>
@@ -127,9 +132,5 @@ class LoginPage extends React.Component {
     );
   }
 }
-
-LoginPage.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
 
 export default withStyles(loginPageStyle)(LoginPage);

@@ -21,31 +21,18 @@ import SidebarWrapper from 'components/SidebarWrapper';
 
 import sidebarStyle from 'styles/jss/components/sidebarStyle';
 
+import { RouteType } from 'routes/index';
 import avatar from 'static/material-images/faces/avatar.jpg';
 import { ApplicationState } from 'store/index';
 import { CommonProps } from 'utils/commonProps';
 
 interface SidebarProps extends CommonProps {
   bgColor?: string; // 'white' | 'black' | 'blue';
-  rtlActive?: boolean;
   color?: 'white' | 'red' | 'orange' | 'green' | 'blue' | 'purple' | 'rose';
   logo?: string;
   logoText?: string;
   image?: string;
-  routes?: Array<{
-    name: string;
-    path: string;
-    redirect?: boolean;
-    collapse?: boolean;
-    icon: string | React.ComponentType<any>;
-    state: string;
-    views: Array<{
-      name: string;
-      redirect?: boolean;
-      path: string;
-      mini?: string;
-    }>;
-  }>;
+  routes?: RouteType[];
   miniActive: boolean;
   location: Location;
   handleDrawerToggle: (e: React.SyntheticEvent) => void;
@@ -154,7 +141,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
                   <NavLink
                     to={'#'}
                     className={navLinkClassesCollapse}
-                    onClick={() => this.openCollapse(route.state)}
+                    onClick={() => this.openCollapse(route.state || '')}
                   >
                     <ListItemIcon className={classes.itemIcon}>
                       {typeof route.icon === 'string' ? <Icon>{route.icon}</Icon> : <route.icon />}
@@ -166,7 +153,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
                           className={
                             classes.caret +
                             ' ' +
-                            (this.state[route.state] ? classes.caretActive : '')
+                            (this.state[route.state || ''] ? classes.caretActive : '')
                           }
                         />
                       }
@@ -174,31 +161,32 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
                       className={itemTextCollapse}
                     />
                   </NavLink>
-                  <Collapse in={this.state[route.state]} unmountOnExit>
+                  <Collapse in={this.state[route.state || '']} unmountOnExit>
                     <List className={classes.list + ' ' + classes.collapseList}>
-                      {route.views.map((view, viewIndex) => {
-                        if (view.redirect) {
-                          return null;
-                        }
-                        const collapseItemLink =
-                          classes.collapseItemLink +
-                          ' ' +
-                          cx({
-                            [' ' + classes[color || 'white']]: this.activeRoute(view.path),
-                          });
-                        return (
-                          <ListItem key={viewIndex} className={classes.collapseItem}>
-                            <NavLink to={view.path} className={collapseItemLink}>
-                              <span className={classes.collapseItemMini}>{view.mini}</span>
-                              <ListItemText
-                                primary={view.name}
-                                disableTypography={true}
-                                className={collapseItemText}
-                              />
-                            </NavLink>
-                          </ListItem>
-                        );
-                      })}
+                      {route.views &&
+                        route.views.map((view, viewIndex) => {
+                          if (view.redirect) {
+                            return null;
+                          }
+                          const collapseItemLink =
+                            classes.collapseItemLink +
+                            ' ' +
+                            cx({
+                              [' ' + classes[color || 'white']]: this.activeRoute(view.path),
+                            });
+                          return (
+                            <ListItem key={viewIndex} className={classes.collapseItem}>
+                              <NavLink to={view.path} className={collapseItemLink}>
+                                <span className={classes.collapseItemMini}>{view.mini}</span>
+                                <ListItemText
+                                  primary={view.name}
+                                  disableTypography={true}
+                                  className={collapseItemText}
+                                />
+                              </NavLink>
+                            </ListItem>
+                          );
+                        })}
                     </List>
                   </Collapse>
                 </ListItem>
@@ -330,14 +318,13 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
   }
 
   public render() {
-    const { classes, image, bgColor, rtlActive, open, handleDrawerToggle } = this.props;
+    const { classes, image, bgColor, open, handleDrawerToggle } = this.props;
 
     const drawerPaper =
       classes.drawerPaper +
       ' ' +
       cx({
         [classes.drawerPaperMini]: this.props.miniActive && this.state.miniActive,
-        [classes.drawerPaperRTL]: rtlActive,
       });
     const sidebarWrapper =
       classes.sidebarWrapper +
@@ -352,7 +339,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
         <Hidden mdUp implementation="css">
           <Drawer
             variant="temporary"
-            anchor={rtlActive ? 'left' : 'right'}
+            anchor="right"
             open={open}
             classes={{
               paper: drawerPaper + ' ' + classes[bgColor + 'Background'],
@@ -381,7 +368,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
           <Drawer
             onMouseOver={() => this.setState({ miniActive: false })}
             onMouseOut={() => this.setState({ miniActive: true })}
-            anchor={rtlActive ? 'right' : 'left'}
+            anchor="left"
             variant="permanent"
             open
             classes={{

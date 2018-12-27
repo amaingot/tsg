@@ -24,7 +24,6 @@ interface Props extends CommonProps {
     tabContent: React.ReactNode;
   }>;
   color?: string; // 'primary' | 'warning' | 'danger' | 'success' | 'info' | 'rose';
-  direction?: string;
   horizontal?: {
     tabsGrid: object;
     contentGrid: object;
@@ -58,7 +57,7 @@ class NavPills extends React.Component<Props, State> {
   };
 
   public render() {
-    const { classes, tabs, direction, color, horizontal, alignCenter } = this.props;
+    const { classes, tabs, color, horizontal, alignCenter } = this.props;
     const flexContainerClasses = classNames({
       [classes.flexContainer]: true,
       [classes.horizontalDisplay]: horizontal !== undefined,
@@ -105,11 +104,7 @@ class NavPills extends React.Component<Props, State> {
 
     const tabContent = (
       <div className={classes.contentWrapper}>
-        <SwipeableViews
-          axis={direction === 'rtl' ? 'x-reverse' : 'x'}
-          index={this.state.active}
-          onChangeIndex={this.handleChangeIndex}
-        >
+        <SwipeableViews axis={'x'} index={this.state.active} onChangeIndex={this.handleChangeIndex}>
           {tabs.map((prop, key) => {
             return (
               <div className={classes.tabContent} key={key}>
