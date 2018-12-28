@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 // @material-ui/core components
 import Icon from '@material-ui/core/Icon';
@@ -19,19 +20,29 @@ import CustomInput from 'components/CustomInput';
 import GridContainer from 'components/GridContainer';
 import GridItem from 'components/GridItem';
 
+import { LoginRequest } from 'store/auth/types';
 import loginPageStyle from 'styles/jss/views/loginPageStyle';
 import { CommonProps } from 'utils/commonProps';
+import { login } from '../store/auth/actions';
+
+interface Props extends CommonProps {
+  login: (request: LoginRequest) => void;
+}
 
 interface State {
   cardAnimaton: string;
+  email: string;
+  password: string;
 }
 
-class LoginPage extends React.Component<CommonProps, State> {
-  constructor(props: CommonProps) {
+class LoginPage extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     // we use this to make the card to appear after the page has been rendered
     this.state = {
       cardAnimaton: 'cardHidden',
+      email: '',
+      password: '',
     };
   }
 
@@ -47,6 +58,18 @@ class LoginPage extends React.Component<CommonProps, State> {
     clearTimeout(this.timeOutFunction);
     this.timeOutFunction = null;
   }
+
+  public handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    this.props.login({
+      email: this.state.email,
+      password: this.state.password,
+      // hardcoded to true for now
+      stayLoggedIn: true,
+    });
+    this.setState({ email: '', password: '' });
+  };
+
   public render() {
     const { classes } = this.props;
     return (
@@ -74,6 +97,8 @@ class LoginPage extends React.Component<CommonProps, State> {
                           <Email className={classes.inputAdornmentIcon} />
                         </InputAdornment>
                       ),
+                      onChange: e => this.setState({ email: e.target.value }),
+                      value: this.state.email,
                     }}
                   />
                   <CustomInput
@@ -88,11 +113,21 @@ class LoginPage extends React.Component<CommonProps, State> {
                           <Icon className={classes.inputAdornmentIcon}>lock_outline</Icon>
                         </InputAdornment>
                       ),
+                      onChange: e => this.setState({ password: e.target.value }),
+                      value: this.state.password,
+                      type: 'password',
                     }}
                   />
                 </CardBody>
                 <CardFooter className={classes.justifyContentCenter}>
-                  <Button myColor="primary" simple mySize="lg" block>
+                  <Button
+                    onClick={this.handleSubmit}
+                    type="submit"
+                    myColor="primary"
+                    simple
+                    mySize="lg"
+                    block
+                  >
                     Let's Go
                   </Button>
                 </CardFooter>
@@ -105,4 +140,7 @@ class LoginPage extends React.Component<CommonProps, State> {
   }
 }
 
-export default withStyles(loginPageStyle)(LoginPage);
+export default connect(
+  null,
+  { login }
+)(withStyles(loginPageStyle)(LoginPage));

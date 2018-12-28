@@ -39,7 +39,7 @@ export function reviveUser(user: object): UserRecord {
 
   return {
     id: u.get('id', -1) as number,
-    username: u.get('username', '') as string,
+    email: u.get('email', '') as string,
 
     ...reviveEditableuser(user),
 

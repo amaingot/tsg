@@ -8,7 +8,7 @@ export interface EditableUserRecord {
 
 export interface UserRecord extends EditableUserRecord {
   id: number;
-  username: string;
+  email: string;
 
   isSuperuser: boolean;
   isStaff: boolean;
@@ -25,7 +25,7 @@ export interface JWT {
 }
 
 export interface LoginRequest {
-  username: string;
+  email: string;
   password: string;
   stayLoggedIn: boolean;
 }

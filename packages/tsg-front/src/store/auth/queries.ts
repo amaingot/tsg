@@ -3,7 +3,7 @@ import { EditableUserRecord, LoginRequest } from './types';
 export function generateLoginQuery(request: LoginRequest): string {
   return `mutation {
     login(
-      username: "${request.username}",
+      username: "${request.email}",
       password: "${request.password}")
       {
         token
