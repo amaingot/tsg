@@ -39,14 +39,18 @@ class Pages extends React.Component<WithStyles> {
         <div className={classes.wrapper} ref="wrapper">
           <div className={classes.fullPage} style={{ backgroundImage: 'url(' + bgImage + ')' }}>
             <Switch>
-              {pagesRoutes.map((prop, key) => {
-                if (prop.collapse) {
+              {pagesRoutes.map((route, routeIndex) => {
+                if (route.collapse) {
                   return null;
                 }
-                if (prop.redirect) {
-                  return <CustomRedirect from={prop.path} to={prop.pathTo || ''} key={key} />;
+                if (route.redirect) {
+                  return (
+                    <CustomRedirect from={route.path} to={route.pathTo || ''} key={routeIndex} />
+                  );
                 }
-                return <CustomRoute path={prop.path} component={prop.component} key={key} />;
+                return (
+                  <CustomRoute path={route.path} component={route.component} key={routeIndex} />
+                );
               })}
             </Switch>
             <Footer white />
