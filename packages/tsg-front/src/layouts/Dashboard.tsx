@@ -33,10 +33,14 @@ const switchRoutes = (
       }
       if (route.collapse && route.views) {
         return route.views.map((view, viewIndex) => {
-          return <CustomRoute path={view.path} component={view.component} key={viewIndex} />;
+          return (
+            <CustomRoute privatePath path={view.path} component={view.component} key={viewIndex} />
+          );
         });
       }
-      return <CustomRoute path={route.path} component={route.component} key={routeIndex} />;
+      return (
+        <CustomRoute privatePath path={route.path} component={route.component} key={routeIndex} />
+      );
     })}
   </Switch>
 );
