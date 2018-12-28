@@ -70,6 +70,15 @@ class LoginPage extends React.Component<Props, State> {
     this.setState({ email: '', password: '' });
   };
 
+  public handleChange = (key: 'email' | 'password') => (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (key === 'email') {
+      this.setState({ email: e.currentTarget.value });
+    }
+    if (key === 'password') {
+      this.setState({ password: e.currentTarget.value });
+    }
+  };
+
   public render() {
     const { classes } = this.props;
     return (
@@ -97,7 +106,7 @@ class LoginPage extends React.Component<Props, State> {
                           <Email className={classes.inputAdornmentIcon} />
                         </InputAdornment>
                       ),
-                      onChange: e => this.setState({ email: e.target.value }),
+                      onChange: this.handleChange('email'),
                       value: this.state.email,
                     }}
                   />
@@ -113,7 +122,7 @@ class LoginPage extends React.Component<Props, State> {
                           <Icon className={classes.inputAdornmentIcon}>lock_outline</Icon>
                         </InputAdornment>
                       ),
-                      onChange: e => this.setState({ password: e.target.value }),
+                      onChange: this.handleChange('password'),
                       value: this.state.password,
                       type: 'password',
                     }}
