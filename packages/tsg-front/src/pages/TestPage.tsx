@@ -16,7 +16,7 @@ class TestPage extends React.Component<Props> {
       <div>
         LoggedIn: {this.props.loggedIn}
         <br />
-        <a onClick={() => this.props.login({ username: '', password: '', stayLoggedIn: false })}>
+        <a onClick={() => this.props.login({ email: '', password: '', stayLoggedIn: false })}>
           Log In
         </a>
       </div>
