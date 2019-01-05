@@ -1,0 +1,10 @@
+{
+  "flow.enabled": false,
+  "editor.tabSize": 2,
+  "typescript.format.enable": true,
+  "eslint.enable": false,
+  "tslint.autoFixOnSave": true,
+  "editor.rulers": [100],
+  "prettier.disableLanguages": ["typescript", "typescriptreact", "vue"],
+  "editor.formatOnPaste": true,
+}
