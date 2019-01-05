@@ -1,7 +1,39 @@
 {
-  "name": "root",
+  "name": "tsg",
   "private": true,
+  "scripts": {
+    "bootstrap": "./node_modules/.bin/lerna bootstrap --hoist",
+    "build": "./node_modules/.bin/lerna exec -- npm run build",
+    "bundle-sizes:save": "npm run tsc -- scripts/generateSizeManifest.ts && node ./scripts/generateSizeManifest.js > ./reports/assetmanifest.json",
+    "bundle-sizes": "npm run tsc -- scripts/generateSizeManifest.ts && node ./scripts/generateSizeManifest.js",
+    "coverage:ci": "./node_modules/.bin/lerna exec -- npm run coverage:ci",
+    "coverage": "./node_modules/.bin/lerna exec -- npm run coverage",
+    "danger:ci": "./node_modules/.bin/danger ci --dangerfile=scripts/dangerfile.ts",
+    "danger": "./node_modules/.bin/danger local --dangerfile=scripts/dangerfile.ts",
+    "deploy:branch": "./node_modules/.bin/lerna exec -- npm run deploy:branch",
+    "deploy:staging": "./node_modules/.bin/lerna exec -- npm run deploy:staging",
+    "deploy:prod": "./node_modules/.bin/lerna exec -- npm run deploy:prod",
+    "fresh": "./node_modules/.bin/lerna exec -- npm run fresh && rm -rf node_modules reports",
+    "lint:ci": "mkdir reports && npm run lint -- --format junit --out reports/tslint.xml",
+    "lint:fix": "npm run lint -- --fix",
+    "lint:rules-check": "./node_modules/.bin/tslint-config-prettier-check ./tslint.json",
+    "lint": "./node_modules/.bin/tslint {src,test}/{**/,**/**/}*.{ts,tsx}",
+    "screenshots:save": "npm run tsc -- scripts/generateScreenshots.ts && node scripts/generateScreenshots.js > reports/screenshots.json",
+    "screenshots": "npm run tsc -- scripts/generateScreenshots.ts && node scripts/generateScreenshots.js",
+    "test:ci": "./node_modules/.bin/lerna exec -- npm run test:ci",
+    "test": "./node_modules/.bin/lerna exec -- npm run test",
+    "tsc": "./node_modules/.bin/tsc --lib esnext,dom"
+  },
   "devDependencies": {
-    "lerna": "^3.8.5"
+    "@types/node": "^10.12.18",
+    "danger": "^7.0.2",
+    "immutable": "^4.0.0-rc.12",
+    "lerna": "^3.8.5",
+    "prettier": "^1.15.3",
+    "tslint": "^5.12.0",
+    "tslint-config-prettier": "^1.17.0",
+    "tslint-plugin-prettier": "^2.0.1",
+    "tslint-react": "^3.6.0",
+    "typescript": "^3.2.2"
   }
 }
