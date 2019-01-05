@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import React from 'react';
 
 // core components
-import parallaxStyle from 'styles/jss/components/parallaxStyle';
+import parallaxStyle from 'styles/jss/components/kit/parallaxStyle';
 import { CommonProps } from 'utils/commonProps';
 
 interface Props extends CommonProps {

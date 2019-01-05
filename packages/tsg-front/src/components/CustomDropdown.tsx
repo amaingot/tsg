@@ -55,7 +55,7 @@ class CustomDropdown extends React.Component<Props, State> {
     };
   }
 
-  public anchorEl: HTMLElement = new HTMLElement();
+  public anchorEl: HTMLElement = Object.create(HTMLElement.prototype, {});
 
   public static defaultProps = {
     caret: true,
