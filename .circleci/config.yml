@@ -1,0 +1,196 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/tsg
+    docker:
+      - image: circleci/node:9.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-root-dependencies-{{ checksum "package-lock.json" }}
+            - v1-root-dependencies
+
+      - run:
+          name: Installing Packages
+          command: npm install
+
+      - run:
+          name: Bootstrap All Packages
+          command: npm run bootstrap
+
+      - run:
+          name: Build Bundle for Distribution
+          command: npm run build
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-root-dependencies-{{ checksum "package-lock.json" }}
+
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
+
+  test:
+    working_directory: ~/tsg
+    docker:
+      - image: circleci/node:9.8.0
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+
+      - run:
+          name: Running linter
+          command: npm run lint:ci
+
+      - run:
+          name: Running tests
+          command: npm run test:ci
+          environment:
+            JEST_JUNIT_OUTPUT: "reports/test-results.xml"
+
+      - run:
+          name: Running test coverage
+          command: npm run coverage:ci
+          environment:
+            JEST_JUNIT_OUTPUT: "reports/test-coverage.xml"
+
+      # - run:
+      #     name: Generate bundle size report
+      #     command: npm run bundle-sizes:save
+
+      - store_test_results:
+          path: reports/
+      - store_artifacts:
+          path: reports/
+
+  deploy-branch:
+    working_directory: ~/tsg
+    docker:
+      - image: circleci/node:9.8.0
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Install s3cmd
+          command: sudo apt-get update; sudo apt-get install s3cmd
+      - run:
+          name: Set up file permissions for scripts
+          command: find ./packages/*/scripts -type f -exec chmod +rx {} \;
+      - run:
+          name: Deploy branch
+          command: npm run deploy:branch
+
+  deploy-staging:
+    working_directory: ~/tsg
+    docker:
+      - image: circleci/node:9.8.0
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Install s3cmd
+          command: sudo apt-get update; sudo apt-get install s3cmd
+      - run:
+          name: Set up file permissions for scripts
+          command: find ./packages/*/scripts -type f -exec chmod +rx {} \;
+      - run:
+          name: Deploy staging
+          command: npm run deploy:staging
+
+  danger:
+    working_directory: ~/tsg
+    docker:
+      - image: circleci/node:9.8.0
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Run danger tests (must after build) this now includes comparing snapshots
+          command: npm run danger:ci
+
+  deploy-prod:
+    working_directory: ~/tsg
+    docker:
+      - image: circleci/node:9.8.0
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Install s3cmd
+          command: sudo apt-get update; sudo apt-get install s3cmd
+      - run:
+          name: Set up file permissions for scripts
+          command: find ./packages/*/scripts -type f -exec chmod +rx {} \;
+      - run:
+          name: Deploy production 
+          command: npm run deploy:prod
+
+workflows:
+  version: 2
+  tsg:
+    jobs:
+      - build:
+          context: maingot
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              only: /^(v\d+)\.\d+.(\d+)$/
+
+      - test:
+          context: maingot
+          requires:
+            - build
+          filters:
+            branches:
+              only: /^(?!production).*$/
+            tags:
+              only: /.*/
+
+      - deploy-branch:
+          context: maingot
+          requires:
+            - build
+          filters:
+            branches:
+              only: /^(?!production|master).*$/
+            tags:
+              ignore: /.*/
+
+      - deploy-staging:
+          context: maingot
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+            tags:
+              ignore: /.*/
+
+      - danger:
+          context: maingot
+          requires:
+            - deploy-branch
+          filters:
+            branches:
+              only: /^(?!master).*$/
+            tags:
+              ignore: /.*/
+
+      - deploy-prod:
+          context: maingot
+          requires:
+            - test
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^(v\d+)\.\d+.(\d+)$/
