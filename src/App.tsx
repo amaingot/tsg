@@ -6,6 +6,8 @@ import Pages from 'src/layouts/Pages';
 import LandingPage from 'src/pages/LandingPage';
 import CustomRoute from 'src/utils/CustomRoute';
 
+import 'src/styles.scss';
+
 class App extends React.Component<{}, {}> {
   public render() {
     return (
