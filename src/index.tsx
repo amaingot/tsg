@@ -1,33 +1,31 @@
-import Amplify from 'aws-amplify';
+import Amplify, { Auth } from 'aws-amplify';
 import AWSAppSyncClient, { AUTH_TYPE } from 'aws-appsync';
 import { Rehydrated } from 'aws-appsync-react';
 import * as React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import * as ReactDOM from 'react-dom';
 
-import App from './App';
-import aws_config from './aws-exports';
+import App from 'src/App';
+import awsconfig from 'src/aws-exports';
+import { AuthContextProvider } from 'src/contexts/AuthContext';
 
-Amplify.configure(aws_config);
+Amplify.configure(awsconfig);
 
 const client = new AWSAppSyncClient({
-  url: aws_config.aws_appsync_graphqlEndpoint,
-  region: aws_config.aws_appsync_region,
+  url: awsconfig.aws_appsync_graphqlEndpoint,
+  region: awsconfig.aws_appsync_region,
   auth: {
-    type: AUTH_TYPE.API_KEY,
-    apiKey: aws_config.aws_appsync_apiKey,
+    type: AUTH_TYPE.AMAZON_COGNITO_USER_POOLS,
+    jwtToken: async () => (await Auth.currentSession()).getAccessToken().getJwtToken(),
   },
 });
 
 ReactDOM.render(
-  /*
-    Without "as any" you get this:
-    Type 'AWSAppSyncClient<NormalizedCacheObject>' is missing the following properties from type
-    'ApolloClient<{}>': clearStoreCallbacks, clientAwareness, stop, onClearStorets(2739).
-  */
   <ApolloProvider client={client as any}>
     <Rehydrated>
-      <App />
+      <AuthContextProvider>
+        <App />
+      </AuthContextProvider>
     </Rehydrated>
   </ApolloProvider>,
   document.getElementById('root')

@@ -9,7 +9,7 @@
     "noErrorTruncation": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    // "noUnusedParameters": true,
     "paths": {
       "src/*": ["src/*"]
     },
