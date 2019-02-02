@@ -1,31 +1,21 @@
 {
   "compilerOptions": {
-    "noErrorTruncation": true,
-    "noImplicitAny": true,
-    "suppressImplicitAnyIndexErrors": false,
-    "strictNullChecks": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": false,
-    "noImplicitThis": false,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    "removeComments": false,
-    "preserveConstEnums": true,
-    "sourceMap": true,
+    "baseUrl": ".",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "target": "es2015",
-    "module": "commonjs",
+    "forceConsistentCasingInFileNames": true,
     "jsx": "react",
     "lib": ["dom", "esnext"],
-    "baseUrl": ".",
-    "outDir": "dist",
-    "rootDir": ".",
+    "module": "commonjs",
+    "noErrorTruncation": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "paths": {
-      "~/*": ["packages/*"]
-    }
+      "src/*": ["src/*"]
+    },
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2015"
   },
-  "exclude": ["node_modules", "dist", "web/webpack.config.ts"]
+  "exclude": ["**/node_modules/**", "**/build/**"]
 }

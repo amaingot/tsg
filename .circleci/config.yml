@@ -1,196 +1,127 @@
 version: 2
 jobs:
-  build:
-    working_directory: ~/tsg
-    docker:
-      - image: circleci/node:9.8.0
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-root-dependencies-{{ checksum "package-lock.json" }}
-            - v1-root-dependencies
+    build:
+        working_directory: ~/tsg
+        docker:
+            - image: circleci/node:11
+        steps:
+            - checkout
 
-      - run:
-          name: Installing Packages
-          command: npm install
+            - restore_cache:
+                keys:
+                    - v1-dependencies-{{ checksum "package-lock.json" }}
+                    - v1-dependencies
 
-      - run:
-          name: Bootstrap All Packages
-          command: npm run bootstrap
+            - run: 
+                name: Installing All Packages
+                command: npm install
 
-      - run:
-          name: Build Bundle for Distribution
-          command: npm run build
+            - run:
+                name: TypeScript Linter
+                command: mkdir reports && npm run lint:ci
 
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-root-dependencies-{{ checksum "package-lock.json" }}
+            - run:
+                name: Running tests
+                command: npm run test:ci
+                environment:
+                    JEST_JUNIT_OUTPUT: "reports/test-results.xml"
 
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./
+            - run:
+                name: Running test coverage
+                command: npm run test:coverage:ci
+                environment:
+                    JEST_JUNIT_OUTPUT: "reports/test-coverage.xml"
 
-  test:
-    working_directory: ~/tsg
-    docker:
-      - image: circleci/node:9.8.0
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ./
+            - run:
+                name: Build Bundle for Distribution
+                command: npm run build
 
-      - run:
-          name: Running linter
-          command: npm run lint:ci
+            - save_cache:
+                paths:
+                    - node_modules
+                key: v1-dependencies-{{ checksum "package-lock.json" }}
 
-      - run:
-          name: Running tests
-          command: npm run test:ci
-          environment:
-            JEST_JUNIT_OUTPUT: "reports/test-results.xml"
+            - run:
+                name: Clean up workspace
+                command: rm -rf node_modules
+            
+            - store_test_results:
+                path: reports/
+            - store_artifacts:
+                path: reports/
 
-      - run:
-          name: Running test coverage
-          command: npm run coverage:ci
-          environment:
-            JEST_JUNIT_OUTPUT: "reports/test-coverage.xml"
+            - persist_to_workspace:
+                root: ./
+                paths:
+                    - ./
 
-      # - run:
-      #     name: Generate bundle size report
-      #     command: npm run bundle-sizes:save
+    deploy-env:
+        working_directory: ~/tsg
+        docker:
+            - image: circleci/python:2.7-jessie
+        steps:
+            - checkout
+            - attach_workspace:
+                at: ./
+            - run: 
+                name: Install awscli
+                command: sudo pip install awscli
+            - run: 
+                name: Deploy bundle to S3
+                command: aws s3 sync build/ s3://tsg.maingot.us/${CIRCLE_BRANCH} --acl public-read
+            - run:
+                name: Purge cache for environment bundle
+                command: aws cloudfront create-invalidation --distribution-id $CDN_DISTRIBUTION_ID --paths "/${CIRCLE_BRANCH}/*"
 
-      - store_test_results:
-          path: reports/
-      - store_artifacts:
-          path: reports/
-
-  deploy-branch:
-    working_directory: ~/tsg
-    docker:
-      - image: circleci/node:9.8.0
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ./
-      - run:
-          name: Install s3cmd
-          command: sudo apt-get update; sudo apt-get install s3cmd
-      - run:
-          name: Set up file permissions for scripts
-          command: find ./packages/*/scripts -type f -exec chmod +rx {} \;
-      - run:
-          name: Deploy branch
-          command: npm run deploy:branch
-
-  deploy-staging:
-    working_directory: ~/tsg
-    docker:
-      - image: circleci/node:9.8.0
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ./
-      - run:
-          name: Install s3cmd
-          command: sudo apt-get update; sudo apt-get install s3cmd
-      - run:
-          name: Set up file permissions for scripts
-          command: find ./packages/*/scripts -type f -exec chmod +rx {} \;
-      - run:
-          name: Deploy staging
-          command: npm run deploy:staging
-
-  danger:
-    working_directory: ~/tsg
-    docker:
-      - image: circleci/node:9.8.0
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ./
-      - run:
-          name: Run danger tests (must after build) this now includes comparing snapshots
-          command: npm run danger:ci
-
-  deploy-prod:
-    working_directory: ~/tsg
-    docker:
-      - image: circleci/node:9.8.0
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ./
-      - run:
-          name: Install s3cmd
-          command: sudo apt-get update; sudo apt-get install s3cmd
-      - run:
-          name: Set up file permissions for scripts
-          command: find ./packages/*/scripts -type f -exec chmod +rx {} \;
-      - run:
-          name: Deploy production 
-          command: npm run deploy:prod
+    deploy-prod:
+        working_directory: ~/tsg
+        docker:
+            - image: circleci/python:2.7-jessie
+        steps:
+            - checkout
+            - attach_workspace:
+                at: ./
+            - run: 
+                name: Install awscli
+                command: sudo pip install awscli
+            - run: 
+                name: Deploy bundle to S3
+                command: aws s3 sync build/ s3://tsg.maingot.us/production --acl public-read
+            - run: 
+                name: Deploy index.html
+                command: aws s3 sync public/ s3://tsg.maingot.us --acl public-read
+            - run:
+                name: Purge cache for everything
+                command: aws cloudfront create-invalidation --distribution-id $CDN_DISTRIBUTION_ID --paths "/*"
 
 workflows:
-  version: 2
-  tsg:
-    jobs:
-      - build:
-          context: maingot
-          filters:
-            branches:
-              only: /.*/
-            tags:
-              only: /^(v\d+)\.\d+.(\d+)$/
+    version: 2
+    tsg:
+        jobs:
+            - build:
+                context: maingot
+                filters:
+                    branches:
+                        only: /.*/
+                    tags:
+                        only: /.*/
 
-      - test:
-          context: maingot
-          requires:
-            - build
-          filters:
-            branches:
-              only: /^(?!production).*$/
-            tags:
-              only: /.*/
+            - deploy-env:
+                context: maingot
+                requires:
+                    - build
+                filters:
+                    branches:
+                        only: /^(?!production).*$/
+                    tags:
+                        ignore: /.*/
 
-      - deploy-branch:
-          context: maingot
-          requires:
-            - build
-          filters:
-            branches:
-              only: /^(?!production|master).*$/
-            tags:
-              ignore: /.*/
-
-      - deploy-staging:
-          context: maingot
-          requires:
-            - build
-          filters:
-            branches:
-              only: master
-            tags:
-              ignore: /.*/
-
-      - danger:
-          context: maingot
-          requires:
-            - deploy-branch
-          filters:
-            branches:
-              only: /^(?!master).*$/
-            tags:
-              ignore: /.*/
-
-      - deploy-prod:
-          context: maingot
-          requires:
-            - test
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^(v\d+)\.\d+.(\d+)$/
+            - deploy-prod:
+                context: maingot
+                requires:
+                    - build
+                filters:
+                    branches:
+                        ignore: /.*/
+                    tags:
+                        only: /^(v\d+)\.\d+.(\d+)$/
