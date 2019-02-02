@@ -1,7 +1,5 @@
 import cx from 'classnames';
-import { Location } from 'history';
 import * as React from 'react';
-import { connect } from 'react-redux';
 
 // @material-ui/core components
 import Collapse from '@material-ui/core/Collapse';
@@ -22,7 +20,6 @@ import sidebarStyle from 'src/styles/jss/components/sidebarStyle';
 
 import { RouteType } from 'src/routes/index';
 import avatar from 'src/static/material-images/faces/avatar.jpg';
-import { ApplicationState } from 'src/store/index';
 import { CommonProps } from 'src/utils/commonProps';
 import CustomLink from 'src/utils/CustomLink';
 
@@ -40,28 +37,17 @@ interface SidebarProps extends CommonProps {
 }
 
 interface SidebarState {
-  openAvatar: boolean;
-  openComponents: boolean;
-  openForms: boolean;
-  openTables: boolean;
-  openMaps: boolean;
-  openPages: boolean;
   miniActive: boolean;
+  openAvatar: boolean;
 }
 
 class Sidebar extends React.Component<SidebarProps, SidebarState> {
   constructor(props: SidebarProps) {
     super(props);
     this.state = {
-      openAvatar: false,
-      openComponents: this.activeRoute('/components'),
-      openForms: this.activeRoute('/forms'),
-      openTables: this.activeRoute('/tables'),
-      openMaps: this.activeRoute('/maps'),
-      openPages: this.activeRoute('-page'),
       miniActive: true,
+      openAvatar: false,
     };
-    this.activeRoute.bind(this);
   }
   public static defaultProps = {
     bgColor: 'blue',
@@ -69,13 +55,19 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
   // verifies if routeName is the one active (in browser input)
   public activeRoute = (routeName: string) => {
-    return this.props.location.pathname.indexOf(routeName) > -1 ? true : false;
+    return true;
+    // TODO: Fix this
+    // return this.props.location.pathname.indexOf(routeName) > -1 ? true : false;
   };
 
-  public openCollapse = (collapse: string) => {
-    const st: SidebarState = {};
-    st.collapse = !this.state.collapse;
-    this.setState(st);
+  // public openCollapse = (collapse: string) => {
+  //   const st: SidebarState = {};
+  //   st.collapse = !this.state.collapse;
+  //   this.setState(st);
+  // };
+
+  public toggleAvatarCollapse = () => {
+    this.setState(state => ({ openAvatar: !state.openAvatar }));
   };
 
   public renderBrand() {
@@ -106,6 +98,91 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
     );
   }
 
+  public renderCollapseableLink(route: RouteType, index: number) {
+    return <div />;
+
+    // TODO: Fix this shit
+    // const { classes, color } = this.props;
+    // const navLinkClassesCollapse =
+    //   classes.itemLink +
+    //   ' ' +
+    //   cx({
+    //     [' ' + classes.collapseActive]: this.activeRoute(route.path),
+    //   });
+    // const itemTextCollapse =
+    //   classes.itemText +
+    //   ' ' +
+    //   cx({
+    //     [classes.itemTextMini]: this.props.miniActive && this.state.miniActive,
+    //   });
+    // const collapseItemText =
+    //   classes.collapseItemText +
+    //   ' ' +
+    //   cx({
+    //     [classes.collapseItemTextMini]: this.props.miniActive && this.state.miniActive,
+    //   });
+
+    // return (
+    //   <ListItem key={index} className={classes.item}>
+    //     <CustomLink
+    //       to={'#'}
+    //       className={navLinkClassesCollapse}
+    //       onClick={() => this.openCollapse(route.state || '')}
+    //     >
+    //       <ListItemIcon className={classes.itemIcon}>
+    //         {typeof route.icon === 'string' ? (
+    //           <Icon>{route.icon}</Icon>
+    //         ) : route.icon ? (
+    //           <route.icon />
+    //         ) : (
+    //           <var />
+    //         )}
+    //       </ListItemIcon>
+    //       <ListItemText
+    //         primary={route.name}
+    //         secondary={
+    //           <b
+    //             className={
+    //               classes.caret + ' ' + (this.state[route.state || ''] ? classes.caretActive : '')
+    //             }
+    //           />
+    //         }
+    //         disableTypography={true}
+    //         className={itemTextCollapse}
+    //       />
+    //     </CustomLink>
+    //     <Collapse in={this.state[route.state || '']} unmountOnExit>
+    //       <List className={classes.list + ' ' + classes.collapseList}>
+    //         {route.views &&
+    //           route.views.map((view, viewIndex) => {
+    //             if (view.redirect) {
+    //               return null;
+    //             }
+    //             const collapseItemLink =
+    //               classes.collapseItemLink +
+    //               ' ' +
+    //               cx({
+    //                 [' ' + classes[color || 'white']]: this.activeRoute(view.path),
+    //               });
+    //             return (
+    //               <ListItem key={viewIndex} className={classes.collapseItem}>
+    //                 <CustomLink to={view.path} className={collapseItemLink}>
+    //                   <span className={classes.collapseItemMini}>{view.mini}</span>
+    //                   <ListItemText
+    //                     primary={view.name}
+    //                     disableTypography={true}
+    //                     className={collapseItemText}
+    //                   />
+    //                 </CustomLink>
+    //               </ListItem>
+    //             );
+    //           })}
+    //       </List>
+    //     </Collapse>
+    //   </ListItem>
+    // );
+  }
+
   public renderLinks() {
     const { routes, classes, color } = this.props;
 
@@ -117,86 +194,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
               return null;
             }
             if (route.collapse) {
-              const navLinkClassesCollapse =
-                classes.itemLink +
-                ' ' +
-                cx({
-                  [' ' + classes.collapseActive]: this.activeRoute(route.path),
-                });
-              const itemTextCollapse =
-                classes.itemText +
-                ' ' +
-                cx({
-                  [classes.itemTextMini]: this.props.miniActive && this.state.miniActive,
-                });
-              const collapseItemText =
-                classes.collapseItemText +
-                ' ' +
-                cx({
-                  [classes.collapseItemTextMini]: this.props.miniActive && this.state.miniActive,
-                });
-
-              return (
-                <ListItem key={index} className={classes.item}>
-                  <CustomLink
-                    to={'#'}
-                    className={navLinkClassesCollapse}
-                    onClick={() => this.openCollapse(route.state || '')}
-                  >
-                    <ListItemIcon className={classes.itemIcon}>
-                      {typeof route.icon === 'string' ? (
-                        <Icon>{route.icon}</Icon>
-                      ) : route.icon ? (
-                        <route.icon />
-                      ) : (
-                        <var />
-                      )}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={route.name}
-                      secondary={
-                        <b
-                          className={
-                            classes.caret +
-                            ' ' +
-                            (this.state[route.state || ''] ? classes.caretActive : '')
-                          }
-                        />
-                      }
-                      disableTypography={true}
-                      className={itemTextCollapse}
-                    />
-                  </CustomLink>
-                  <Collapse in={this.state[route.state || '']} unmountOnExit>
-                    <List className={classes.list + ' ' + classes.collapseList}>
-                      {route.views &&
-                        route.views.map((view, viewIndex) => {
-                          if (view.redirect) {
-                            return null;
-                          }
-                          const collapseItemLink =
-                            classes.collapseItemLink +
-                            ' ' +
-                            cx({
-                              [' ' + classes[color || 'white']]: this.activeRoute(view.path),
-                            });
-                          return (
-                            <ListItem key={viewIndex} className={classes.collapseItem}>
-                              <CustomLink to={view.path} className={collapseItemLink}>
-                                <span className={classes.collapseItemMini}>{view.mini}</span>
-                                <ListItemText
-                                  primary={view.name}
-                                  disableTypography={true}
-                                  className={collapseItemText}
-                                />
-                              </CustomLink>
-                            </ListItem>
-                          );
-                        })}
-                    </List>
-                  </Collapse>
-                </ListItem>
-              );
+              return this.renderCollapseableLink(route, index);
             }
             const navLinkClasses =
               classes.itemLink +
@@ -266,7 +264,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
             <CustomLink
               to={'#'}
               className={classes.itemLink + ' ' + classes.userCollapseButton}
-              onClick={() => this.openCollapse('openAvatar')}
+              onClick={this.toggleAvatarCollapse}
             >
               <ListItemText
                 primary="Tania Andrew"
@@ -402,10 +400,4 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
   }
 }
 
-const mapState2Props = (state: ApplicationState) => {
-  return {
-    location: state.router.location,
-  };
-};
-
-export default connect(mapState2Props)(withStyles(sidebarStyle)(Sidebar));
+export default withStyles(sidebarStyle)(Sidebar);

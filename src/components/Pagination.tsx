@@ -31,18 +31,9 @@ const Pagination: React.SFC<Props> = ({ ...props }) => {
         });
         return (
           <li className={classes.paginationItem} key={key}>
-            {prop.onClick ? (
-              <Button onClick={prop.onClick} className={paginationLink}>
-                {prop.text}
-              </Button>
-            ) : (
-              <Button
-                // onClick={() => console.log("you've clicked " + prop.text)}
-                className={paginationLink}
-              >
-                {prop.text}
-              </Button>
-            )}
+            <Button onClick={prop.onClick} className={paginationLink}>
+              {prop.text}
+            </Button>
           </li>
         );
       })}

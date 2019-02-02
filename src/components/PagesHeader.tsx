@@ -1,7 +1,5 @@
 import cx from 'classnames';
-import { Location } from 'history';
 import * as React from 'react';
-import { connect } from 'react-redux';
 
 // @material-ui/core components
 import AppBar from '@material-ui/core/AppBar';
@@ -22,14 +20,12 @@ import Menu from '@material-ui/icons/Menu';
 import Button from 'src/components/Button';
 
 import pageRoutes from 'src/routes/pages';
-import { ApplicationState } from 'src/store/index';
 import pagesHeaderStyle from 'src/styles/jss/components/pagesHeaderStyle';
 import { CommonProps } from 'src/utils/commonProps';
 import CustomLink from 'src/utils/CustomLink';
 
 interface Props extends CommonProps {
   color?: 'primary' | 'info' | 'success' | 'warning' | 'danger';
-  location: Location;
 }
 
 interface State {
@@ -50,13 +46,16 @@ class PagesHeader extends React.Component<Props, State> {
 
   // verifies if routeName is the one active (in browser input)
   public activeRoute = (routeName: string) => {
-    return this.props.location.pathname.indexOf(routeName) > -1 ? true : false;
+    return false;
+    // TODO: Fix this for routes
+    // return this.props.location.pathname.indexOf(routeName) > -1 ? true : false;
   };
 
   public componentDidUpdate(prevProps: Props) {
-    if (prevProps.location.pathname !== this.props.location.pathname) {
-      this.setState({ open: false });
-    }
+    // TODO: Fix some shit here
+    // if (prevProps.location.pathname !== this.props.location.pathname) {
+    //   this.setState({ open: false });
+    // }
   }
 
   public renderList() {
@@ -165,8 +164,4 @@ class PagesHeader extends React.Component<Props, State> {
   }
 }
 
-const mapState2Props = (state: ApplicationState) => {
-  return { location: state.router.location };
-};
-
-export default withStyles(pagesHeaderStyle)(connect(mapState2Props)(PagesHeader));
+export default withStyles(pagesHeaderStyle)(PagesHeader);
