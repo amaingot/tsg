@@ -1,0 +1,19 @@
+{
+    "prod": {
+        "awscloudformation": {
+            "AuthRoleName": "tsg-20190201211408-authRole",
+            "UnauthRoleArn": "arn:aws:iam::140978229662:role/tsg-20190201211408-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::140978229662:role/tsg-20190201211408-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "tsg-20190201211408-deployment",
+            "UnauthRoleName": "tsg-20190201211408-unauthRole",
+            "StackName": "tsg-20190201211408",
+            "StackId": "arn:aws:cloudformation:us-east-1:140978229662:stack/tsg-20190201211408/9b4a40d0-2698-11e9-8ecd-0a00a1b75a8c"
+        },
+        "categories": {
+            "auth": {
+                "tsgCognito": {}
+            }
+        }
+    }
+}
