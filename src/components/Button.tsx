@@ -6,6 +6,7 @@ import Button, { ButtonClassKey, ButtonProps as MuiButtonProps } from '@material
 import withStyles, { ClassNameMap, WithStyles } from '@material-ui/core/styles/withStyles';
 
 import buttonStyle from 'src/styles/jss/components/buttonStyle';
+import CustomLink from 'src/utils/CustomLink';
 
 export interface ButtonProps extends MuiButtonProps {
   myColor?:
@@ -29,6 +30,7 @@ export interface ButtonProps extends MuiButtonProps {
     | 'reddit'
     | 'transparent';
   mySize?: 'sm' | 'lg';
+  to?: string;
   simple?: boolean;
   round?: boolean;
   fullWidth?: boolean;
@@ -54,6 +56,7 @@ function RegularButton(props: ButtonProps & WithStyles) {
     justIcon,
     className,
     muiClasses,
+    to,
     ...rest
   } = props;
   const btnClasses = classNames({
@@ -69,8 +72,15 @@ function RegularButton(props: ButtonProps & WithStyles) {
     [classes.justIcon]: justIcon,
     [className || '']: className,
   });
+
+  const additionalProps: Partial<ButtonProps> = {};
+
+  if (to) {
+    additionalProps.component = (linkProps: any) => <CustomLink to={to} {...linkProps} />;
+  }
+
   return (
-    <Button {...rest} classes={muiClasses} className={btnClasses}>
+    <Button {...rest} classes={muiClasses} className={btnClasses} {...additionalProps}>
       {children}
     </Button>
   );

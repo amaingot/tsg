@@ -1,12 +1,12 @@
 import * as React from 'react';
 
 // @material-ui/core components
-import Icon from '@material-ui/core/Icon';
-import InputAdornment from '@material-ui/core/InputAdornment';
+// import Icon from '@material-ui/core/Icon';
+// import InputAdornment from '@material-ui/core/InputAdornment';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 // @material-ui/icons
-import Email from '@material-ui/icons/Email';
+// import Email from '@material-ui/icons/Email';
 // import LockOutline from "@material-ui/icons/LockOutline";
 
 // core components
@@ -18,13 +18,10 @@ import CardHeader from 'src/components/CardHeader';
 import CustomInput from 'src/components/CustomInput';
 import GridContainer from 'src/components/GridContainer';
 import GridItem from 'src/components/GridItem';
+import { withAuth, WithAuthProps } from 'src/enhancers/withAuth';
 
 import loginPageStyle from 'src/styles/jss/views/loginPageStyle';
 import { CommonProps } from 'src/utils/commonProps';
-
-interface Props extends CommonProps {
-  login: (request: any) => void;
-}
 
 interface State {
   cardAnimaton: string;
@@ -32,8 +29,8 @@ interface State {
   password: string;
 }
 
-class LoginPage extends React.Component<Props, State> {
-  constructor(props: Props) {
+class LoginPage extends React.Component<WithAuthProps & CommonProps, State> {
+  constructor(props: WithAuthProps & CommonProps) {
     super(props);
     // we use this to make the card to appear after the page has been rendered
     this.state = {
@@ -58,12 +55,12 @@ class LoginPage extends React.Component<Props, State> {
 
   public handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    this.props.login({
-      email: this.state.email,
+    const { auth } = this.props;
+    const signInOpts = {
+      username: this.state.email,
       password: this.state.password,
-      // hardcoded to true for now
-      stayLoggedIn: true,
-    });
+    };
+    auth.signIn(signInOpts);
     this.setState({ email: '', password: '' });
   };
 
@@ -81,12 +78,12 @@ class LoginPage extends React.Component<Props, State> {
     return (
       <div className={classes.container}>
         <GridContainer justify="center">
-          <GridItem xs={12} sm={6} md={4}>
+          <GridItem xs={12} sm={9} md={5}>
             <form>
               <Card login className={classes[this.state.cardAnimaton]}>
                 <CardHeader
                   className={`${classes.cardHeader} ${classes.textCenter}`}
-                  color="primary"
+                  color="success"
                 >
                   <h3 className={classes.cardTitle}>Log in</h3>
                 </CardHeader>
@@ -98,11 +95,11 @@ class LoginPage extends React.Component<Props, State> {
                       fullWidth: true,
                     }}
                     inputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <Email className={classes.inputAdornmentIcon} />
-                        </InputAdornment>
-                      ),
+                      // endAdornment: (
+                      //   <InputAdornment position="end">
+                      //     <Email className={classes.inputAdornmentIcon} />
+                      //   </InputAdornment>
+                      // ),
                       onChange: this.handleChange('email'),
                       value: this.state.email,
                     }}
@@ -114,11 +111,11 @@ class LoginPage extends React.Component<Props, State> {
                       fullWidth: true,
                     }}
                     inputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <Icon className={classes.inputAdornmentIcon}>lock_outline</Icon>
-                        </InputAdornment>
-                      ),
+                      // endAdornment: (
+                      //   <InputAdornment position="end">
+                      //     <Icon className={classes.inputAdornmentIcon}>lock_outline</Icon>
+                      //   </InputAdornment>
+                      // ),
                       onChange: this.handleChange('password'),
                       value: this.state.password,
                       type: 'password',
@@ -146,4 +143,6 @@ class LoginPage extends React.Component<Props, State> {
   }
 }
 
-export default withStyles(loginPageStyle)(LoginPage);
+const StyledLoginPage = withStyles(loginPageStyle)(LoginPage);
+
+export default withAuth(StyledLoginPage);

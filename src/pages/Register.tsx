@@ -3,16 +3,11 @@ import * as React from 'react';
 // @material-ui/core components
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Icon from '@material-ui/core/Icon';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 
 // @material-ui/icons
-// import LockOutline from "@material-ui/icons/LockOutline";
 import Check from '@material-ui/icons/Check';
 import Code from '@material-ui/icons/Code';
-import Email from '@material-ui/icons/Email';
-import Face from '@material-ui/icons/Face';
 import Group from '@material-ui/icons/Group';
 import Timeline from '@material-ui/icons/Timeline';
 
@@ -25,35 +20,42 @@ import GridContainer from 'src/components/GridContainer';
 import GridItem from 'src/components/GridItem';
 import InfoArea from 'src/components/InfoArea';
 
+import { withAuth, WithAuthProps } from 'src/enhancers/withAuth';
 import registerPageStyle from 'src/styles/jss/views/registerPageStyle';
 
 interface State {
-  checked: number[];
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  agree: boolean;
 }
 
-class RegisterPage extends React.Component<WithStyles, State> {
-  constructor(props: WithStyles) {
+class RegisterPage extends React.Component<WithStyles & WithAuthProps, State> {
+  constructor(props: WithStyles & WithAuthProps) {
     super(props);
     this.state = {
-      checked: [],
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      agree: false,
     };
   }
 
-  public handleToggle = (value: number) => () => {
-    const { checked } = this.state;
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    this.setState({
-      checked: newChecked,
-    });
-  };
+  public toggleAgree = () => this.setState(state => ({ agree: !state.agree }));
+  public handleFirstName = (e: React.ChangeEvent<HTMLInputElement>) =>
+    this.setState({ firstName: e.currentTarget.value });
+  public handleLastName = (e: React.ChangeEvent<HTMLInputElement>) =>
+    this.setState({ lastName: e.currentTarget.value });
+  public handleEmail = (e: React.ChangeEvent<HTMLInputElement>) =>
+    this.setState({ email: e.currentTarget.value });
+  public handlePassword = (e: React.ChangeEvent<HTMLInputElement>) =>
+    this.setState({ password: e.currentTarget.value });
+  public handleConfirmPassword = (e: React.ChangeEvent<HTMLInputElement>) =>
+    this.setState({ confirmPassword: e.currentTarget.value });
 
   public render() {
     const { classes } = this.props;
@@ -87,21 +89,6 @@ class RegisterPage extends React.Component<WithStyles, State> {
                     />
                   </GridItem>
                   <GridItem xs={12} sm={8} md={5}>
-                    {/* <div className={classes.center}>
-                      <Button justIcon round myColor="twitter">
-                        <i className="fab fa-twitter" />
-                      </Button>
-                      {` `}
-                      <Button justIcon round myColor="dribbble">
-                        <i className="fab fa-dribbble" />
-                      </Button>
-                      {` `}
-                      <Button justIcon round myColor="facebook">
-                        <i className="fab fa-facebook-f" />
-                      </Button>
-                      {` `}
-                      <h4 className={classes.socialTitle}>or be classical</h4>
-                    </div> */}
                     <form className={classes.form}>
                       <CustomInput
                         formControlProps={{
@@ -109,12 +96,9 @@ class RegisterPage extends React.Component<WithStyles, State> {
                           className: classes.customFormControlClasses,
                         }}
                         inputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start" className={classes.inputAdornment}>
-                              <Face className={classes.inputAdornmentIcon} />
-                            </InputAdornment>
-                          ),
                           placeholder: 'First Name...',
+                          onChange: this.handleFirstName,
+                          value: this.state.firstName,
                         }}
                       />
                       <CustomInput
@@ -123,12 +107,20 @@ class RegisterPage extends React.Component<WithStyles, State> {
                           className: classes.customFormControlClasses,
                         }}
                         inputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start" className={classes.inputAdornment}>
-                              <Email className={classes.inputAdornmentIcon} />
-                            </InputAdornment>
-                          ),
+                          placeholder: 'Last Name...',
+                          value: this.state.lastName,
+                          onChange: this.handleFirstName,
+                        }}
+                      />
+                      <CustomInput
+                        formControlProps={{
+                          fullWidth: true,
+                          className: classes.customFormControlClasses,
+                        }}
+                        inputProps={{
                           placeholder: 'Email...',
+                          value: this.state.email,
+                          onChange: this.handleEmail,
                         }}
                       />
                       <CustomInput
@@ -137,12 +129,20 @@ class RegisterPage extends React.Component<WithStyles, State> {
                           className: classes.customFormControlClasses,
                         }}
                         inputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start" className={classes.inputAdornment}>
-                              <Icon className={classes.inputAdornmentIcon}>lock_outline</Icon>
-                            </InputAdornment>
-                          ),
                           placeholder: 'Password...',
+                          value: this.state.password,
+                          onChange: this.handlePassword,
+                        }}
+                      />
+                      <CustomInput
+                        formControlProps={{
+                          fullWidth: true,
+                          className: classes.customFormControlClasses,
+                        }}
+                        inputProps={{
+                          placeholder: 'Confirm Password...',
+                          value: this.state.confirmPassword,
+                          onChange: this.handleConfirmPassword,
                         }}
                       />
                       <FormControlLabel
@@ -152,8 +152,8 @@ class RegisterPage extends React.Component<WithStyles, State> {
                         }}
                         control={
                           <Checkbox
-                            tabIndex={-1}
-                            onClick={this.handleToggle(1)}
+                            checked={this.state.agree}
+                            onClick={this.toggleAgree}
                             checkedIcon={<Check className={classes.checkedIcon} />}
                             icon={<Check className={classes.uncheckedIcon} />}
                             classes={{
@@ -170,7 +170,7 @@ class RegisterPage extends React.Component<WithStyles, State> {
                       />
                       <div className={classes.center}>
                         <Button round myColor="primary">
-                          Get started
+                          Get started!
                         </Button>
                       </div>
                     </form>
@@ -185,4 +185,4 @@ class RegisterPage extends React.Component<WithStyles, State> {
   }
 }
 
-export default withStyles(registerPageStyle)(RegisterPage);
+export default withAuth(withStyles(registerPageStyle)(RegisterPage));

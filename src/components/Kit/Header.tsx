@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import * as React from 'react';
 
 import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
@@ -26,7 +25,6 @@ interface Props extends CommonProps {
     | 'dark';
   rightLinks?: React.ReactNode;
   leftLinks?: React.ReactNode;
-  brand?: string;
   fixed?: boolean;
   absolute?: boolean;
   // this will cause the sidebar to change the color from
@@ -99,14 +97,16 @@ class Header extends React.Component<Props, State> {
   }
 
   public render() {
-    const { classes, color, rightLinks, leftLinks, brand, fixed, absolute } = this.props;
+    const { classes, color, rightLinks, leftLinks, fixed, absolute } = this.props;
     const appBarClasses = classNames({
       [classes.appBar]: true,
       [classes[color]]: color,
       [classes.absolute]: absolute,
       [classes.fixed]: fixed,
     });
-    const brandComponent = <Button className={classes.title}>{brand}</Button>;
+    const brandComponent = (
+      <img className={classes.logo} src={require('src/static/images/largeColorLogo.png')} />
+    );
     return (
       <AppBar className={appBarClasses}>
         <Toolbar className={classes.container}>

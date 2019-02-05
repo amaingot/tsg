@@ -1,7 +1,8 @@
+import TestPage from 'src/pages/TestPage';
 import { RouteType } from 'src/routes/index';
 
 // @material-ui/icons
-// import Apps from '@material-ui/icons/Apps';
+import Apps from '@material-ui/icons/Apps';
 // import DashboardIcon from '@material-ui/icons/Dashboard';
 // import DateRange from '@material-ui/icons/DateRange';
 // import ContentPaste from "@material-ui/icons/ContentPaste";
@@ -11,5 +12,12 @@ import { RouteType } from 'src/routes/index';
 // import Timeline from '@material-ui/icons/Timeline';
 // import WidgetsIcon from '@material-ui/icons/Widgets';
 
-const dashRoutes: RouteType[] = [];
+const dashRoutes: RouteType[] = [
+  {
+    name: 'Test',
+    path: '/test',
+    component: TestPage,
+    icon: Apps,
+  },
+];
 export default dashRoutes;

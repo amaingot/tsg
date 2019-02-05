@@ -34,7 +34,7 @@ class HeaderLinks extends React.Component<CommonProps, State> {
     open: false,
   };
 
-  public anchorEl: HTMLElement = new HTMLElement();
+  public anchorEl: HTMLElement | undefined;
 
   public handleClick = () => {
     this.setState({ open: !this.state.open });

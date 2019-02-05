@@ -20,7 +20,7 @@ const pagesStyle: StyleRulesCallback<string> = (theme: Theme) => ({
     backgroundPosition: 'center center',
     height: '100%',
     [theme.breakpoints.down('sm')]: {
-      minHeight: 'fit-content!important',
+      // minHeight: 'fit-content!important',
     },
     '& footer': {
       position: 'absolute',

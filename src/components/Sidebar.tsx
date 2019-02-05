@@ -1,4 +1,5 @@
 import cx from 'classnames';
+import { Location } from 'history';
 import * as React from 'react';
 
 // @material-ui/core components
@@ -31,7 +32,7 @@ interface SidebarProps extends CommonProps {
   image?: string;
   routes?: RouteType[];
   miniActive: boolean;
-  location: Location;
+  location: Location<any>;
   handleDrawerToggle: (e: React.SyntheticEvent) => void;
   open: boolean;
 }

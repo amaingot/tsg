@@ -3,7 +3,7 @@ import cx from 'classnames';
 import PerfectScrollbar from 'perfect-scrollbar';
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
 import * as React from 'react';
-import { Switch } from 'react-router-dom';
+import { RouteComponentProps, Switch } from 'react-router-dom';
 
 // @material-ui/core components
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
@@ -17,6 +17,7 @@ import dashboardRoutes from 'src/routes/dashboard';
 
 import appStyle from 'src/styles/jss/layouts/dashboardStyle';
 
+import { withAuth, WithAuthProps } from 'src/enhancers/withAuth';
 import logo from 'src/static/material-images/logo-white.svg';
 import image from 'src/static/material-images/sidebar-2.jpg';
 import CustomRedirect from 'src/utils/CustomRedirect';
@@ -42,9 +43,7 @@ const switchRoutes = (
   </Switch>
 );
 
-interface Props extends WithStyles {
-  location: Location;
-}
+type Props = RouteComponentProps & WithStyles & WithAuthProps;
 
 interface State {
   mobileOpen: boolean;
@@ -120,7 +119,7 @@ class Dashboard extends React.Component<Props, State> {
   };
 
   public render() {
-    const { classes, ...rest } = this.props;
+    const { classes, location } = this.props;
     const mainPanelClasses =
       classes.mainPanel +
       ' ' +
@@ -140,14 +139,13 @@ class Dashboard extends React.Component<Props, State> {
           color="blue"
           bgColor="black"
           miniActive={this.state.miniActive}
-          {...rest}
+          location={location}
         />
         <div className={mainPanelClasses} ref={this.mainPanel}>
           <Header
             sidebarMinimize={this.sidebarMinimize}
             miniActive={this.state.miniActive}
             handleDrawerToggle={this.handleDrawerToggle}
-            {...rest}
           />
           {/* On the /maps/full-screen-maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}
           {this.getRoute() ? (
@@ -164,4 +162,4 @@ class Dashboard extends React.Component<Props, State> {
   }
 }
 
-export default withStyles(appStyle)(Dashboard);
+export default withAuth(withStyles(appStyle)(Dashboard));

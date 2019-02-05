@@ -69,7 +69,7 @@ class PagesHeader extends React.Component<Props, State> {
               <Home />
             </ListItemIcon>
             <ListItemText
-              primary={'Dashboard'}
+              primary={'Home'}
               disableTypography={true}
               className={classes.listItemText}
             />
@@ -116,7 +116,7 @@ class PagesHeader extends React.Component<Props, State> {
         <Toolbar className={classes.container}>
           <Hidden smDown>
             <div className={classes.flex}>
-              <Button href="#" className={classes.title} myColor="transparent">
+              <Button to="/" className={classes.title} myColor="transparent">
                 Tennis Shop Guru
               </Button>
             </div>

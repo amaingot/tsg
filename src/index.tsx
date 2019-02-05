@@ -7,7 +7,7 @@ import * as ReactDOM from 'react-dom';
 
 import App from 'src/App';
 import awsconfig from 'src/aws-exports';
-import { AuthContextProvider } from 'src/contexts/AuthContext';
+import { AuthContextProvider } from 'src/enhancers/withAuth';
 
 Amplify.configure(awsconfig);
 

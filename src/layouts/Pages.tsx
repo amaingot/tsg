@@ -15,8 +15,6 @@ import CustomRoute from 'src/utils/CustomRoute';
 
 import pagesStyle from 'src/styles/jss/layouts/pagesStyle';
 
-import bgImage from 'src/static/images/tenniscourt2.jpg';
-
 class Pages extends React.Component<WithStyles> {
   public componentDidMount() {
     document.body.style.overflow = 'unset';
@@ -37,7 +35,12 @@ class Pages extends React.Component<WithStyles> {
       <div>
         <PagesHeader {...rest} />
         <div className={classes.wrapper} ref="wrapper">
-          <div className={classes.fullPage} style={{ backgroundImage: 'url(' + bgImage + ')' }}>
+          <div
+            className={classes.fullPage}
+            style={{
+              backgroundImage: 'url(' + require('src/static/images/tenniscourt2.jpg') + ')',
+            }}
+          >
             <Switch>
               {pagesRoutes.map((route, routeIndex) => {
                 if (route.collapse) {

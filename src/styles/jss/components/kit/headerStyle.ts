@@ -63,6 +63,9 @@ const headerStyle: StyleRules<string> = {
       background: 'transparent',
     },
   },
+  logo: {
+    height: '70px',
+  },
   appResponsive: {
     margin: '20px 10px',
   },
