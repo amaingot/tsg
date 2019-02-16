@@ -19,16 +19,15 @@ import SidebarWrapper from 'src/components/SidebarWrapper';
 
 import sidebarStyle from 'src/styles/jss/components/sidebarStyle';
 
+import { withAuth, WithAuthProps } from 'src/enhancers/withAuth';
 import { RouteType } from 'src/routes/index';
-import avatar from 'src/static/material-images/faces/avatar.jpg';
 import { CommonProps } from 'src/utils/commonProps';
 import CustomLink from 'src/utils/CustomLink';
 
-interface SidebarProps extends CommonProps {
+interface Props extends CommonProps {
   bgColor?: string; // 'white' | 'black' | 'blue';
   color?: 'white' | 'red' | 'orange' | 'green' | 'blue' | 'purple' | 'rose';
   logo?: string;
-  logoText?: string;
   image?: string;
   routes?: RouteType[];
   miniActive: boolean;
@@ -42,8 +41,8 @@ interface SidebarState {
   openAvatar: boolean;
 }
 
-class Sidebar extends React.Component<SidebarProps, SidebarState> {
-  constructor(props: SidebarProps) {
+class Sidebar extends React.Component<Props & WithAuthProps, SidebarState> {
+  constructor(props: Props & WithAuthProps) {
     super(props);
     this.state = {
       miniActive: true,
@@ -72,14 +71,8 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
   };
 
   public renderBrand() {
-    const { classes, bgColor, logo, logoText } = this.props;
+    const { classes, bgColor, logo } = this.props;
 
-    const logoNormal =
-      classes.logoNormal +
-      ' ' +
-      cx({
-        [classes.logoNormalSidebarMini]: this.props.miniActive && this.state.miniActive,
-      });
     const logoClasses =
       classes.logo +
       ' ' +
@@ -89,12 +82,9 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
     return (
       <div className={logoClasses}>
-        <a href="https://www.creative-tim.com" className={classes.logoMini}>
+        <CustomLink to="/">
           <img src={logo} alt="logo" className={classes.img} />
-        </a>
-        <a href="https://www.creative-tim.com" className={logoNormal}>
-          {logoText}
-        </a>
+        </CustomLink>
       </div>
     );
   }
@@ -257,9 +247,9 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
     return (
       <div className={userWrapperClass}>
-        <div className={classes.photo}>
+        {/* <div className={classes.photo}>
           <img src={avatar} className={classes.avatarImg} alt="..." />
-        </div>
+        </div> */}
         <List className={classes.list}>
           <ListItem className={classes.item + ' ' + classes.userItem}>
             <CustomLink
@@ -401,4 +391,4 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
   }
 }
 
-export default withStyles(sidebarStyle)(Sidebar);
+export default withStyles(sidebarStyle)(withAuth<Props>(Sidebar));

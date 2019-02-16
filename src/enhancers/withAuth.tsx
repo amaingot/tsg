@@ -13,6 +13,8 @@ export interface AuthContextShape {
   updateSession: () => void;
   updateUser: () => void;
   signIn: (opts: SignInOpts) => void;
+  setRedirect: (to: string) => void;
+  redirected: () => void;
 }
 
 const defaultValue: AuthContextShape = {
@@ -22,6 +24,8 @@ const defaultValue: AuthContextShape = {
   updateSession: () => {},
   updateUser: () => {},
   signIn: () => {},
+  setRedirect: () => {},
+  redirected: () => {},
 };
 
 const AuthContext = React.createContext<AuthContextShape>(defaultValue);
@@ -39,29 +43,35 @@ export class AuthContextProvider extends React.Component<ProviderProps, AuthCont
       updateSession: this.updateSession,
       signIn: this.signIn,
       updateUser: this.updateUser,
+      setRedirect: this.setRedirect,
+      redirected: this.redirected,
     };
   }
 
   public componentDidMount() {
     this.updateSession();
+    this.updateUser();
   }
 
-  public updateSession = () => {
+  private updateSession = () => {
     this.setState(state => ({ loading: state.loading + 1 }));
     Auth.currentSession().then(session =>
       this.setState(state => ({ loggedIn: session.isValid(), loading: state.loading - 1 }))
     );
   };
 
-  public updateUser = () => {
+  private updateUser = () => {
     this.setState(state => ({ loading: state.loading + 1 }));
     Auth.currentAuthenticatedUser().then(this.handleUserResponse);
   };
 
-  public signIn = (opts: SignInOpts) => {
+  private signIn = (opts: SignInOpts) => {
     this.setState(state => ({ loading: state.loading + 1 }));
     Auth.signIn(opts).then(this.handleUserResponse);
   };
+
+  private setRedirect = (to: string) => this.setState({ redirectTo: to });
+  private redirected = () => this.setState({ redirectTo: undefined });
 
   private handleUserResponse = (user: any) => {
     if (user instanceof CognitoUser) {

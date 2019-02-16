@@ -167,7 +167,8 @@ const sidebarStyle: StyleRulesCallback<string> = (theme: Theme) => ({
     transform: 'translate3d(25px, 0, 0)',
   },
   img: {
-    width: '35px',
+    width: '100%',
+    padding: '10px',
     verticalAlign: 'middle',
     border: '0',
   },

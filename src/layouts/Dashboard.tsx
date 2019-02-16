@@ -17,9 +17,6 @@ import dashboardRoutes from 'src/routes/dashboard';
 
 import appStyle from 'src/styles/jss/layouts/dashboardStyle';
 
-import { withAuth, WithAuthProps } from 'src/enhancers/withAuth';
-import logo from 'src/static/material-images/logo-white.svg';
-import image from 'src/static/material-images/sidebar-2.jpg';
 import CustomRedirect from 'src/utils/CustomRedirect';
 import CustomRoute from 'src/utils/CustomRoute';
 
@@ -43,7 +40,7 @@ const switchRoutes = (
   </Switch>
 );
 
-type Props = RouteComponentProps & WithStyles & WithAuthProps;
+type Props = RouteComponentProps & WithStyles;
 
 interface State {
   mobileOpen: boolean;
@@ -60,11 +57,7 @@ class Dashboard extends React.Component<Props, State> {
       miniActive: false,
     };
     this.mainPanel = React.createRef<HTMLDivElement>();
-  }
 
-  public mainPanel: React.RefObject<HTMLDivElement>;
-
-  public componentDidMount() {
     if (navigator.platform.indexOf('Win') > -1 && this.mainPanel.current) {
       ps = new PerfectScrollbar(this.mainPanel.current, {
         suppressScrollX: true,
@@ -74,6 +67,19 @@ class Dashboard extends React.Component<Props, State> {
     }
     window.addEventListener('resize', this.resizeFunction);
   }
+
+  public mainPanel: React.RefObject<HTMLDivElement>;
+
+  // public componentDidMount() {
+  //   if (navigator.platform.indexOf('Win') > -1 && this.mainPanel.current) {
+  //     ps = new PerfectScrollbar(this.mainPanel.current, {
+  //       suppressScrollX: true,
+  //       suppressScrollY: false,
+  //     });
+  //     document.body.style.overflow = 'hidden';
+  //   }
+  //   window.addEventListener('resize', this.resizeFunction);
+  // }
 
   // public componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
   //   Sentry.withScope(scope => {
@@ -104,13 +110,13 @@ class Dashboard extends React.Component<Props, State> {
     this.setState({ mobileOpen: !this.state.mobileOpen });
   };
 
-  public getRoute() {
+  public getRoute = () => {
     return this.props.location.pathname !== '/maps/full-screen-maps';
-  }
+  };
 
-  public sidebarMinimize() {
+  public sidebarMinimize = () => {
     this.setState({ miniActive: !this.state.miniActive });
-  }
+  };
 
   public resizeFunction = () => {
     if (window.innerWidth >= 960) {
@@ -131,9 +137,7 @@ class Dashboard extends React.Component<Props, State> {
       <div className={classes.wrapper}>
         <Sidebar
           routes={dashboardRoutes}
-          logoText={'Creative Tim'}
-          logo={logo}
-          image={image}
+          logo={require('src/static/images/topLeftLogo.png')}
           handleDrawerToggle={this.handleDrawerToggle}
           open={this.state.mobileOpen}
           color="blue"
@@ -147,7 +151,6 @@ class Dashboard extends React.Component<Props, State> {
             miniActive={this.state.miniActive}
             handleDrawerToggle={this.handleDrawerToggle}
           />
-          {/* On the /maps/full-screen-maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}
           {this.getRoute() ? (
             <div className={classes.content}>
               <div className={classes.container}>{switchRoutes}</div>
@@ -162,4 +165,4 @@ class Dashboard extends React.Component<Props, State> {
   }
 }
 
-export default withAuth(withStyles(appStyle)(Dashboard));
+export default withStyles(appStyle)(Dashboard);

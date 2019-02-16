@@ -8,10 +8,11 @@ import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import Button from 'src/components/Button';
 
 // import { RouteType } from 'src/routes';
+import { withAuth, WithAuthProps } from 'src/enhancers/withAuth';
 import headerLinksStyle from 'src/styles/jss/components/kit/headerLinksStyle';
 
-const HeaderLinks: React.SFC<WithStyles> = (props: WithStyles) => {
-  const { classes } = props;
+const HeaderLinks: React.SFC<WithStyles & WithAuthProps> = props => {
+  const { classes, auth } = props;
 
   // const renderButton = (route: RouteType) => (
   //   <ListItem className={classes.listItem}>
@@ -28,11 +29,22 @@ const HeaderLinks: React.SFC<WithStyles> = (props: WithStyles) => {
           Pricing
         </Button>
       </ListItem> */}
-      <ListItem className={classes.listItem}>
-        <Button to="/login" myColor="transparent" className={classes.navLink}>
-          Log In
-        </Button>
-      </ListItem>
+      {auth.loggedIn ? (
+        <ListItem className={classes.listItem}>
+          <Button to="/app" myColor="transparent" className={classes.navLink}>
+            Application
+          </Button>
+        </ListItem>
+      ) : (
+        <ListItem className={classes.listItem}>
+          <Button to="/app" myColor="transparent" className={classes.navLink}>
+            App
+          </Button>
+          <Button to="/login" myColor="transparent" className={classes.navLink}>
+            Login
+          </Button>
+        </ListItem>
+      )}
       {/* <ListItem className={classes.listItem}>
         <Button myColor="transparent" className={classes.navLink}>
           Sign Up
@@ -42,4 +54,4 @@ const HeaderLinks: React.SFC<WithStyles> = (props: WithStyles) => {
   );
 };
 
-export default withStyles(headerLinksStyle)(HeaderLinks);
+export default withAuth<{}>(withStyles(headerLinksStyle)(HeaderLinks));

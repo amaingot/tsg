@@ -1,15 +1,6 @@
+import withStyles from '@material-ui/core/styles/withStyles';
 import * as React from 'react';
 
-// @material-ui/core components
-// import Icon from '@material-ui/core/Icon';
-// import InputAdornment from '@material-ui/core/InputAdornment';
-import withStyles from '@material-ui/core/styles/withStyles';
-
-// @material-ui/icons
-// import Email from '@material-ui/icons/Email';
-// import LockOutline from "@material-ui/icons/LockOutline";
-
-// core components
 import Button from 'src/components/Button';
 import Card from 'src/components/Card';
 import CardBody from 'src/components/CardBody';
@@ -22,6 +13,7 @@ import { withAuth, WithAuthProps } from 'src/enhancers/withAuth';
 
 import loginPageStyle from 'src/styles/jss/views/loginPageStyle';
 import { CommonProps } from 'src/utils/commonProps';
+import CustomRedirect from 'src/utils/CustomRedirect';
 
 interface State {
   cardAnimaton: string;
@@ -74,7 +66,16 @@ class LoginPage extends React.Component<WithAuthProps & CommonProps, State> {
   };
 
   public render() {
-    const { classes } = this.props;
+    const { classes, auth } = this.props;
+
+    if (auth.loading) {
+      return <div />;
+    }
+
+    if (auth.loggedIn) {
+      return <CustomRedirect to={auth.redirectTo || '/app'} />;
+    }
+
     return (
       <div className={classes.container}>
         <GridContainer justify="center">
@@ -95,11 +96,6 @@ class LoginPage extends React.Component<WithAuthProps & CommonProps, State> {
                       fullWidth: true,
                     }}
                     inputProps={{
-                      // endAdornment: (
-                      //   <InputAdornment position="end">
-                      //     <Email className={classes.inputAdornmentIcon} />
-                      //   </InputAdornment>
-                      // ),
                       onChange: this.handleChange('email'),
                       value: this.state.email,
                     }}
@@ -111,11 +107,6 @@ class LoginPage extends React.Component<WithAuthProps & CommonProps, State> {
                       fullWidth: true,
                     }}
                     inputProps={{
-                      // endAdornment: (
-                      //   <InputAdornment position="end">
-                      //     <Icon className={classes.inputAdornmentIcon}>lock_outline</Icon>
-                      //   </InputAdornment>
-                      // ),
                       onChange: this.handleChange('password'),
                       value: this.state.password,
                       type: 'password',
@@ -126,12 +117,12 @@ class LoginPage extends React.Component<WithAuthProps & CommonProps, State> {
                   <Button
                     onClick={this.handleSubmit}
                     type="submit"
-                    myColor="primary"
+                    myColor="success"
                     simple
                     mySize="lg"
                     block
                   >
-                    Let's Go
+                    Login
                   </Button>
                 </CardFooter>
               </Card>
