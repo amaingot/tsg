@@ -3,11 +3,11 @@
   "editor.tabSize": 2,
   "typescript.format.enable": true,
   "typescript.tsdk": "node_modules/typescript/lib",
-  "tslint.autoFixOnSave": true,
-  "prettier.disableLanguages": [
-    "typescript",
-    "typescriptreact"
-  ],
-  "tslint.configFile": "tslint.json",
-  "eslint.enable": false
+  "prettier.disableLanguages": ["typescript", "typescriptreact"],
+  "editor.codeActionsOnSave": {
+    "source.fixApp.tslint": true
+  },
+  "tslint.configFile": "./tslint.json",
+  "eslint.enable": false,
+  "prettier.tslintIntegration": true
 }

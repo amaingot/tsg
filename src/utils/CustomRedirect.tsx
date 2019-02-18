@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Redirect, RedirectProps } from 'react-router';
 
-interface Prop extends RedirectProps {
+interface CustomRedirectProps extends RedirectProps {
   to: string;
 }
 
-const CustomRedirect: React.SFC<Prop> = (props: Prop) => {
+const CustomRedirect: React.SFC<CustomRedirectProps> = (props: CustomRedirectProps) => {
   const { to, ...rest } = props;
 
   return (
