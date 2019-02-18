@@ -1,19 +1,10 @@
-export interface RouteType {
-  name: string;
+import { RouteComponentProps } from 'react-router';
+import { CustomRouteProps } from 'src/utils/CustomRoute';
+
+export interface RouteConfig extends CustomRouteProps {
   path: string;
-  pathTo?: string;
-  redirect?: boolean;
-  collapse?: boolean;
-  icon?: string | React.ComponentType<any>;
-  state?: string;
-  short?: string;
-  mini?: string;
-  component?: React.ComponentType<any>;
-  views?: Array<{
-    name: string;
-    redirect?: boolean;
-    path: string;
-    mini?: string;
-    component?: React.ComponentType<any>;
-  }>;
+  component: React.ComponentType<RouteComponentProps>;
+  exact?: boolean;
+  label: string;
+  icon?: React.ComponentType;
 }

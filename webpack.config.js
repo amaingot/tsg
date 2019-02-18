@@ -93,7 +93,13 @@ module.exports = env => {
         port: 9000
       },
       plugins: [
-        new ForkTsCheckerWebpackPlugin(),
+        new ForkTsCheckerWebpackPlugin({
+          reportFiles: [
+            "src/**/*.{ts,tsx}",
+            "src/*.{ts,tsx}",
+            "src/**/**/*.{ts,tsx}"
+          ]
+        }),
         new webpack.HotModuleReplacementPlugin()
       ],
       output: {

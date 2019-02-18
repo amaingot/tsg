@@ -1,24 +1,27 @@
 import * as React from 'react';
-import { BrowserRouter, Switch } from 'react-router-dom';
+import { Switch } from 'react-router-dom';
 
-import Dashboard from 'src/layouts/Dashboard';
-import Pages from 'src/layouts/Pages';
-import LandingPage from 'src/pages/LandingPage';
+import AppLayout from 'src/layouts/AppLayout';
+import SiteLayout from 'src/layouts/SiteLayout';
+import ErrorPage from 'src/pages/ErrorPage';
+import SignInPage from 'src/pages/SignInPage';
+import SignUpPage from 'src/pages/SignUpPage';
+import VerifySignUpPage from 'src/pages/VerifySignUpPage';
+import CustomRedirect from 'src/utils/CustomRedirect';
 import CustomRoute from 'src/utils/CustomRoute';
-
-import 'src/styles.scss';
 
 class App extends React.Component<{}, {}> {
   public render() {
     return (
-      <BrowserRouter>
-        <Switch>
-          <CustomRoute path="/" exact component={LandingPage} />
-          <CustomRoute path="/app" privatePath component={Dashboard} />
-          <CustomRoute path="/" component={Pages} />
-          <CustomRoute component={() => <div>Not Found</div>} />
-        </Switch>
-      </BrowserRouter>
+      <Switch>
+        <CustomRedirect path="/login" exact to="/signin" />
+        <CustomRoute path="/signup/verify" unauthedPath component={VerifySignUpPage} />
+        <CustomRoute path="/signup" unauthedPath component={SignUpPage} />
+        <CustomRoute path="/signin" unauthedPath component={SignInPage} />
+        <CustomRoute path="/error" component={ErrorPage} />
+        <CustomRoute path="/app" privatePath component={AppLayout} />
+        <CustomRoute path="/" component={SiteLayout} />
+      </Switch>
     );
   }
 }

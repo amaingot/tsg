@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { NavLink, NavLinkProps } from 'react-router-dom';
 
-interface Props extends NavLinkProps {
+interface CustomRouteProps extends NavLinkProps {
   to: string;
 }
 
-const CustomLink: React.SFC<Props> = (props: Props) => {
+const CustomNavLink: React.SFC<CustomRouteProps> = (props: CustomRouteProps) => {
   const { to, ...rest } = props;
 
   return (
@@ -14,9 +14,12 @@ const CustomLink: React.SFC<Props> = (props: Props) => {
         pathname: to,
         search: App.webEnv === 'production' ? '' : `?env=${App.webEnv}`,
       }}
+      style={{
+        textDecoration: 'none',
+      }}
       {...rest}
     />
   );
 };
 
-export default CustomLink;
+export default CustomNavLink;

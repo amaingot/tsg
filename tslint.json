@@ -21,12 +21,10 @@
     "interface-name": [true, "never-prefix"],
     "jsx-boolean-value": [false],
     "jsx-no-lambda": [false],
-    "jsx-no-string-ref": false,
     "max-classes-per-file": false,
     "member-ordering": [false],
     "no-implicit-dependencies": [true, "dev", ["src"]],
     "no-submodule-imports": [false],
-    "no-string-literal": [false],
     "object-literal-sort-keys": [false]
   },
   "rulesDirectory": []

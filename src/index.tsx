@@ -4,6 +4,7 @@ import { Rehydrated } from 'aws-appsync-react';
 import * as React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import * as ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
 
 import App from 'src/App';
 import awsconfig from 'src/aws-exports';
@@ -21,12 +22,14 @@ const client = new AWSAppSyncClient({
 });
 
 ReactDOM.render(
-  <ApolloProvider client={client as any}>
-    <Rehydrated>
-      <AuthContextProvider>
-        <App />
-      </AuthContextProvider>
-    </Rehydrated>
-  </ApolloProvider>,
+  <BrowserRouter>
+    <ApolloProvider client={client as any}>
+      <Rehydrated>
+        <AuthContextProvider>
+          <App />
+        </AuthContextProvider>
+      </Rehydrated>
+    </ApolloProvider>
+  </BrowserRouter>,
   document.getElementById('root')
 );
