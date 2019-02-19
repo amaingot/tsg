@@ -5,21 +5,29 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 
-interface FormFieldProps {
+export interface FormFieldProps {
   id: string;
   label: string;
-  value: string;
+  value?: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
   error?: string;
   disabled: boolean;
   autoFocus?: boolean;
   type?: string;
+  required?: boolean;
 }
 
 const FormField: React.FunctionComponent<FormFieldProps> = props => {
-  const { id, label, disabled, error, onChange, type, autoFocus, value } = props;
+  const { id, label, disabled, error, onChange, type, autoFocus, value, required } = props;
   return (
-    <FormControl id={id} margin="normal" required fullWidth error={!!error} disabled={disabled}>
+    <FormControl
+      id={id}
+      margin="normal"
+      required={required}
+      fullWidth
+      error={!!error}
+      disabled={disabled}
+    >
       <InputLabel htmlFor={id}>{label}</InputLabel>
       <Input
         id={id}

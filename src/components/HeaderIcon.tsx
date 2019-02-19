@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import Avatar from '@material-ui/core/Avatar';
 import CircularProgress from '@material-ui/core/CircularProgress';
-// import green from '@material-ui/core/colors/green';
 import withStyles, { StyleRulesCallback, WithStyles } from '@material-ui/core/styles/withStyles';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
@@ -18,7 +17,6 @@ const styles: StyleRulesCallback = theme => ({
     fontSize: `${iconSize / 2}px`,
   },
   progress: {
-    // color: green[500],
     position: 'absolute',
     left: `calc(50% - ${iconSize / 2}px)`,
     marginTop: `-${iconSize + theme.spacing.unit / 2}px`,

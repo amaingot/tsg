@@ -1,6 +1,10 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 
+import Typography from '@material-ui/core/Typography';
+
+import CustomerTable from 'src/components/CustomerTable';
+
 type Props = RouteComponentProps;
 
 interface State {
@@ -19,6 +23,11 @@ export default class CustomersPage extends React.Component<Props, State> {
   }
 
   public render() {
-    return <div>Customer Page</div>;
+    return (
+      <>
+        <Typography variant="h4">Customers</Typography>
+        <CustomerTable />
+      </>
+    );
   }
 }
