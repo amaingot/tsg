@@ -151,12 +151,14 @@ class WithoutRouterAuthContextProvider extends React.Component<ProviderProps, Au
     Auth.signUp(signUpParams)
       .then(result => {
         if (!result.userConfirmed) {
-          this.redirect('/signup/verify');
-          this.setState(state => ({
-            loading: state.loading - 1,
-            resendCodeForNewUser: this.resendNewUserConfirmSignUp(opts.email),
-            verifyCodeForyNewUser: this.confirmSignUp(signUpParams),
-          }));
+          this.setState(
+            state => ({
+              loading: state.loading - 1,
+              resendCodeForNewUser: this.resendNewUserConfirmSignUp(opts.email),
+              verifyCodeForyNewUser: this.confirmSignUp(signUpParams),
+            }),
+            () => this.redirect('/signup/verify')
+          );
         } else {
           this.setState(state => ({
             loggedIn: true,

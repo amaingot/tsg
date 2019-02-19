@@ -1,14 +1,11 @@
 import * as React from 'react';
 
 import Button from '@material-ui/core/Button';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
 import withStyles, { StyleRulesCallback, WithStyles } from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 import PersonIcon from '@material-ui/icons/Person';
 
+import FormField from 'src/components/FormField';
 import HeaderIcon from 'src/components/HeaderIcon';
 import { withAuth, WithAuthProps } from 'src/enhancers/withAuth';
 import SimpleLayout from 'src/layouts/SimpleLayout';
@@ -159,33 +156,21 @@ class SignUpPage extends React.Component<Props, State> {
     return (
       <form className={classes.form} onSubmit={this.handleSubmit}>
         {formFields.map((f, i) => (
-          <FormControl
+          <FormField
             key={f.key}
-            margin="normal"
-            required
-            fullWidth
-            error={!!this.state.errors[f.key]}
+            id={f.key}
+            label={f.label}
+            type={f.type}
+            value={this.state.values[f.key]}
+            onChange={this.handle(f.key)}
+            error={this.state.errors[f.key]}
             disabled={loading}
-          >
-            <InputLabel htmlFor={f.key}>{f.label}</InputLabel>
-            <Input
-              id={f.key}
-              name={f.key}
-              autoComplete={f.key}
-              autoFocus={i === 0}
-              type={f.type}
-              onChange={this.handle(f.key)}
-              value={this.state.values[f.key]}
-            />
-            {this.state.errors[f.key] && (
-              <FormHelperText>{this.state.errors[f.key]}</FormHelperText>
-            )}
-          </FormControl>
+            autoFocus={i === 0}
+          />
         ))}
         <Typography color="error" variant="body1" component="p">
           {auth.error ? `Error: ${auth.errorMessage}` : ' '}
         </Typography>
-
         <Button
           type="submit"
           fullWidth
