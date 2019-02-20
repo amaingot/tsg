@@ -46,17 +46,11 @@ class CreateCustomer extends React.Component<Props, State> {
     const { loading, classes } = this.props;
     return (
       <>
-        <Fab
-          color="primary"
-          aria-label="Add"
-          onClick={this.open}
-          disabled={loading}
-          className={classes.button}
-        >
+        <Fab color="primary" aria-label="Add" onClick={this.open} className={classes.button}>
           <AddIcon />
         </Fab>
         <Modal open={this.state.open} title="Create new customer" close={this.close}>
-          <CreateCustomerForm submit={this.submit} loading={false} />
+          <CreateCustomerForm submit={this.submit} loading={loading} />
         </Modal>
       </>
     );

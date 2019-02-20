@@ -4,6 +4,7 @@ import { RouteComponentProps } from 'react-router';
 import Typography from '@material-ui/core/Typography';
 
 import CustomerTable from 'src/components/CustomerTable';
+import PagePaper from 'src/components/PagePaper';
 
 type Props = RouteComponentProps;
 
@@ -26,7 +27,9 @@ export default class CustomersPage extends React.Component<Props, State> {
     return (
       <>
         <Typography variant="h4">Customers</Typography>
-        <CustomerTable />
+        <PagePaper>
+          <CustomerTable />
+        </PagePaper>
       </>
     );
   }

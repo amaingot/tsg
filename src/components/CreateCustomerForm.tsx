@@ -15,6 +15,7 @@ const styles: StyleRulesCallback = theme => ({
   },
   submit: {
     marginTop: theme.spacing.unit * 3,
+    float: 'right',
   },
 });
 
@@ -177,7 +178,7 @@ class CreateCustomerForm extends React.Component<Props & WithStyles, State> {
   };
 
   public render() {
-    const { classes, loading, error } = this.props;
+    const { classes, error } = this.props;
 
     return (
       <form className={classes.form} onSubmit={this.handleSubmit}>
@@ -185,13 +186,7 @@ class CreateCustomerForm extends React.Component<Props & WithStyles, State> {
         <Typography color="error" variant="body1" component="p">
           {error ? `Error: ${error}` : ' '}
         </Typography>
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          className={classes.submit}
-          disabled={loading}
-        >
+        <Button type="submit" variant="contained" className={classes.submit}>
           Create Customer
         </Button>
       </form>

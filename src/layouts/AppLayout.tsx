@@ -3,28 +3,34 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 
 import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
+import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import { StyleRulesCallback, withStyles, WithStyles, WithTheme } from '@material-ui/core/styles';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import { StyleRulesCallback, withStyles, WithStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import MenuIcon from '@material-ui/icons/Menu';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import HelpIcon from '@material-ui/icons/Help';
+import SettingsIcon from '@material-ui/icons/Settings';
+import WorkIcon from '@material-ui/icons/Work';
 
 import { withAuth, WithAuthProps } from 'src/enhancers/withAuth';
 import { AppRoutes, AppRoutesSwitch } from 'src/routes/AppRoutes';
 import CustomNavLink from 'src/utils/CustomLink';
 
-const drawerWidth = 240;
+const drawerWidth = 220;
 
 const styles: StyleRulesCallback = theme => ({
   root: {
@@ -45,6 +51,13 @@ const styles: StyleRulesCallback = theme => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
   },
+  accountGreeting: {
+    background: `${theme.palette.grey[300]} !important`,
+    cursor: 'unset !important',
+  },
+  menuIcon: {
+    marginRight: theme.spacing.unit * 1.5,
+  },
   menuButton: {
     marginLeft: 12,
     marginRight: 36,
@@ -53,10 +66,7 @@ const styles: StyleRulesCallback = theme => ({
     flexGrow: 1,
     color: 'inherit',
   },
-  signOutButton: {
-    marginRight: '32px',
-  },
-  hide: {
+  open: {
     display: 'none',
   },
   drawer: {
@@ -83,6 +93,32 @@ const styles: StyleRulesCallback = theme => ({
       width: theme.spacing.unit * 9 + 1,
     },
   },
+  toggleButton: {
+    position: 'absolute',
+    top: theme.spacing.unit * 18,
+    zIndex: 1201,
+    width: theme.spacing.unit * 4,
+    height: theme.spacing.unit * 4,
+    minHeight: theme.spacing.unit * 4,
+  },
+  toggleIcon: {},
+  toggleButtonOpen: {
+    transition: theme.transitions.create('left', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    left: drawerWidth - theme.spacing.unit * 2,
+  },
+  toggleButtonClose: {
+    transition: theme.transitions.create('left', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    left: theme.spacing.unit * 7,
+  },
+  accountMenu: {
+    zIndex: 1199,
+  },
   listItem: {
     paddingLeft: '24px',
   },
@@ -102,7 +138,7 @@ const styles: StyleRulesCallback = theme => ({
   },
 });
 
-type AdditionalProps = WithStyles & WithTheme & RouteComponentProps & WithAuthProps;
+type AdditionalProps = WithStyles & RouteComponentProps & WithAuthProps;
 
 interface Props extends AdditionalProps {
   children: React.ReactNode;
@@ -110,22 +146,27 @@ interface Props extends AdditionalProps {
 
 interface State {
   sidebarOpen: boolean;
+  accountMenuAnchor?: HTMLElement;
 }
 
 class AppLayout extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      sidebarOpen: false,
+      sidebarOpen: true,
     };
   }
 
-  public handleDrawerOpen = () => {
-    this.setState({ sidebarOpen: true });
+  public toggleDrawer = () => {
+    this.setState(state => ({ sidebarOpen: !state.sidebarOpen }));
   };
 
-  public handleDrawerClose = () => {
-    this.setState({ sidebarOpen: false });
+  public openMenu = (e: React.SyntheticEvent<HTMLElement>) => {
+    this.setState({ accountMenuAnchor: e.currentTarget });
+  };
+
+  public closeMenu = () => {
+    this.setState({ accountMenuAnchor: undefined });
   };
 
   public handleSignOut = () => {
@@ -134,38 +175,76 @@ class AppLayout extends React.Component<Props, State> {
   };
 
   public render() {
-    const { classes, theme } = this.props;
+    const { classes, auth } = this.props;
+
+    const menuOpen = !!this.state.accountMenuAnchor;
 
     return (
       <div className={classes.root}>
         <CssBaseline />
-        <AppBar
-          position="fixed"
-          className={classNames(classes.appBar, {
-            [classes.appBarShift]: this.state.sidebarOpen,
-          })}
-        >
-          <Toolbar disableGutters={!this.state.sidebarOpen}>
-            <IconButton
-              color="inherit"
-              aria-label="Open drawer"
-              onClick={this.handleDrawerOpen}
-              className={classNames(classes.menuButton, {
-                [classes.hide]: this.state.sidebarOpen,
-              })}
-            >
-              <MenuIcon />
-            </IconButton>
+        <AppBar position="fixed" className={classes.appBar}>
+          <Toolbar>
             <Typography variant="h6" noWrap className={classes.menuTitle}>
               <CustomNavLink exact to="/" className={classes.menuTitle}>
                 Tennis Shop Guru
               </CustomNavLink>
             </Typography>
-            <Button className={classes.signOutButton} onClick={this.handleSignOut} color="inherit">
-              Sign Out
-            </Button>
+            <div>
+              <IconButton
+                className={classes.accountButton}
+                onClick={menuOpen ? this.closeMenu : this.openMenu}
+                color="inherit"
+              >
+                <SettingsIcon />
+              </IconButton>
+              <Menu
+                anchorEl={this.state.accountMenuAnchor}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: -56,
+                  horizontal: 'right',
+                }}
+                open={menuOpen}
+                onClose={this.closeMenu}
+                className={classes.accountMenu}
+              >
+                <MenuItem disableTouchRipple className={classes.accountGreeting}>
+                  {auth.user && `Hello, ${auth.user.firstName} ${auth.user.lastName}!`}
+                </MenuItem>
+                <Divider />
+                <MenuItem>
+                  <AccountCircleIcon className={classes.menuIcon} /> User Settings
+                </MenuItem>
+                <MenuItem>
+                  <WorkIcon className={classes.menuIcon} /> Company Settings
+                </MenuItem>
+                <MenuItem>
+                  <HelpIcon className={classes.menuIcon} /> Help
+                </MenuItem>
+                <MenuItem onClick={this.handleSignOut}>
+                  <ExitToAppIcon className={classes.menuIcon} /> Sign Out
+                </MenuItem>
+              </Menu>
+            </div>
           </Toolbar>
         </AppBar>
+        <Fab
+          onClick={this.toggleDrawer}
+          className={classNames(classes.toggleButton, {
+            [classes.toggleButtonOpen]: this.state.sidebarOpen,
+            [classes.toggleButtonClose]: !this.state.sidebarOpen,
+          })}
+          size="small"
+        >
+          {this.state.sidebarOpen ? (
+            <ChevronLeftIcon className={classes.toggleIcon} />
+          ) : (
+            <ChevronRightIcon className={classes.toggleIcon} />
+          )}
+        </Fab>
         <Drawer
           variant="permanent"
           className={classNames(classes.drawer, {
@@ -180,12 +259,7 @@ class AppLayout extends React.Component<Props, State> {
           }}
           open={this.state.sidebarOpen}
         >
-          <div className={classes.toolbar}>
-            <IconButton onClick={this.handleDrawerClose}>
-              {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-            </IconButton>
-          </div>
-          <Divider />
+          <div className={classes.toolbar} />
           <List>
             {AppRoutes.map((route, i) => {
               if (route === null) {
@@ -212,6 +286,6 @@ class AppLayout extends React.Component<Props, State> {
   }
 }
 
-const StyledAppLayout = withStyles(styles, { withTheme: true })(AppLayout);
+const StyledAppLayout = withStyles(styles)(AppLayout);
 
 export default withAuth(StyledAppLayout);

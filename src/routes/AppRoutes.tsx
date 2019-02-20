@@ -28,7 +28,7 @@ export const AppRoutes: Array<RouteConfig | null> = [
     icon: HomeIcon,
   },
   { path: '/app/jobs', component: JobsPage, label: 'Jobs', icon: AssignmentIcon },
-  { path: '/app/customer', component: CustomersPage, label: 'Customers', icon: PeopleIcon },
+  { path: '/app/customers', component: CustomersPage, label: 'Customers', icon: PeopleIcon },
   {
     path: '/app/employees',
     component: EmployeesPage,
@@ -36,14 +36,14 @@ export const AppRoutes: Array<RouteConfig | null> = [
     icon: IDBadgeIcon,
   },
   null,
-  { path: '/app/settings', component: CustomersPage, label: 'Settings', icon: SettingsIcon },
+  { path: '/app/settings', component: CustomersPage, label: 'Administration', icon: SettingsIcon },
 ];
 
 export const AppRoutesSwitch: React.FunctionComponent = () => {
   return (
     <Switch>
-      <CustomRedirect from="/app" exact to="/app/dashboard" />
-      {AppRoutes.map(r => r && <CustomRoute key={r.path} privatePath {...r} />)}{' '}
+      <CustomRedirect from="/app" exact to="/app/customers" />
+      {AppRoutes.map(r => r && <CustomRoute key={r.path} privatePath {...r} />)}
       <CustomRedirect to="/error" />
     </Switch>
   );

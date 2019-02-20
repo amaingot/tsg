@@ -14,8 +14,8 @@ interface SignUpOpts {
 }
 
 interface SessionPayload {
-  first_name: string;
-  last_name: string;
+  given_name: string;
+  family_name: string;
   email: string;
   email_verified: boolean;
   phone_number: string;
@@ -106,8 +106,8 @@ class WithoutRouterAuthContextProvider extends React.Component<ProviderProps, Au
         const payload = idToken.payload as SessionPayload;
 
         const user: User = {
-          firstName: payload.first_name,
-          lastName: payload.last_name,
+          firstName: payload.given_name,
+          lastName: payload.family_name,
           email: payload.email,
           emailVerified: payload.email_verified,
           phone: payload.phone_number,
@@ -323,7 +323,7 @@ class WithoutRouterAuthContextProvider extends React.Component<ProviderProps, Au
   private redirect = (path?: string) => {
     const { history } = this.props;
     history.push({
-      pathname: path || this.state.redirectTo || '/app/dashboard',
+      pathname: path || this.state.redirectTo || '/app',
       search: App.webEnv === 'production' ? '' : `?env=${App.webEnv}`,
     });
     this.redirected();
