@@ -6,7 +6,8 @@ import Typography from '@material-ui/core/Typography';
 
 import FormField, { FormFieldProps } from 'src/components/FormField';
 import { CreateJobInput } from 'src/graphql/types';
-import { FormFieldArray, FormRecord, FormState } from 'src/utils/formHelpers';
+import { FormRecord, FormState } from 'src/utils/formHelpers';
+import { JobFieldKey, jobFormFields } from 'src/utils/jobFormHelpers';
 
 const styles: StyleRulesCallback = theme => ({
   form: {
@@ -25,36 +26,7 @@ export interface Props {
   error?: string;
 }
 
-type FormKey = 'name' | 'racket' | 'tension' | 'gauge' | 'stringName';
-
-const formFields: FormFieldArray<FormKey> = [
-  {
-    label: 'Job Name',
-    key: 'name',
-  },
-  {
-    label: 'Racket',
-    key: 'racket',
-    required: true,
-  },
-  {
-    label: 'String',
-    key: 'stringName',
-    required: true,
-  },
-  {
-    label: 'Gauge',
-    key: 'gauge',
-    required: true,
-  },
-  {
-    label: 'Tension',
-    key: 'tension',
-    required: true,
-  },
-];
-
-interface State extends FormState<FormKey> {
+interface State extends FormState<JobFieldKey> {
   attempted: boolean;
 }
 
@@ -68,7 +40,7 @@ class CreateJobForm extends React.Component<Props & WithStyles, State> {
       values: {},
     };
   }
-  public handle = (key: FormKey) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  public handle = (key: JobFieldKey) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValues = this.state.values;
     newValues[key] = e.currentTarget.value.length === 0 ? undefined : e.currentTarget.value;
     this.setState({
@@ -83,7 +55,7 @@ class CreateJobForm extends React.Component<Props & WithStyles, State> {
     submit({ ...this.state.values });
   };
 
-  public renderFormField = (f: FormRecord<FormKey>, i: number) => {
+  public renderFormField = (f: FormRecord<JobFieldKey>, i: number) => {
     const { loading } = this.props;
 
     const formProps: FormFieldProps = {
@@ -106,7 +78,7 @@ class CreateJobForm extends React.Component<Props & WithStyles, State> {
 
     return (
       <form className={classes.form} onSubmit={this.handleSubmit}>
-        {formFields.map(this.renderFormField)}
+        {jobFormFields.map(this.renderFormField)}
         <Typography color="error" variant="body1" component="p">
           {error ? `Error: ${error}` : ' '}
         </Typography>

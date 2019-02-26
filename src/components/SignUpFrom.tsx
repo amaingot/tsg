@@ -6,11 +6,11 @@ import Typography from '@material-ui/core/Typography';
 
 import FormField, { FormFieldProps } from 'src/components/FormField';
 import {
-  FormErrorMessages,
   FormFieldArray,
   FormRecord,
   FormState,
-  FormValues,
+  FormValueMap,
+  FullFormValues,
 } from 'src/utils/formHelpers';
 
 const styles: StyleRulesCallback = theme => ({
@@ -57,14 +57,14 @@ const formFields: FormFieldArray<FormKey> = [
 
 interface Props extends WithStyles {
   loading: boolean;
-  submit: (f: FormValues<FormKey>) => void;
+  submit: (f: FullFormValues<FormKey>) => void;
   error?: string;
 }
 
 interface State extends FormState<FormKey> {
   agree: boolean;
   attempted: boolean;
-  values: FormValues<FormKey>;
+  values: FullFormValues<FormKey>;
 }
 
 class SignUpForm extends React.Component<Props, State> {
@@ -126,7 +126,7 @@ class SignUpForm extends React.Component<Props, State> {
   public validate = (all?: boolean) => {
     const { values } = this.state;
 
-    const errors: FormErrorMessages<FormKey> = {};
+    const errors: FormValueMap<FormKey> = {};
 
     if (
       all &&

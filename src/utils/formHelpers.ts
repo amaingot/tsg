@@ -1,5 +1,5 @@
-export type FormValues<FormKey extends string> = Record<FormKey, string>;
-export type FormErrorMessages<FormKey extends string> = Partial<FormValues<FormKey>>;
+export type FullFormValues<FormKey extends string> = Record<FormKey, string>;
+export type FormValueMap<FormKey extends string> = Partial<FullFormValues<FormKey>>;
 
 export interface FormRecord<FormKey extends string> {
   label: string;
@@ -11,6 +11,6 @@ export interface FormRecord<FormKey extends string> {
 export type FormFieldArray<FormKey extends string> = Array<FormRecord<FormKey>>;
 
 export interface FormState<FormKey extends string> {
-  values: FormErrorMessages<FormKey>;
-  errors: FormErrorMessages<FormKey>;
+  values: FormValueMap<FormKey>;
+  errors: FormValueMap<FormKey>;
 }

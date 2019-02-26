@@ -6,7 +6,12 @@ import Typography from '@material-ui/core/Typography';
 
 import FormField, { FormFieldProps } from 'src/components/FormField';
 import { CreateEmployeeInput } from 'src/graphql/types';
-import { FormErrorMessages, FormFieldArray, FormRecord, FormState } from 'src/utils/formHelpers';
+import {
+  employeeFormFields,
+  EmployeeFormKey,
+  validateEmployeeFormFields,
+} from 'src/utils/employeeFormHelpers';
+import { FormRecord, FormState, FormValueMap } from 'src/utils/formHelpers';
 
 const styles: StyleRulesCallback = theme => ({
   form: {
@@ -25,27 +30,7 @@ export interface Props {
   error?: string;
 }
 
-type FormKey = 'lastName' | 'firstName' | 'email';
-
-const formFields: FormFieldArray<FormKey> = [
-  {
-    label: 'Last Name',
-    key: 'lastName',
-    required: true,
-  },
-  {
-    label: 'First Name',
-    key: 'firstName',
-    required: true,
-  },
-  {
-    label: 'Email',
-    key: 'email',
-    required: true,
-  },
-];
-
-interface State extends FormState<FormKey> {
+interface State extends FormState<EmployeeFormKey> {
   attempted: boolean;
 }
 
@@ -59,7 +44,7 @@ class CreateEmployeeForm extends React.Component<Props & WithStyles, State> {
       values: {},
     };
   }
-  public handle = (key: FormKey) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  public handle = (key: EmployeeFormKey) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValues = this.state.values;
     newValues[key] = e.currentTarget.value.length === 0 ? undefined : e.currentTarget.value;
     this.setState(
@@ -82,30 +67,13 @@ class CreateEmployeeForm extends React.Component<Props & WithStyles, State> {
   public validate = (all?: boolean) => {
     const { values } = this.state;
 
-    const errors: FormErrorMessages<FormKey> = {};
-
-    if (
-      all &&
-      values.email &&
-      values.email.match(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/) ===
-        null
-    ) {
-      errors.email = 'Please enter a valid email address.';
-    }
-
-    if (all && !values.firstName) {
-      errors.firstName = 'You must enter your first name.';
-    }
-
-    if (all && !values.lastName) {
-      errors.lastName = 'You must enter your last name.';
-    }
+    const errors: FormValueMap<EmployeeFormKey> = validateEmployeeFormFields(values);
 
     this.setState({ errors });
     return Object.keys(errors).length === 0;
   };
 
-  public renderFormField = (f: FormRecord<FormKey>, i: number) => {
+  public renderFormField = (f: FormRecord<EmployeeFormKey>, i: number) => {
     const { loading } = this.props;
 
     const formProps: FormFieldProps = {
@@ -128,7 +96,7 @@ class CreateEmployeeForm extends React.Component<Props & WithStyles, State> {
 
     return (
       <form className={classes.form} onSubmit={this.handleSubmit}>
-        {formFields.map(this.renderFormField)}
+        {employeeFormFields.map(this.renderFormField)}
         <Typography color="error" variant="body1" component="p">
           {error ? `Error: ${error}` : ' '}
         </Typography>

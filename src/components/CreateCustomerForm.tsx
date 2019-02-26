@@ -6,7 +6,12 @@ import Typography from '@material-ui/core/Typography';
 
 import FormField, { FormFieldProps } from 'src/components/FormField';
 import { CreateCustomerInput } from 'src/graphql/types';
-import { FormErrorMessages, FormFieldArray, FormRecord, FormState } from 'src/utils/formHelpers';
+import {
+  CustomerFieldKey,
+  customerFormFields,
+  validateCustomerFormFields,
+} from 'src/utils/customerFormHelpers';
+import { FormRecord, FormState, FormValueMap } from 'src/utils/formHelpers';
 
 const styles: StyleRulesCallback = theme => ({
   form: {
@@ -25,69 +30,7 @@ export interface Props {
   error?: string;
 }
 
-type FormKey =
-  | 'lastName'
-  | 'firstName'
-  | 'email'
-  | 'address'
-  | 'address2'
-  | 'city'
-  | 'state'
-  | 'zip'
-  | 'homePhone'
-  | 'cellPhone'
-  | 'workPhone';
-
-const formFields: FormFieldArray<FormKey> = [
-  {
-    label: 'Last Name',
-    key: 'lastName',
-    required: true,
-  },
-  {
-    label: 'First Name',
-    key: 'firstName',
-    required: true,
-  },
-  {
-    label: 'Email',
-    key: 'email',
-  },
-  {
-    label: 'Address',
-    key: 'address',
-  },
-  {
-    label: 'Address 2',
-    key: 'address2',
-  },
-  {
-    label: 'City',
-    key: 'city',
-  },
-  {
-    label: 'State',
-    key: 'state',
-  },
-  {
-    label: 'Zip',
-    key: 'zip',
-  },
-  {
-    label: 'Home Phone',
-    key: 'homePhone',
-  },
-  {
-    label: 'Cell Phone',
-    key: 'cellPhone',
-  },
-  {
-    label: 'Work Phone',
-    key: 'workPhone',
-  },
-];
-
-interface State extends FormState<FormKey> {
+interface State extends FormState<CustomerFieldKey> {
   attempted: boolean;
 }
 
@@ -101,7 +44,7 @@ class CreateCustomerForm extends React.Component<Props & WithStyles, State> {
       values: {},
     };
   }
-  public handle = (key: FormKey) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  public handle = (key: CustomerFieldKey) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValues = this.state.values;
     newValues[key] = e.currentTarget.value.length === 0 ? undefined : e.currentTarget.value;
     this.setState(
@@ -116,50 +59,21 @@ class CreateCustomerForm extends React.Component<Props & WithStyles, State> {
     e.preventDefault();
     const { submit } = this.props;
 
-    if (this.validate(true)) {
+    if (this.validate()) {
       submit({ ...this.state.values });
     }
   };
 
-  public validate = (all?: boolean) => {
+  public validate = () => {
     const { values } = this.state;
 
-    const errors: FormErrorMessages<FormKey> = {};
-
-    if (
-      all &&
-      values.email &&
-      values.email.match(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/) ===
-        null
-    ) {
-      errors.email = 'Please enter a valid email address.';
-    }
-
-    if (all && !values.firstName) {
-      errors.firstName = 'You must enter your first name.';
-    }
-
-    if (all && !values.lastName) {
-      errors.lastName = 'You must enter your last name.';
-    }
-
-    if (all && values.homePhone && values.homePhone.match(/^\+?[1-9]\d{10,14}$/) === null) {
-      errors.homePhone = 'You must enter your phone number. Example: +15557770000';
-    }
-
-    if (all && values.cellPhone && values.cellPhone.match(/^\+?[1-9]\d{10,14}$/) === null) {
-      errors.cellPhone = 'You must enter your phone number. Example: +15557770000';
-    }
-
-    if (all && values.workPhone && values.workPhone.match(/^\+?[1-9]\d{10,14}$/) === null) {
-      errors.workPhone = 'You must enter your phone number. Example: +15557770000';
-    }
+    const errors: FormValueMap<CustomerFieldKey> = validateCustomerFormFields(values);
 
     this.setState({ errors });
     return Object.keys(errors).length === 0;
   };
 
-  public renderFormField = (f: FormRecord<FormKey>, i: number) => {
+  public renderFormField = (f: FormRecord<CustomerFieldKey>, i: number) => {
     const { loading } = this.props;
 
     const formProps: FormFieldProps = {
@@ -182,7 +96,7 @@ class CreateCustomerForm extends React.Component<Props & WithStyles, State> {
 
     return (
       <form className={classes.form} onSubmit={this.handleSubmit}>
-        {formFields.map(this.renderFormField)}
+        {customerFormFields.map(this.renderFormField)}
         <Typography color="error" variant="body1" component="p">
           {error ? `Error: ${error}` : ' '}
         </Typography>
