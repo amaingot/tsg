@@ -13,6 +13,11 @@ interface SignUpOpts {
   password: string;
 }
 
+export enum UserGroup {
+  Admin = 'Admin',
+  AccountOwner = 'AccountOwner',
+}
+
 interface SessionPayload {
   given_name: string;
   family_name: string;
@@ -20,20 +25,23 @@ interface SessionPayload {
   email_verified: boolean;
   phone_number: string;
   phone_number_verified: boolean;
+  'cognito:groups': string[];
 }
 
-interface User {
+export interface User {
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
   emailVerified: boolean;
   phoneVerified: boolean;
+  groups: UserGroup[];
 }
 
 export type VerifyAttributeType = 'phone' | 'email';
 
 export interface AuthContextShape {
+  loaded: boolean;
   loggedIn: boolean;
   loading: number;
   error: boolean;
@@ -57,6 +65,7 @@ export interface AuthContextShape {
 }
 
 const defaultValue: AuthContextShape = {
+  loaded: false,
   loggedIn: false,
   loading: 0,
   error: false,
@@ -104,6 +113,7 @@ class WithoutRouterAuthContextProvider extends React.Component<ProviderProps, Au
       .then(session => {
         const idToken = session.getIdToken();
         const payload = idToken.payload as SessionPayload;
+        const groups = (payload['cognito:groups'] || []) as UserGroup[];
 
         const user: User = {
           firstName: payload.given_name,
@@ -112,9 +122,11 @@ class WithoutRouterAuthContextProvider extends React.Component<ProviderProps, Au
           emailVerified: payload.email_verified,
           phone: payload.phone_number,
           phoneVerified: payload.phone_number_verified,
+          groups,
         };
 
         this.setState(state => ({
+          loaded: true,
           loggedIn: session.isValid(),
           cognitoSession: session,
           user,
@@ -332,6 +344,7 @@ class WithoutRouterAuthContextProvider extends React.Component<ProviderProps, Au
   private handleUserResponse = (user: any, reportError: boolean = false) => {
     if (user instanceof CognitoUser) {
       this.setState(state => ({
+        loaded: true,
         loggedIn: true,
         cognitoUser: user,
         loading: state.loading - 1,
@@ -357,6 +370,10 @@ class WithoutRouterAuthContextProvider extends React.Component<ProviderProps, Au
 
   public render() {
     const { children } = this.props;
+
+    if (!this.state.loaded) {
+      return null;
+    };
 
     return <AuthContext.Provider value={this.state}>{children}</AuthContext.Provider>;
   }

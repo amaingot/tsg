@@ -1,0 +1,13 @@
+{
+    "Migration": {
+        "V1": {
+            "Resources": [
+                "CustomerTable",
+                "JobTable",
+                "EmployeeTable",
+                "ElasticSearchAccessIAMRole",
+                "ElasticSearchDomain"
+            ]
+        }
+    }
+}

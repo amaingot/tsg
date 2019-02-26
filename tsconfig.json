@@ -9,8 +9,6 @@
     "noErrorTruncation": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
-    // "noUnusedParameters": true,
-    "allowJs": true,
     "paths": {
       "src/*": ["src/*"]
     },

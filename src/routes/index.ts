@@ -1,4 +1,6 @@
 import { RouteComponentProps } from 'react-router';
+
+import { UserGroup } from 'src/enhancers/withAuth';
 import { CustomRouteProps } from 'src/utils/CustomRoute';
 
 export interface RouteConfig extends CustomRouteProps {
@@ -7,4 +9,5 @@ export interface RouteConfig extends CustomRouteProps {
   exact?: boolean;
   label: string;
   icon?: React.ComponentType;
+  allowedGroups?: UserGroup[];
 }

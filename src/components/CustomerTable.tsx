@@ -7,7 +7,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-import CreateCustomer from 'src/components/CreateCustomer';
+import CreateCustomerDialog from 'src/components/CreateCustomerDialog';
 import withCustomers, { WithCustomersProps } from 'src/enhancers/withCustomers';
 
 const styles: StyleRulesCallback = theme => ({
@@ -33,7 +33,7 @@ const CustomerTable: React.FunctionComponent<AllProps> = props => {
 
   return (
     <>
-      <CreateCustomer submit={createCustomer} loading={data.loading} />
+      <CreateCustomerDialog submit={createCustomer} loading={data.loading} />
       <Table className={classes.table}>
         <TableHead>
           <TableRow>

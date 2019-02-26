@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import * as React from 'react';
 
 import Paper from '@material-ui/core/Paper';
@@ -9,11 +10,24 @@ const styles: StyleRulesCallback = theme => ({
     marginTop: theme.spacing.unit * 3,
     overflowX: 'auto',
   },
+  withPadding: {
+    padding: theme.spacing.unit * 4,
+  },
 });
 
-const PagePaper: React.FunctionComponent<{ children: React.ReactNode } & WithStyles> = props => {
-  const { children, classes } = props;
-  return <Paper className={classes.root}>{children}</Paper>;
+interface Props extends WithStyles {
+  children: React.ReactNode;
+  withPadding?: boolean;
+}
+
+const PagePaper: React.FunctionComponent<Props> = props => {
+  const { children, classes, withPadding } = props;
+
+  const paperClasses = classNames(classes.root, {
+    [classes.withPadding]: withPadding,
+  });
+
+  return <Paper className={paperClasses}>{children}</Paper>;
 };
 
 export default withStyles(styles)(PagePaper);

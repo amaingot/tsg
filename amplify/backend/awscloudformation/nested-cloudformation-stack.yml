@@ -148,6 +148,8 @@
 			"Properties": {
 				"TemplateURL": "https://s3.amazonaws.com/tsg-20190201211408-deployment/amplify-cfn-templates/api/cloudformation-template.json",
 				"Parameters": {
+					"APIKeyExpirationEpoch": -1,
+					"DynamoDBBillingMode": "PROVISIONED",
 					"AppSyncApiName": "tsg",
 					"AuthCognitoUserPoolId": {
 						"Fn::GetAtt": [
@@ -155,12 +157,8 @@
 							"Outputs.UserPoolId"
 						]
 					},
-					"ElasticSearchStreamingLambdaCodeS3Key": "amplify-appsync-files/python_streaming_function.zip",
-					"ElasticSearchStreamingLambdaCodeS3Bucket": "tsg-20190201211408-deployment",
-					"schemaGraphql": "s3://tsg-20190201211408-deployment/amplify-appsync-files/schema.graphql.1549081517744",
-					"ResolverBucket": "tsg-20190201211408-deployment",
-					"ResolverRootKey": "amplify-appsync-files",
-					"DeploymentTimestamp": "1549081517744",
+					"S3DeploymentBucket": "tsg-20190201211408-deployment",
+					"S3DeploymentRootKey": "amplify-appsync-files/7a946f613860e864a83e1d3a675b89d6e5293cb1",
 					"env": "prod"
 				}
 			}

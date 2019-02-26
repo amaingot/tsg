@@ -4,9 +4,9 @@ import Fab from '@material-ui/core/Fab';
 import withStyles, { StyleRulesCallback, WithStyles } from '@material-ui/core/styles/withStyles';
 import AddIcon from '@material-ui/icons/Add';
 
-import CreateCustomerForm from 'src/components/CreateCustomerForm';
+import CreateEmployeeForm from 'src/components/CreateEmployeeForm';
 import Modal from 'src/components/Modal';
-import { CreateCustomerInput, CreateCustomerMutationVariables } from 'src/graphql/types';
+import { CreateEmployeeInput, CreateEmployeeMutationVariables } from 'src/graphql/types';
 
 const styles: StyleRulesCallback = theme => ({
   button: {
@@ -17,7 +17,7 @@ const styles: StyleRulesCallback = theme => ({
 });
 
 export interface Props extends WithStyles<typeof styles> {
-  submit: (variables: CreateCustomerMutationVariables) => void;
+  submit: (variables: CreateEmployeeMutationVariables) => void;
   loading: boolean;
 }
 
@@ -25,7 +25,7 @@ export interface State {
   open: boolean;
 }
 
-class CreateCustomer extends React.Component<Props, State> {
+class CreateEmployeeDialog extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -37,7 +37,7 @@ class CreateCustomer extends React.Component<Props, State> {
 
   public close = () => this.setState({ open: false });
 
-  public submit = (input: CreateCustomerInput) => {
+  public submit = (input: CreateEmployeeInput) => {
     this.props.submit({ input });
     this.close();
   };
@@ -50,11 +50,11 @@ class CreateCustomer extends React.Component<Props, State> {
           <AddIcon />
         </Fab>
         <Modal open={this.state.open} title="Create new customer" close={this.close}>
-          <CreateCustomerForm submit={this.submit} loading={loading} />
+          <CreateEmployeeForm submit={this.submit} loading={loading} />
         </Modal>
       </>
     );
   }
 }
 
-export default withStyles(styles)(CreateCustomer);
+export default withStyles(styles)(CreateEmployeeDialog);

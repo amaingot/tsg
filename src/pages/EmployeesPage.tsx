@@ -1,6 +1,12 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 
+import Typography from '@material-ui/core/Typography';
+
+import EmployeeTable from 'src/components/EmployeeTable';
+import PagePaper from 'src/components/PagePaper';
+
+
 type Props = RouteComponentProps;
 
 interface State {
@@ -19,6 +25,13 @@ export default class EmployeesPage extends React.Component<Props, State> {
   }
 
   public render() {
-    return <div>Employee Page</div>;
+    return (
+      <>
+        <Typography variant="h4">Employees</Typography>
+        <PagePaper>
+          <EmployeeTable />
+        </PagePaper>
+      </>
+    );
   }
 }

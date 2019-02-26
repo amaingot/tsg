@@ -7,6 +7,8 @@ import HomeIcon from '@material-ui/icons/Home';
 import PeopleIcon from '@material-ui/icons/People';
 import SettingsIcon from '@material-ui/icons/Settings';
 
+import { UserGroup } from 'src/enhancers/withAuth';
+import CompanySettingsPage from 'src/pages/CompanySettingsPage';
 import CustomersPage from 'src/pages/CustomersPage';
 import DashboardPage from 'src/pages/DashboardPage';
 import EmployeesPage from 'src/pages/EmployeesPage';
@@ -36,7 +38,13 @@ export const AppRoutes: Array<RouteConfig | null> = [
     icon: IDBadgeIcon,
   },
   null,
-  { path: '/app/settings', component: CustomersPage, label: 'Administration', icon: SettingsIcon },
+  {
+    path: '/app/settings',
+    component: CompanySettingsPage,
+    label: 'Settings',
+    icon: SettingsIcon,
+    allowedGroups: [UserGroup.Admin, UserGroup.AccountOwner],
+  },
 ];
 
 export const AppRoutesSwitch: React.FunctionComponent = () => {

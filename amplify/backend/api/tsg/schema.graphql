@@ -38,7 +38,7 @@ type Employee @model
   @auth(
     rules: [
       { allow: owner, ownerField: "owner", mutations: [ update ], queries: [ get ] },
-      { allow: groups, groups: [ "Admin" ] }
+      { allow: groups, groups: [ "Admin" ], mutations: [ create, update, delete ], queries: [ get, list ]  }
     ]
   )
 {

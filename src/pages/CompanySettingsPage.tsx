@@ -3,32 +3,21 @@ import { RouteComponentProps } from 'react-router';
 
 import Typography from '@material-ui/core/Typography';
 
-import JobTable from 'src/components/JobTable';
 import PagePaper from 'src/components/PagePaper';
 
 type Props = RouteComponentProps;
 
-interface State {
-  rowsPerPage: number;
-  pageNumber: number;
-}
-
-export default class JobsPage extends React.Component<Props, State> {
+export default class CompanySettingsPage extends React.Component<Props, {}> {
   constructor(props: Props) {
     super(props);
-
-    this.state = {
-      rowsPerPage: 50,
-      pageNumber: 1,
-    };
   }
 
   public render() {
     return (
       <>
-        <Typography variant="h4">Jobs</Typography>
-        <PagePaper>
-          <JobTable />
+        <Typography variant="h4">Company Settings</Typography>
+        <PagePaper withPadding>
+          <Typography>Here is where we will put company settings</Typography>
         </PagePaper>
       </>
     );
