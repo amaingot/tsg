@@ -373,7 +373,7 @@ class WithoutRouterAuthContextProvider extends React.Component<ProviderProps, Au
 
     if (!this.state.loaded) {
       return null;
-    };
+    }
 
     return <AuthContext.Provider value={this.state}>{children}</AuthContext.Provider>;
   }
