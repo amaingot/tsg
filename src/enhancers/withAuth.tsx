@@ -354,6 +354,7 @@ class WithoutRouterAuthContextProvider extends React.Component<ProviderProps, Au
       }));
     } else {
       this.setState(state => ({
+        loaded: true,
         loading: state.loading - 1,
       }));
     }
