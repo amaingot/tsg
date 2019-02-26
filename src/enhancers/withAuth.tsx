@@ -1,4 +1,4 @@
-/* tslint:disable:no-empty no-console */
+/* tslint:disable:no-empty */
 import { SignInOpts, SignUpParams } from '@aws-amplify/auth/lib/types';
 import { CognitoUser, CognitoUserSession } from 'amazon-cognito-identity-js';
 import { Auth } from 'aws-amplify';
@@ -262,7 +262,6 @@ class WithoutRouterAuthContextProvider extends React.Component<ProviderProps, Au
     if (cognitoUser && user) {
       Auth.verifyCurrentUserAttributeSubmit(attr, code)
         .then(r => {
-          console.log('Verify current user attribute submit response: ', r);
           this.setState(state => ({
             loading: state.loading - 1,
             verifyCodeForAttribute: undefined,
@@ -362,6 +361,7 @@ class WithoutRouterAuthContextProvider extends React.Component<ProviderProps, Au
 
   private catchReason = (reason: any) => {
     this.setState(state => ({
+      loaded: true,
       loading: state.loading - 1,
       error: true,
       errorCode: reason.code,

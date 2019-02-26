@@ -17,13 +17,17 @@ class CustomRoute extends React.Component<Props, {}> {
     super(props);
   }
 
+  public shouldComponentUpdate(nextProps: Props) {
+    return this.props.auth.loggedIn !== nextProps.auth.loggedIn;
+  }
+
   public render() {
-    const { allowedGroups, unauthedPath, privatePath, auth, ...rest } = this.props;
+    const { allowedGroups, unauthedPath = false, privatePath = false, auth, ...rest } = this.props;
     const { user, loggedIn } = auth;
 
     const notInGroup =
       allowedGroups && user && allowedGroups.filter(g => user.groups.includes(g)).length === 0;
-    const onlyForUnAuthed = unauthedPath && !loggedIn;
+    const onlyForUnAuthed = unauthedPath && loggedIn;
     const onlyForAuthed = privatePath && !loggedIn;
     let redirectTo: string | undefined;
 
