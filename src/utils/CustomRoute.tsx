@@ -17,10 +17,6 @@ class CustomRoute extends React.Component<Props, {}> {
     super(props);
   }
 
-  public shouldComponentUpdate(nextProps: Props) {
-    return this.props.auth.loggedIn !== nextProps.auth.loggedIn;
-  }
-
   public render() {
     const { allowedGroups, unauthedPath = false, privatePath = false, auth, ...rest } = this.props;
     const { user, loggedIn } = auth;

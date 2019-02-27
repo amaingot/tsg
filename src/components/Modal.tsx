@@ -5,6 +5,13 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import withStyles, { StyleRulesCallback, WithStyles } from '@material-ui/core/styles/withStyles';
+
+const styles: StyleRulesCallback<'actions'> = theme => ({
+  actions: {
+    margin: theme.spacing.unit,
+  },
+});
 
 interface ModalProps {
   open: boolean;
@@ -15,8 +22,8 @@ interface ModalProps {
   actions?: React.ReactNode;
 }
 
-const Modal: React.FunctionComponent<ModalProps> = props => {
-  const { open, close, title, description, children, actions } = props;
+const Modal: React.FunctionComponent<ModalProps & WithStyles<typeof styles>> = props => {
+  const { open, close, title, description, children, actions, classes } = props;
   return (
     <Dialog open={open} onClose={close}>
       {title && <DialogTitle>{title}</DialogTitle>}
@@ -24,9 +31,9 @@ const Modal: React.FunctionComponent<ModalProps> = props => {
         {description && <DialogContentText>{description}</DialogContentText>}
         {children}
       </DialogContent>
-      {actions && <DialogActions>{actions}</DialogActions>}
+      {actions && <DialogActions className={classes.actions}>{actions}</DialogActions>}
     </Dialog>
   );
 };
 
-export default Modal;
+export default withStyles(styles)(Modal);
