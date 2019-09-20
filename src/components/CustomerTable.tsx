@@ -1,23 +1,24 @@
 import * as React from 'react';
 
-import { StyleRulesCallback, withStyles, WithStyles } from '@material-ui/core/styles';
+import { StyleRules, withStyles, WithStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-import CreateCustomerDialog from 'src/components/CreateCustomerDialog';
+import CustomerModal from 'src/components/CreateJobDialog';
 import withCustomers, { WithCustomersProps } from 'src/enhancers/withCustomers';
+import { goTo } from 'src/utils/history';
 
-const styles: StyleRulesCallback = theme => ({
+const styles: StyleRules = {
   table: {
     minWidth: 700,
   },
   tableWrapper: {
     overflowX: 'auto',
   },
-});
+};
 
 interface CustomerTableProps {
   rowsPerPage?: number;
@@ -25,7 +26,7 @@ interface CustomerTableProps {
   tableFooter?: React.ReactNode;
 }
 
-type AllProps = CustomerTableProps & WithCustomersProps & WithStyles;
+type AllProps = CustomerTableProps & WithCustomersProps & WithStyles<typeof styles>;
 
 const CustomerTable: React.FunctionComponent<AllProps> = props => {
   const { classes, listCustomersData: data, createCustomer, tableFooter } = props;
@@ -33,7 +34,7 @@ const CustomerTable: React.FunctionComponent<AllProps> = props => {
 
   return (
     <>
-      <CreateCustomerDialog submit={createCustomer} loading={data.loading} />
+      <CustomerModal submit={createCustomer} loading={data.loading} />
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
@@ -48,7 +49,7 @@ const CustomerTable: React.FunctionComponent<AllProps> = props => {
           {customers.map(
             c =>
               c && (
-                <TableRow key={c.id}>
+                <TableRow key={c.id} hover onClick={() => goTo(`/app/customer/${c.id}`)}>
                   <TableCell component="th" scope="row">
                     {c.firstName} {c.lastName}
                   </TableCell>

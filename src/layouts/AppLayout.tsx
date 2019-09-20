@@ -264,6 +264,8 @@ class AppLayout extends React.Component<Props, State> {
             {AppRoutes.map((route, i) => {
               if (route === null) {
                 return <Divider key={i} className={classes.listDivider} />;
+              } else if (route.renderInMenu === false) {
+                return null;
               }
 
               return (

@@ -19,7 +19,7 @@ interface WithSingleEmployeeProps {
   subscribeToUpdateEmployee: () => void;
   subscribeToCreateEmployee: () => void;
   subscribeToDeleteEmployee: () => void;
-  todoData?: DataValue<GetEmployeeQueryData, GetEmployeeQueryVariables>;
+  employeeData?: DataValue<GetEmployeeQueryData, GetEmployeeQueryVariables>;
 }
 
 interface WithEmployeeIdProp {

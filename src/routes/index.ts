@@ -10,4 +10,5 @@ export interface RouteConfig extends CustomRouteProps {
   label: string;
   icon?: React.ComponentType;
   allowedGroups?: UserGroup[];
+  renderInMenu?: boolean;
 }

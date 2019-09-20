@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Switch } from 'react-router';
+import { RouteComponentProps, Switch } from 'react-router';
 
 import Icon, { IconProps } from '@material-ui/core/Icon';
 import AssignmentIcon from '@material-ui/icons/Assignment';
@@ -9,6 +9,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 
 import { UserGroup } from 'src/enhancers/withAuth';
 import CompanySettingsPage from 'src/pages/CompanySettingsPage';
+import CustomerDetailPage from 'src/pages/CustomerDetailPage';
 import CustomersPage from 'src/pages/CustomersPage';
 import DashboardPage from 'src/pages/DashboardPage';
 import EmployeesPage from 'src/pages/EmployeesPage';
@@ -52,6 +53,17 @@ export const AppRoutesSwitch: React.FunctionComponent = () => {
     <Switch>
       <CustomRedirect from="/app" exact to="/app/customers" />
       {AppRoutes.map(r => r && <CustomRoute key={r.path} privatePath {...r} />)}
+      <CustomRoute
+        path="/app/customer/:id"
+        privatePath
+        children={(props: RouteComponentProps<{ id: string }>) =>
+          props.match ? (
+            <CustomerDetailPage id={props.match.params.id} {...props} />
+          ) : (
+            <CustomRedirect to="/error" />
+          )
+        }
+      />
       <CustomRedirect to="/error" />
     </Switch>
   );

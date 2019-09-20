@@ -1,3 +1,46 @@
+export interface Job {
+  __typename: 'Job';
+  id: string;
+  name: string | null;
+  racket: string | null;
+  tension: string | null;
+  gauge: string | null;
+  recieved: string | null;
+  finished: string | null;
+  stringName: string | null;
+  lastUpdated: string | null;
+  createdAt: string | null;
+}
+
+export interface Customer {
+  __typename: 'Customer';
+  id: string;
+  memNumber: string | null;
+  lastName: string | null;
+  firstName: string | null;
+  middleInitial: string | null;
+  email: string | null;
+  address: string | null;
+  address2: string | null;
+  city: string | null;
+  state: string | null;
+  zip: string | null;
+  homePhone: string | null;
+  cellPhone: string | null;
+  workPhone: string | null;
+  lastUpdated: string | null;
+  createdAt: string | null;
+}
+
+export interface Employee {
+  __typename: 'Employee';
+  id: string;
+  firstName: string | null;
+  lastName: string | null;
+  email: string | null;
+  owner: string;
+}
+
 export interface CreateCustomerInput {
   id?: string | null;
   memNumber?: string | null;
@@ -303,19 +346,7 @@ export interface CreateCustomerMutation {
     createdAt: string | null;
     jobs: {
       __typename: 'ModelJobConnection';
-      items: Array<{
-        __typename: 'Job';
-        id: string;
-        name: string | null;
-        racket: string | null;
-        tension: string | null;
-        gauge: string | null;
-        recieved: string | null;
-        finished: string | null;
-        stringName: string | null;
-        lastUpdated: string | null;
-        createdAt: string | null;
-      } | null> | null;
+      items: Array<Job | null> | null;
       nextToken: string | null;
     } | null;
   } | null;
@@ -346,19 +377,7 @@ export interface UpdateCustomerMutation {
     createdAt: string | null;
     jobs: {
       __typename: 'ModelJobConnection';
-      items: Array<{
-        __typename: 'Job';
-        id: string;
-        name: string | null;
-        racket: string | null;
-        tension: string | null;
-        gauge: string | null;
-        recieved: string | null;
-        finished: string | null;
-        stringName: string | null;
-        lastUpdated: string | null;
-        createdAt: string | null;
-      } | null> | null;
+      items: Array<Job | null> | null;
       nextToken: string | null;
     } | null;
   } | null;
@@ -389,19 +408,7 @@ export interface DeleteCustomerMutation {
     createdAt: string | null;
     jobs: {
       __typename: 'ModelJobConnection';
-      items: Array<{
-        __typename: 'Job';
-        id: string;
-        name: string | null;
-        racket: string | null;
-        tension: string | null;
-        gauge: string | null;
-        recieved: string | null;
-        finished: string | null;
-        stringName: string | null;
-        lastUpdated: string | null;
-        createdAt: string | null;
-      } | null> | null;
+      items: Array<Job | null> | null;
       nextToken: string | null;
     } | null;
   } | null;
@@ -586,19 +593,7 @@ export interface CreateEmployeeMutation {
     owner: string;
     jobs: {
       __typename: 'ModelJobConnection';
-      items: Array<{
-        __typename: 'Job';
-        id: string;
-        name: string | null;
-        racket: string | null;
-        tension: string | null;
-        gauge: string | null;
-        recieved: string | null;
-        finished: string | null;
-        stringName: string | null;
-        lastUpdated: string | null;
-        createdAt: string | null;
-      } | null> | null;
+      items: Array<Job | null> | null;
       nextToken: string | null;
     } | null;
   } | null;
@@ -618,19 +613,7 @@ export interface UpdateEmployeeMutation {
     owner: string;
     jobs: {
       __typename: 'ModelJobConnection';
-      items: Array<{
-        __typename: 'Job';
-        id: string;
-        name: string | null;
-        racket: string | null;
-        tension: string | null;
-        gauge: string | null;
-        recieved: string | null;
-        finished: string | null;
-        stringName: string | null;
-        lastUpdated: string | null;
-        createdAt: string | null;
-      } | null> | null;
+      items: Array<Job | null> | null;
       nextToken: string | null;
     } | null;
   } | null;
@@ -650,19 +633,7 @@ export interface DeleteEmployeeMutation {
     owner: string;
     jobs: {
       __typename: 'ModelJobConnection';
-      items: Array<{
-        __typename: 'Job';
-        id: string;
-        name: string | null;
-        racket: string | null;
-        tension: string | null;
-        gauge: string | null;
-        recieved: string | null;
-        finished: string | null;
-        stringName: string | null;
-        lastUpdated: string | null;
-        createdAt: string | null;
-      } | null> | null;
+      items: Array<Job | null> | null;
       nextToken: string | null;
     } | null;
   } | null;
@@ -693,19 +664,7 @@ export interface GetCustomerQueryData {
     createdAt: string | null;
     jobs: {
       __typename: 'ModelJobConnection';
-      items: Array<{
-        __typename: 'Job';
-        id: string;
-        name: string | null;
-        racket: string | null;
-        tension: string | null;
-        gauge: string | null;
-        recieved: string | null;
-        finished: string | null;
-        stringName: string | null;
-        lastUpdated: string | null;
-        createdAt: string | null;
-      } | null> | null;
+      items: Array<Job | null> | null;
       nextToken: string | null;
     } | null;
   } | null;
@@ -823,33 +782,8 @@ export interface ListJobsQueryData {
       stringName: string | null;
       lastUpdated: string | null;
       createdAt: string | null;
-      customer: {
-        __typename: 'Customer';
-        id: string;
-        memNumber: string | null;
-        lastName: string | null;
-        firstName: string | null;
-        middleInitial: string | null;
-        email: string | null;
-        address: string | null;
-        address2: string | null;
-        city: string | null;
-        state: string | null;
-        zip: string | null;
-        homePhone: string | null;
-        cellPhone: string | null;
-        workPhone: string | null;
-        lastUpdated: string | null;
-        createdAt: string | null;
-      } | null;
-      employee: {
-        __typename: 'Employee';
-        id: string;
-        firstName: string | null;
-        lastName: string | null;
-        email: string | null;
-        owner: string;
-      } | null;
+      customer: Customer | null;
+      employee: Employee | null;
     } | null> | null;
     nextToken: string | null;
   } | null;
@@ -869,19 +803,7 @@ export interface GetEmployeeQueryData {
     owner: string;
     jobs: {
       __typename: 'ModelJobConnection';
-      items: Array<{
-        __typename: 'Job';
-        id: string;
-        name: string | null;
-        racket: string | null;
-        tension: string | null;
-        gauge: string | null;
-        recieved: string | null;
-        finished: string | null;
-        stringName: string | null;
-        lastUpdated: string | null;
-        createdAt: string | null;
-      } | null> | null;
+      items: Array<Job | null> | null;
       nextToken: string | null;
     } | null;
   } | null;
@@ -971,33 +893,8 @@ export interface SearchJobsQueryData {
       stringName: string | null;
       lastUpdated: string | null;
       createdAt: string | null;
-      customer: {
-        __typename: 'Customer';
-        id: string;
-        memNumber: string | null;
-        lastName: string | null;
-        firstName: string | null;
-        middleInitial: string | null;
-        email: string | null;
-        address: string | null;
-        address2: string | null;
-        city: string | null;
-        state: string | null;
-        zip: string | null;
-        homePhone: string | null;
-        cellPhone: string | null;
-        workPhone: string | null;
-        lastUpdated: string | null;
-        createdAt: string | null;
-      } | null;
-      employee: {
-        __typename: 'Employee';
-        id: string;
-        firstName: string | null;
-        lastName: string | null;
-        email: string | null;
-        owner: string;
-      } | null;
+      customer: Customer | null;
+      employee: Employee | null;
     } | null> | null;
     nextToken: string | null;
   } | null;
@@ -1024,19 +921,7 @@ export interface OnCreateCustomerSubscription {
     createdAt: string | null;
     jobs: {
       __typename: 'ModelJobConnection';
-      items: Array<{
-        __typename: 'Job';
-        id: string;
-        name: string | null;
-        racket: string | null;
-        tension: string | null;
-        gauge: string | null;
-        recieved: string | null;
-        finished: string | null;
-        stringName: string | null;
-        lastUpdated: string | null;
-        createdAt: string | null;
-      } | null> | null;
+      items: Array<Job | null> | null;
       nextToken: string | null;
     } | null;
   } | null;
@@ -1063,19 +948,7 @@ export interface OnUpdateCustomerSubscription {
     createdAt: string | null;
     jobs: {
       __typename: 'ModelJobConnection';
-      items: Array<{
-        __typename: 'Job';
-        id: string;
-        name: string | null;
-        racket: string | null;
-        tension: string | null;
-        gauge: string | null;
-        recieved: string | null;
-        finished: string | null;
-        stringName: string | null;
-        lastUpdated: string | null;
-        createdAt: string | null;
-      } | null> | null;
+      items: Array<Job | null> | null;
       nextToken: string | null;
     } | null;
   } | null;
@@ -1102,19 +975,7 @@ export interface OnDeleteCustomerSubscription {
     createdAt: string | null;
     jobs: {
       __typename: 'ModelJobConnection';
-      items: Array<{
-        __typename: 'Job';
-        id: string;
-        name: string | null;
-        racket: string | null;
-        tension: string | null;
-        gauge: string | null;
-        recieved: string | null;
-        finished: string | null;
-        stringName: string | null;
-        lastUpdated: string | null;
-        createdAt: string | null;
-      } | null> | null;
+      items: Array<Job | null> | null;
       nextToken: string | null;
     } | null;
   } | null;
@@ -1283,19 +1144,7 @@ export interface OnCreateEmployeeSubscription {
     owner: string;
     jobs: {
       __typename: 'ModelJobConnection';
-      items: Array<{
-        __typename: 'Job';
-        id: string;
-        name: string | null;
-        racket: string | null;
-        tension: string | null;
-        gauge: string | null;
-        recieved: string | null;
-        finished: string | null;
-        stringName: string | null;
-        lastUpdated: string | null;
-        createdAt: string | null;
-      } | null> | null;
+      items: Array<Job | null> | null;
       nextToken: string | null;
     } | null;
   } | null;
@@ -1311,19 +1160,7 @@ export interface OnUpdateEmployeeSubscription {
     owner: string;
     jobs: {
       __typename: 'ModelJobConnection';
-      items: Array<{
-        __typename: 'Job';
-        id: string;
-        name: string | null;
-        racket: string | null;
-        tension: string | null;
-        gauge: string | null;
-        recieved: string | null;
-        finished: string | null;
-        stringName: string | null;
-        lastUpdated: string | null;
-        createdAt: string | null;
-      } | null> | null;
+      items: Array<Job | null> | null;
       nextToken: string | null;
     } | null;
   } | null;
@@ -1339,19 +1176,7 @@ export interface OnDeleteEmployeeSubscription {
     owner: string;
     jobs: {
       __typename: 'ModelJobConnection';
-      items: Array<{
-        __typename: 'Job';
-        id: string;
-        name: string | null;
-        racket: string | null;
-        tension: string | null;
-        gauge: string | null;
-        recieved: string | null;
-        finished: string | null;
-        stringName: string | null;
-        lastUpdated: string | null;
-        createdAt: string | null;
-      } | null> | null;
+      items: Array<Job | null> | null;
       nextToken: string | null;
     } | null;
   } | null;

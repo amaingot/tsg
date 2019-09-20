@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router';
 
 import Typography from '@material-ui/core/Typography';
 
-import JobTable from 'src/components/JobTable';
+import ListJobs from 'src/components/ListJobs';
 import PagePaper from 'src/components/PagePaper';
 
 type Props = RouteComponentProps;
@@ -28,7 +28,7 @@ export default class JobsPage extends React.Component<Props, State> {
       <>
         <Typography variant="h4">Jobs</Typography>
         <PagePaper>
-          <JobTable />
+          <ListJobs />
         </PagePaper>
       </>
     );

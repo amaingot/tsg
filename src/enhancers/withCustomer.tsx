@@ -5,6 +5,7 @@ import { compose, DataValue, graphql } from 'react-apollo';
 import withCustomerMutations, {
   WithCustomersMutationsProps,
 } from 'src/enhancers/withCustomerMutations';
+import withJobMutations, { WithJobsMutationsProps } from 'src/enhancers/withJobMutations';
 import { getCustomerQuery } from 'src/graphql/queries';
 import {
   onCreateCustomerSubscription,
@@ -13,13 +14,15 @@ import {
 } from 'src/graphql/subscriptions';
 import { GetCustomerQueryData, GetCustomerQueryVariables } from 'src/graphql/types';
 
-export type WithCustomerProps = WithSingleCustomerProps & WithCustomersMutationsProps;
+export type WithCustomerProps = WithSingleCustomerProps &
+  WithCustomersMutationsProps &
+  WithJobsMutationsProps;
 
 interface WithSingleCustomerProps {
   subscribeToUpdateCustomer: () => void;
   subscribeToCreateCustomer: () => void;
   subscribeToDeleteCustomer: () => void;
-  todoData?: DataValue<GetCustomerQueryData, GetCustomerQueryVariables>;
+  customerData?: DataValue<GetCustomerQueryData, GetCustomerQueryVariables>;
 }
 
 interface WithCustomerIdProp {
@@ -73,12 +76,13 @@ const withCustomer = <TProps extends WithCustomerIdProp>(
                   data.subscribeToMore(
                     buildSubscription(onDeleteCustomerSubscription, cacheUpdateOptions)
                   ),
-                todoData: data,
+                customerData: data,
               };
             },
           }
         ),
-        withCustomerMutations(cacheUpdateOptions)
+        withCustomerMutations(cacheUpdateOptions),
+        withJobMutations(cacheUpdateOptions)
       )(Component);
 
       return <NewComponent {...this.props} />;

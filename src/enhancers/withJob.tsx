@@ -17,7 +17,7 @@ interface WithSingleJobProps {
   subscribeToUpdateJob: () => void;
   subscribeToCreateJob: () => void;
   subscribeToDeleteJob: () => void;
-  todoData?: DataValue<GetJobQueryData, GetJobQueryVariables>;
+  jobData?: DataValue<GetJobQueryData, GetJobQueryVariables>;
 }
 
 interface WithJobIdProp {

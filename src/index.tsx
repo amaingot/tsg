@@ -4,11 +4,12 @@ import { Rehydrated } from 'aws-appsync-react';
 import * as React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import * as ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 
 import App from 'src/App';
 import awsconfig from 'src/aws-exports';
 import { AuthContextProvider } from 'src/enhancers/withAuth';
+import { history } from 'src/utils/history';
 
 Amplify.configure(awsconfig);
 
@@ -22,7 +23,7 @@ const client = new AWSAppSyncClient({
 });
 
 ReactDOM.render(
-  <BrowserRouter>
+  <Router history={history}>
     <ApolloProvider client={client as any}>
       <Rehydrated>
         <AuthContextProvider>
@@ -30,6 +31,6 @@ ReactDOM.render(
         </AuthContextProvider>
       </Rehydrated>
     </ApolloProvider>
-  </BrowserRouter>,
+  </Router>,
   document.getElementById('root')
 );
