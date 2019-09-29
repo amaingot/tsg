@@ -3,8 +3,8 @@ set -e
 IFS='|'
 
 REACTCONFIG="{\
-\"SourceDir\":\"src\",\
-\"DistributionDir\":\"build\",\
+\"SourceDir\":\"api/src\",\
+\"DistributionDir\":\"web/build\",\
 \"BuildCommand\":\"yarn build\",\
 \"StartCommand\":\"yarn start\"\
 }"

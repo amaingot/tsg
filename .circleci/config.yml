@@ -100,11 +100,11 @@ jobs:
 
       - run:
           name: Installing Amplify
-          command: sudo npm install -g @aws-amplify/cli
+          command: sudo npm install -g @aws-amplify/cli --unsafe-perm=true
 
       - run:
-          name: Setup scripts
-          command: find ./scripts -type f -exec chmod +rx {} \\;
+          name: Setup init script
+          command: chmod +rx scripts/amplify-init.sh
 
       - run:
           name: Initialize the Amplify local environment
