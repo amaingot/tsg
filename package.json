@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Tennis Shop Guru",
   "author": "Alex Maingot (alex@maingot.us)",
-  "homepage": "https://github.com/amaingot/tsg#readme",
+  "homepage": "https://github.com/amaingot/tsg",
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap",
@@ -15,7 +15,8 @@
     "fresh": "rm -rf node_modules && lerna run fresh"
   },
   "devDependencies": {
-    "lerna": "^3.16.4"
+    "lerna": "^3.16.4",
+    "serverless": "^1.53.0"
   },
   "repository": {
     "type": "git",
