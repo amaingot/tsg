@@ -109,7 +109,7 @@ jobs:
       - run:
           name: Initialize the Amplify local environment
           command: ./scripts/amplify-init.sh
-          env:
+          environment:
             AMPLIFY_ENV_NAME: prod
 
       - run:
