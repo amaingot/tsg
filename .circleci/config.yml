@@ -4,7 +4,7 @@ jobs:
   build-web:
     working_directory: ~/tsg
     docker:
-      - image: circleci/node:latest-browsers
+      - image: circleci/node:8-browsers
     steps:
       - checkout
 
@@ -47,7 +47,7 @@ jobs:
   deploy-web:
     working_directory: ~/tsg
     docker:
-      - image: circleci/node:latest
+      - image: circleci/node:8
     steps:
       - attach_workspace:
           at: ./
@@ -89,7 +89,7 @@ jobs:
   deploy-api:
     working_directory: ~/tsg
     docker:
-      - image: circleci/node:latest
+      - image: circleci/node:8
     steps:
       - checkout
 
@@ -97,6 +97,24 @@ jobs:
           keys:
             - v1-api-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "api/yarn.lock" }}
             - v1-api-dependencies
+
+      - run:
+          name: Installing Amplify
+          command: sudo npm install -g @aws-amplify/cli
+
+      - run:
+          name: Setup scripts
+          command: find ./scripts -type f -exec chmod +rx {} \\;
+
+      - run:
+          name: Initialize the Amplify local environment
+          command: ./scripts/amplify-init.sh
+          env:
+            AMPLIFY_ENV_NAME: prod
+
+      - run:
+          name: Deploy Amplify
+          command: amplify push --yes
 
       - run:
           name: Installing API dependencies

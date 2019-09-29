@@ -34,14 +34,7 @@ type Job @model @searchable {
   employee: Employee @connection(name: "EmployeeJobs")
 }
 
-type Employee @model
-  @auth(
-    rules: [
-      { allow: owner, ownerField: "owner", mutations: [ update ], queries: [ get ] },
-      { allow: groups, groups: [ "Admin" ], mutations: [ create, update, delete ], queries: [ get, list ]  }
-    ]
-  )
-{
+type Employee @model {
   id: ID!
   firstName: String
   lastName: String
