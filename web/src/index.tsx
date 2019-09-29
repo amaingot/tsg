@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 import { Router } from 'react-router-dom';
 
-import App from 'src/App';
-import { AuthContextProvider } from 'src/enhancers/withAuth';
-import { history } from 'src/utils/history';
+import App from './App';
+import { AuthContextProvider } from './enhancers/withAuth';
+import { history } from './utils/history';
 
 
 ReactDOM.render(

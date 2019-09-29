@@ -3,9 +3,9 @@ import { RouteComponentProps } from 'react-router';
 
 import Fingerprint from '@material-ui/icons/Fingerprint';
 
-import AuthCodeForm from 'src/components/AuthCodeForm';
-import { withAuth, WithAuthProps } from 'src/enhancers/withAuth';
-import SimpleLayout from 'src/layouts/SimpleLayout';
+import AuthCodeForm from '../components/AuthCodeForm';
+import { withAuth, WithAuthProps } from '../enhancers/withAuth';
+import SimpleLayout from '../layouts/SimpleLayout';
 
 type Props = WithAuthProps & RouteComponentProps;
 

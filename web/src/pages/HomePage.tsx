@@ -2,20 +2,19 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 
 import Button from '@material-ui/core/Button';
-import { StyleRulesCallback, withStyles, WithStyles } from '@material-ui/core/styles';
-import Hero from 'src/components/Hero';
-import CustomNavLink from 'src/utils/CustomLink';
+import Hero from '../components/Hero';
+import CustomNavLink from '../utils/CustomLink';
+import { makeStyles } from '../utils/Theme';
 
-const styles: StyleRulesCallback = theme => ({
+const useStyles = makeStyles(theme => ({
   button: {
-    marginTop: `${theme.spacing.unit * 4}px`,
+    marginTop: `${theme.spacing(4)}px`,
   },
-});
+}));
 
-type Props = RouteComponentProps & WithStyles;
 
-const HomePage: React.SFC<Props> = props => {
-  const { classes } = props;
+const HomePage: React.FC<RouteComponentProps> = props => {
+  const classes = useStyles();
 
   return (
     <React.Fragment>
@@ -35,4 +34,4 @@ const HomePage: React.SFC<Props> = props => {
   );
 };
 
-export default withStyles(styles)(HomePage);
+export default HomePage;

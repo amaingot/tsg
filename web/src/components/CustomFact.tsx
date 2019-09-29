@@ -1,28 +1,31 @@
 import * as React from 'react';
 
 import Grid from '@material-ui/core/Grid';
-import withStyles, { StyleRulesCallback, WithStyles } from '@material-ui/core/styles/withStyles';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 import Typography from '@material-ui/core/Typography';
 
-const styles: StyleRulesCallback<'iconContainer' | 'root'> = theme => ({
+import { makeStyles } from '../utils/Theme';
+
+const useStyles = makeStyles(theme => ({
   root: {
-    margin: `${theme.spacing.unit}px 0`,
+    margin: `${theme.spacing(1)}px 0`,
   },
   iconContainer: {
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing(1),
   },
-});
+}));
 
-interface CustomFactProps extends WithStyles<typeof styles> {
+interface CustomFactProps {
   label: string;
   icon: React.ComponentType<SvgIconProps>;
   value?: string | null;
   type?: 'phone' | 'email';
 }
 
-const CustomFact: React.SFC<CustomFactProps> = props => {
-  const { label, icon: Icon, value, classes } = props;
+const CustomFact: React.FC<CustomFactProps> = props => {
+  const { label, icon: Icon, value } = props;
+  const classes = useStyles();
+
   if (!value) {
     return null;
   }
@@ -38,4 +41,4 @@ const CustomFact: React.SFC<CustomFactProps> = props => {
   );
 };
 
-export default withStyles(styles)(CustomFact);
+export default CustomFact;

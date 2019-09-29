@@ -335,7 +335,7 @@ class WithoutRouterAuthContextProvider extends React.Component<ProviderProps, Au
     const { history } = this.props;
     history.push({
       pathname: path || this.state.redirectTo || '/app',
-      search: App.webEnv === 'production' ? '' : `?env=${App.webEnv}`,
+      // search: App.webEnv === 'production' ? '' : `?env=${App.webEnv}`,
     });
     this.redirected();
   };

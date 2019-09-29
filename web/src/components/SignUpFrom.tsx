@@ -1,192 +1,206 @@
 import * as React from 'react';
 
 import Button from '@material-ui/core/Button';
-import withStyles, { StyleRulesCallback, WithStyles } from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 
-import FormField, { FormFieldProps } from 'src/components/FormField';
-import {
-  FormFieldArray,
-  FormRecord,
-  FormState,
-  FormValueMap,
-  FullFormValues,
-} from 'src/utils/formHelpers';
+import FormField from '../components/FormField';
+import { makeStyles } from '../utils/Theme';
 
-const styles: StyleRulesCallback = theme => ({
+const useStyles = makeStyles(theme => ({
   form: {
     width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing(1),
   },
   submit: {
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
   },
-});
+}));
 
 type FormKey = 'firstName' | 'lastName' | 'email' | 'phone' | 'password' | 'passwordAgain';
 
-const formFields: FormFieldArray<FormKey> = [
-  {
-    label: 'First Name',
-    key: 'firstName',
-  },
-  {
-    label: 'Last Name',
-    key: 'lastName',
-  },
-  {
-    label: 'Phone Number',
-    key: 'phone',
-  },
-  {
-    label: 'Email Address',
-    type: 'email',
-    key: 'email',
-  },
-  {
-    label: 'Password',
-    key: 'password',
-    type: 'password',
-  },
-  {
-    label: 'Confirm Password',
-    key: 'passwordAgain',
-    type: 'password',
-  },
-];
 
-interface Props extends WithStyles {
+interface Props {
   loading: boolean;
-  submit: (f: FullFormValues<FormKey>) => void;
+  submit: (f: any) => void;
   error?: string;
 }
 
-interface State extends FormState<FormKey> {
-  agree: boolean;
-  attempted: boolean;
-  values: FullFormValues<FormKey>;
-}
+const SignUpForm: React.FC<Props> = props => {
+  const classes = useStyles();
+  const { loading, submit, error } = props;
 
-class SignUpForm extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      values: {
-        firstName: '',
-        lastName: '',
-        phone: '',
-        email: '',
-        password: '',
-        passwordAgain: '',
-      },
-      agree: false,
-      attempted: false,
-      errors: {},
-    };
-  }
+  const [firstName, setFirstName] = React.useState('');
+  const [firstNameError, setFirstNameError] = React.useState<string>();
 
-  public handle = (key: FormKey) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValues = this.state.values;
-    newValues[key] = e.currentTarget.value;
-    this.setState(
-      {
-        values: newValues,
-      },
-      () => this.validate()
-    );
-  };
+  const [lastName, setLastName] = React.useState('');
+  const [lastNameError, setLastNameError] = React.useState<string>();
 
-  public handleSubmit = (e: React.SyntheticEvent) => {
+  const [phone, setPhone] = React.useState('');
+  const [phoneError, setPhoneError] = React.useState<string>();
+
+  const [email, setEmail] = React.useState('');
+  const [emailError, setEmailError] = React.useState<string>();
+
+  const [password, setPassword] = React.useState('');
+  const [passwordError, setPasswordError] = React.useState<string>();
+
+  const [passwordAgain, setPasswordAgain] = React.useState('');
+  const [passwordAgainError, setPasswordAgainError] = React.useState<string>();
+
+  const hasNoError = !firstNameError || !lastNameError || !phoneError || !emailError || !passwordError || !passwordAgainError;
+
+  const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    const { submit } = this.props;
 
-    if (this.validate(true)) {
-      submit({ ...this.state.values });
+    if (hasNoError) {
+      submit({
+        firstName,
+        lastName,
+        phone,
+        email,
+        password,
+        passwordAgain,
+      });
     }
   };
 
-  public renderFormField = (f: FormRecord<FormKey>, i: number) => {
-    const { loading } = this.props;
+  React.useEffect(() => {
+    if (!phone && phone.match(/^\+?[1-9]\d{10,14}$/) === null) {
+      setPhoneError('You must enter your phone number. Example: +15557770000');
+    } else {
+      setPhoneError(undefined);
+    }
+  }, [phone])
 
-    const formProps: FormFieldProps = {
-      id: f.key,
-      label: f.label,
-      type: f.type,
-      value: this.state.values[f.key],
-      onChange: this.handle(f.key),
-      error: this.state.errors[f.key],
-      disabled: loading,
-      autoFocus: i === 0,
-      required: true,
-    };
+  React.useEffect(() => {
+    if (!lastName) {
+      setLastNameError('You must enter your last name.');
+    } else {
+      setLastNameError(undefined);
+    }
+  }, [lastName])
 
-    return <FormField key={f.key} {...formProps} />;
-  };
 
-  public validate = (all?: boolean) => {
-    const { values } = this.state;
+  React.useEffect(() => {
+    if (!firstName) {
+      setFirstNameError('You must enter your first name.');
+    } else {
+      setFirstNameError(undefined);
+    }
+  }, [firstName])
 
-    const errors: FormValueMap<FormKey> = {};
+  React.useEffect(() => {
+    if (
+      email &&
+      email.match(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/) ===
+      null
+    ) {
+      setEmailError('Please enter a valid email address.');
+    } else {
+      setEmailError(undefined);
+    }
+  }, [email]);
+
+  React.useEffect(() => {
+    if (password && password.length < 8) {
+      setPasswordError('Your password must be longer than eight characters.');
+    } else {
+      setPasswordError(undefined);
+    }
 
     if (
-      all &&
-      values.email &&
-      values.email.match(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/) ===
-        null
+      password &&
+      passwordAgain &&
+      password !== passwordAgain
     ) {
-      errors.email = 'Please enter a valid email address.';
+      setPasswordAgainError('You must enter the exact same password twice.');
+    } else {
+      setPasswordAgainError(undefined);
     }
 
-    if (all && values.password && values.password.length < 8) {
-      errors.password = 'Your password must be longer than eight characters.';
-    }
+  }, [password, passwordAgain]);
 
-    if (
-      all &&
-      values.password &&
-      values.passwordAgain &&
-      values.password !== values.passwordAgain
-    ) {
-      errors.passwordAgain = 'You must enter the exact same password twice.';
-    }
+  return (
+    <form className={classes.form} onSubmit={handleSubmit}>
+      <FormField
+        key="firstName"
+        id="firstName"
+        label="First Name"
+        value={firstName}
+        onChange={e => setFirstName(e.target.value)}
+        error={firstNameError}
+        disabled={loading}
+        autoFocus={true}
+        required={true}
+      />
+      <FormField
+        key="lastName"
+        id="lastName"
+        label="Last Name"
+        value={lastName}
+        onChange={e => setLastName(e.target.value)}
+        error={lastNameError}
+        disabled={loading}
+        required={true}
+      />
+      <FormField
+        key="phone"
+        id="phone"
+        label="Phone Number"
+        value={phone}
+        onChange={e => setPhone(e.target.value)}
+        error={phoneError}
+        disabled={loading}
+        required={true}
+      />
+      <FormField
+        key="email"
+        id="email"
+        label="Email Address"
+        type="email"
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+        error={emailError}
+        disabled={loading}
+        required={true}
+      />
+      <FormField
+        key="password"
+        id="password"
+        label="Password"
+        type="password"
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+        error={passwordError}
+        disabled={loading}
+        required={true}
+      />
+      <FormField
+        key="passwordAgain"
+        id="passwordAgain"
+        label="Confirm Password"
+        type="password"
+        value={passwordAgain}
+        onChange={e => setPasswordAgain(e.target.value)}
+        error={passwordAgainError}
+        disabled={loading}
+        required={true}
+      />
+      <Typography color="error" variant="body1" component="p">
+        {error ? `Error: ${error}` : ' '}
+      </Typography>
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        className={classes.submit}
+        disabled={loading}
+      >
+        Sign up
+      </Button>
+    </form>
+  );
 
-    if (all && !values.firstName) {
-      errors.firstName = 'You must enter your first name.';
-    }
-
-    if (all && !values.lastName) {
-      errors.lastName = 'You must enter your last name.';
-    }
-
-    if (all && !values.phone && values.phone.match(/^\+?[1-9]\d{10,14}$/) === null) {
-      errors.phone = 'You must enter your phone number. Example: +15557770000';
-    }
-
-    this.setState({ errors });
-    return Object.keys(errors).length === 0;
-  };
-
-  public render() {
-    const { classes, loading, error } = this.props;
-
-    return (
-      <form className={classes.form} onSubmit={this.handleSubmit}>
-        {formFields.map(this.renderFormField)}
-        <Typography color="error" variant="body1" component="p">
-          {error ? `Error: ${error}` : ' '}
-        </Typography>
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          className={classes.submit}
-          disabled={loading}
-        >
-          Sign up
-        </Button>
-      </form>
-    );
-  }
 }
 
-export default withStyles(styles)(SignUpForm);
+export default SignUpForm;

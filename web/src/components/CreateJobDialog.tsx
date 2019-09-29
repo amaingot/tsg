@@ -2,18 +2,16 @@ import * as React from 'react';
 
 import Button from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
-import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import AddIcon from '@material-ui/icons/Add';
 
-import { JobForm } from 'src/components/CustomForm';
-import Modal from 'src/components/Modal';
-import { CreateJobMutationVariables } from 'src/graphql/types';
-import createDialogStyles from 'src/utils/createDialogStyles';
-import { FormState, FormValueMap } from 'src/utils/formHelpers';
-import { JobFieldKey, validateJobFormFields } from 'src/utils/jobFormHelpers';
+import { JobForm } from '../components/CustomForm';
+import Modal from '../components/Modal';
+import useDialogStyles from '../utils/useDialogStyles';
+import { FormState, FormValueMap } from '../utils/formHelpers';
+import { JobFieldKey, validateJobFormFields } from '../utils/jobFormHelpers';
 
-export interface Props extends WithStyles<typeof createDialogStyles> {
-  submit: (variables: CreateJobMutationVariables) => void;
+export interface Props {
+  submit: (variables: any) => void;
   loading: boolean;
 }
 
@@ -56,7 +54,7 @@ class CreateJobDialog extends React.Component<Props, State> {
   };
 
   public renderActions() {
-    const { classes } = this.props;
+    const classes = useDialogStyles();
 
     return (
       <>
@@ -76,7 +74,9 @@ class CreateJobDialog extends React.Component<Props, State> {
   }
 
   public render() {
-    const { loading, classes } = this.props;
+    const { loading } = this.props;
+    const classes = useDialogStyles();
+
     return (
       <>
         <Fab color="primary" aria-label="Add" onClick={this.open} className={classes.fab}>
@@ -100,4 +100,4 @@ class CreateJobDialog extends React.Component<Props, State> {
   }
 }
 
-export default withStyles(createDialogStyles)(CreateJobDialog);
+export default CreateJobDialog;

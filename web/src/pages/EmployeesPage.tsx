@@ -3,8 +3,8 @@ import { RouteComponentProps } from 'react-router';
 
 import Typography from '@material-ui/core/Typography';
 
-import EmployeeTable from 'src/components/EmployeeTable';
-import PagePaper from 'src/components/PagePaper';
+import EmployeeTable from '../components/EmployeeTable';
+import PagePaper from '../components/PagePaper';
 
 
 type Props = RouteComponentProps;

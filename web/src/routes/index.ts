@@ -1,7 +1,7 @@
 import { RouteComponentProps } from 'react-router';
 
-import { UserGroup } from 'src/enhancers/withAuth';
-import { CustomRouteProps } from 'src/utils/CustomRoute';
+import { UserGroup } from '../enhancers/withAuth';
+import { CustomRouteProps } from '../utils/CustomRoute';
 
 export interface RouteConfig extends CustomRouteProps {
   path: string;

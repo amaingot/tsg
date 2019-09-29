@@ -2,21 +2,21 @@ import classNames from 'classnames';
 import * as React from 'react';
 
 import Paper, { PaperProps } from '@material-ui/core/Paper';
-import { StyleRulesCallback, withStyles, WithStyles } from '@material-ui/core/styles';
+import { makeStyles } from '../utils/Theme';
 
-const styles: StyleRulesCallback<'root' | 'withPadding' | 'fullHeight'> = theme => ({
+const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
     overflowX: 'auto',
   },
   withPadding: {
-    padding: theme.spacing.unit * 3,
+    padding: theme.spacing(3),
   },
   fullHeight: {
     height: '100%',
   },
-});
+}));
 
 interface Props extends PaperProps {
   children: React.ReactNode;
@@ -24,8 +24,10 @@ interface Props extends PaperProps {
   fullHeight?: boolean;
 }
 
-const PagePaper: React.FunctionComponent<Props & WithStyles<typeof styles>> = props => {
-  const { children, classes, withPadding, fullHeight, ...rest } = props;
+const PagePaper: React.FC<Props> = props => {
+  const { children, withPadding, fullHeight, ...rest } = props;
+  const classes = useStyles();
+
 
   const paperClasses = classNames(classes.root, {
     [classes.withPadding]: withPadding,
@@ -39,4 +41,4 @@ const PagePaper: React.FunctionComponent<Props & WithStyles<typeof styles>> = pr
   );
 };
 
-export default withStyles(styles)(PagePaper);
+export default PagePaper;

@@ -5,23 +5,23 @@ import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
-import withStyles, { StyleRulesCallback, WithStyles } from '@material-ui/core/styles/withStyles';
+import { makeStyles } from '../utils/Theme';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 import Typography from '@material-ui/core/Typography';
 
-import HeaderIcon from 'src/components/HeaderIcon';
+import HeaderIcon from '../components/HeaderIcon';
 
-const styles: StyleRulesCallback = theme => ({
+const useStyles = makeStyles(theme => ({
   form: {
     width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing(1),
   },
   submit: {
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
   },
-});
+}));
 
-export interface VerifyCodeFormProps extends WithStyles {
+export interface VerifyCodeFormProps {
   title: string;
   resendCode?: () => void;
   submit?: (code: string) => void;
@@ -85,7 +85,9 @@ class VerifyCodeForm extends React.Component<VerifyCodeFormProps, VerifyCodeForm
   };
 
   public renderForm() {
-    const { classes, serverError, resendCode, loading } = this.props;
+    const { serverError, resendCode, loading } = this.props;
+    const classes = useStyles();
+
     const hasError = !!serverError || !!this.state.localError;
 
     return (
@@ -139,4 +141,4 @@ class VerifyCodeForm extends React.Component<VerifyCodeFormProps, VerifyCodeForm
   }
 }
 
-export default withStyles(styles)(VerifyCodeForm);
+export default VerifyCodeForm;

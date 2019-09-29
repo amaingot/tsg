@@ -1,16 +1,15 @@
 import * as React from 'react';
 
-import { StyleRulesCallback, withStyles, WithStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-import CreateJobDialog from 'src/components/CreateJobDialog';
-import withJobs, { WithJobsProps } from 'src/enhancers/withJobs';
+import CreateJobDialog from '../components/CreateJobDialog';
+import { makeStyles } from '../utils/Theme';
 
-const styles: StyleRulesCallback = theme => ({
+const useStyles = makeStyles({
   table: {
     minWidth: 700,
   },
@@ -25,15 +24,15 @@ interface ListJobsProps {
   tableFooter?: React.ReactNode;
 }
 
-type AllProps = ListJobsProps & WithJobsProps & WithStyles;
+const ListJobs: React.FC<ListJobsProps> = props => {
+  const { tableFooter } = props;
+  const classes = useStyles();
 
-const ListJobs: React.FunctionComponent<AllProps> = props => {
-  const { classes, listJobsData: data, createJob, tableFooter } = props;
-  const jobs = data.listJobs && data.listJobs.items ? data.listJobs.items : [];
+  // const jobs = data.listJobs && data.listJobs.items ? data.listJobs.items : [];
 
   return (
-    <>
-      <CreateJobDialog submit={createJob} loading={data.loading} />
+    <React.Fragment>
+      <CreateJobDialog submit={() => { }} loading={false} />
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
@@ -45,7 +44,7 @@ const ListJobs: React.FunctionComponent<AllProps> = props => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {jobs.map(
+          {/* {jobs.map(
             j =>
               j && (
                 <TableRow key={j.id}>
@@ -58,14 +57,12 @@ const ListJobs: React.FunctionComponent<AllProps> = props => {
                   <TableCell>{j.createdAt}</TableCell>
                 </TableRow>
               )
-          )}
+          )} */}
         </TableBody>
         {tableFooter}
       </Table>
-    </>
+    </React.Fragment>
   );
 };
 
-const StyledListJobs = withStyles(styles)(ListJobs);
-
-export default withJobs<ListJobsProps>()(StyledListJobs);
+export default ListJobs;

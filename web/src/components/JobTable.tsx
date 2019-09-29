@@ -1,34 +1,31 @@
 import * as React from 'react';
 
-import { StyleRulesCallback, withStyles, WithStyles } from '@material-ui/core/styles';
+import { makeStyles } from '../utils/Theme';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-import { Job } from 'src/graphql/types';
-
-const styles: StyleRulesCallback<'table' | 'tableWrapper'> = theme => ({
+const useStyles = makeStyles(theme => ({
   table: {
     minWidth: 700,
   },
   tableWrapper: {
     overflowX: 'auto',
   },
-});
+}));
 
 interface CustomerTableProps {
   rowsPerPage?: number;
   pageNumber?: number;
   tableFooter?: React.ReactNode;
-  jobs: Job[];
+  jobs: any[];
 }
 
-const CustomerTable: React.FunctionComponent<
-  CustomerTableProps & WithStyles<typeof styles>
-> = props => {
-  const { classes, jobs, tableFooter } = props;
+const CustomerTable: React.FC<CustomerTableProps> = props => {
+  const { tableFooter } = props;
+  const classes = useStyles();
 
   return (
     <>
@@ -43,7 +40,7 @@ const CustomerTable: React.FunctionComponent<
           </TableRow>
         </TableHead>
         <TableBody>
-          {jobs.map(
+          {/* {jobs.map(
             j =>
               j && (
                 <TableRow key={j.id}>
@@ -54,7 +51,7 @@ const CustomerTable: React.FunctionComponent<
                   <TableCell>{j.createdAt}</TableCell>
                 </TableRow>
               )
-          )}
+          )} */}
         </TableBody>
         {tableFooter}
       </Table>
@@ -62,4 +59,4 @@ const CustomerTable: React.FunctionComponent<
   );
 };
 
-export default withStyles(styles)(CustomerTable);
+export default CustomerTable;

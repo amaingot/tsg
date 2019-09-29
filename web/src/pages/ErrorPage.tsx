@@ -1,25 +1,25 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 
-import withStyles, { StyleRulesCallback, WithStyles } from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 import ErrorIcon from '@material-ui/icons/ErrorOutlineOutlined';
 
-import SimpleLayout from 'src/layouts/SimpleLayout';
-import CustomNavLink from 'src/utils/CustomLink';
+import SimpleLayout from '../layouts/SimpleLayout';
+import CustomNavLink from '../utils/CustomLink';
+import { makeStyles } from '../utils/Theme';
 
-const styles: StyleRulesCallback = theme => ({
+const useStyles = makeStyles(theme => ({
   icon: {
-    margin: `0 auto ${theme.spacing.unit * 3}px`,
-    fontSize: `${theme.spacing.unit * 18}px`,
+    margin: `0 auto ${theme.spacing(3)}px`,
+    fontSize: `19px`,
   },
   homeLink: {
-    margin: `${theme.spacing.unit * 2}px auto 0`,
+    margin: `${theme.spacing(2)}px auto 0`,
   },
-});
+}));
 
-const ErrorPage: React.FunctionComponent<RouteComponentProps & WithStyles> = props => {
-  const { classes } = props;
+const ErrorPage: React.FC<RouteComponentProps> = props => {
+  const classes = useStyles();
 
   return (
     <SimpleLayout>
@@ -37,4 +37,4 @@ const ErrorPage: React.FunctionComponent<RouteComponentProps & WithStyles> = pro
   );
 };
 
-export default withStyles(styles)(ErrorPage);
+export default (ErrorPage);

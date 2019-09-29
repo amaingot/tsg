@@ -2,17 +2,16 @@ import * as React from 'react';
 
 import Button from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
-import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 
-import { CustomerForm } from 'src/components/CustomForm';
-import Modal from 'src/components/Modal';
-import createDialogStyles from 'src/utils/createDialogStyles';
-import { CustomerFieldKey, validateCustomerFormFields } from 'src/utils/customerFormHelpers';
-import { FormState, FormValueMap } from 'src/utils/formHelpers';
+import { CustomerForm } from '../components/CustomForm';
+import Modal from '../components/Modal';
+import useDialogStyles from '../utils/useDialogStyles';
+import { CustomerFieldKey, validateCustomerFormFields } from '../utils/customerFormHelpers';
+import { FormState, FormValueMap } from '../utils/formHelpers';
 
-export interface Props extends WithStyles<typeof createDialogStyles> {
+export interface Props {
   submit: (values: FormValueMap<CustomerFieldKey>) => void;
   loading: boolean;
   initialValues?: FormValueMap<CustomerFieldKey>;
@@ -56,7 +55,8 @@ class CustomerModal extends React.Component<Props, State> {
   };
 
   public renderActions() {
-    const { classes, initialValues } = this.props;
+    const { initialValues } = this.props;
+    const classes = useDialogStyles();
 
     return (
       <>
@@ -76,7 +76,9 @@ class CustomerModal extends React.Component<Props, State> {
   }
 
   public render() {
-    const { loading, classes, initialValues } = this.props;
+    const { loading, initialValues } = this.props;
+    const classes = useDialogStyles();
+
     return (
       <>
         <Fab color="primary" aria-label="Add" onClick={this.open} className={classes.fab}>
@@ -100,4 +102,4 @@ class CustomerModal extends React.Component<Props, State> {
   }
 }
 
-export default withStyles(createDialogStyles)(CustomerModal);
+export default CustomerModal;

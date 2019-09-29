@@ -9,12 +9,11 @@ import Drawer from '@material-ui/core/Drawer';
 import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+// import ListItem from '@material-ui/core/ListItem';
+// import ListItemIcon from '@material-ui/core/ListItemIcon';
+// import ListItemText from '@material-ui/core/ListItemText';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import { StyleRulesCallback, withStyles, WithStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
@@ -26,13 +25,13 @@ import HelpIcon from '@material-ui/icons/Help';
 import SettingsIcon from '@material-ui/icons/Settings';
 import WorkIcon from '@material-ui/icons/Work';
 
-import { withAuth, WithAuthProps } from 'src/enhancers/withAuth';
-import { AppRoutes, AppRoutesSwitch } from 'src/routes/AppRoutes';
-import CustomNavLink from 'src/utils/CustomLink';
+import { withAuth, WithAuthProps } from '../enhancers/withAuth';
+import CustomNavLink from '../utils/CustomLink';
+import { makeStyles } from '../utils/Theme';
 
 const drawerWidth = 220;
 
-const styles: StyleRulesCallback = theme => ({
+const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
   },
@@ -56,7 +55,7 @@ const styles: StyleRulesCallback = theme => ({
     cursor: 'unset !important',
   },
   menuIcon: {
-    marginRight: theme.spacing.unit * 1.5,
+    marginRight: theme.spacing(1.5),
   },
   menuButton: {
     marginLeft: 12,
@@ -88,18 +87,18 @@ const styles: StyleRulesCallback = theme => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: 'hidden',
-    width: theme.spacing.unit * 7 + 1,
+    width: theme.spacing(7) + 1,
     [theme.breakpoints.up('sm')]: {
-      width: theme.spacing.unit * 9 + 1,
+      width: theme.spacing(9) + 1,
     },
   },
   toggleButton: {
     position: 'absolute',
-    top: theme.spacing.unit * 18,
+    top: theme.spacing(18),
     zIndex: 1201,
-    width: theme.spacing.unit * 4,
-    height: theme.spacing.unit * 4,
-    minHeight: theme.spacing.unit * 4,
+    width: theme.spacing(4),
+    height: theme.spacing(4),
+    minHeight: theme.spacing(4),
   },
   toggleIcon: {},
   toggleButtonOpen: {
@@ -107,14 +106,14 @@ const styles: StyleRulesCallback = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
-    left: drawerWidth - theme.spacing.unit * 2,
+    left: drawerWidth - theme.spacing(2),
   },
   toggleButtonClose: {
     transition: theme.transitions.create('left', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    left: theme.spacing.unit * 7,
+    left: theme.spacing(7),
   },
   accountMenu: {
     zIndex: 1199,
@@ -134,11 +133,11 @@ const styles: StyleRulesCallback = theme => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing.unit * 3,
+    padding: theme.spacing(3),
   },
-});
+}));
 
-type AdditionalProps = WithStyles & RouteComponentProps & WithAuthProps;
+type AdditionalProps = RouteComponentProps & WithAuthProps;
 
 interface Props extends AdditionalProps {
   children: React.ReactNode;
@@ -175,7 +174,8 @@ class AppLayout extends React.Component<Props, State> {
   };
 
   public render() {
-    const { classes, auth } = this.props;
+    const { auth } = this.props;
+    const classes = useStyles();
 
     const menuOpen = !!this.state.accountMenuAnchor;
 
@@ -242,8 +242,8 @@ class AppLayout extends React.Component<Props, State> {
           {this.state.sidebarOpen ? (
             <ChevronLeftIcon className={classes.toggleIcon} />
           ) : (
-            <ChevronRightIcon className={classes.toggleIcon} />
-          )}
+              <ChevronRightIcon className={classes.toggleIcon} />
+            )}
         </Fab>
         <Drawer
           variant="permanent"
@@ -261,7 +261,7 @@ class AppLayout extends React.Component<Props, State> {
         >
           <div className={classes.toolbar} />
           <List>
-            {AppRoutes.map((route, i) => {
+            {/* {AppRoutes.map((route, i) => {
               if (route === null) {
                 return <Divider key={i} className={classes.listDivider} />;
               } else if (route.renderInMenu === false) {
@@ -276,18 +276,16 @@ class AppLayout extends React.Component<Props, State> {
                   </ListItem>
                 </CustomNavLink>
               );
-            })}
+            })} */}
           </List>
         </Drawer>
         <main className={classes.content}>
           <div className={classes.toolbar} />
-          <AppRoutesSwitch />
+          Content
         </main>
       </div>
     );
   }
 }
 
-const StyledAppLayout = withStyles(styles)(AppLayout);
-
-export default withAuth(StyledAppLayout);
+export default withAuth(AppLayout);

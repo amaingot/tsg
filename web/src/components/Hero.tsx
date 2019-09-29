@@ -1,25 +1,28 @@
 import * as React from 'react';
 
-import { PropTypes, StyleRulesCallback, WithStyles, withStyles } from '@material-ui/core';
+import { PropTypes } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 
-const styles: StyleRulesCallback = theme => ({
+import { makeStyles } from '../utils/Theme';
+
+const useStyles = makeStyles(theme => ({
   heroContent: {
     maxWidth: 600,
     margin: '0 auto',
-    padding: `${theme.spacing.unit * 8}px 0 ${theme.spacing.unit * 6}px`,
+    padding: `${theme.spacing(8)}px 0 ${theme.spacing(6)}px`,
   },
-});
+}));
 
-interface HeroProps extends WithStyles {
+interface HeroProps {
   title: string;
   description: string;
   action?: React.ReactNode;
   align?: PropTypes.Alignment;
 }
 
-const Hero: React.FunctionComponent<HeroProps> = props => {
-  const { classes, title, description, action, align = 'center' } = props;
+const Hero: React.FC<HeroProps> = props => {
+  const { title, description, action, align = 'center' } = props;
+  const classes = useStyles();
 
   return (
     <div className={classes.heroContent}>
@@ -34,4 +37,4 @@ const Hero: React.FunctionComponent<HeroProps> = props => {
   );
 };
 
-export default withStyles(styles)(Hero);
+export default Hero;

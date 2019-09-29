@@ -2,15 +2,15 @@ import * as React from 'react';
 
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
-import { StyleRules, withStyles, WithStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
-import { withAuth, WithAuthProps } from 'src/enhancers/withAuth';
-import { SiteRoutes } from 'src/routes/SiteRoutes';
-import CustomNavLink from 'src/utils/CustomLink';
+import { withAuth, WithAuthProps } from '../enhancers/withAuth';
+import { SiteRoutes } from '../routes/SiteRoutes';
+import CustomNavLink from '../utils/CustomLink';
+import { makeStyles } from '../utils/Theme';
 
-const styles: StyleRules = {
+const useStyles = makeStyles({
   appBar: {
     position: 'relative',
   },
@@ -26,12 +26,11 @@ const styles: StyleRules = {
   authButton: {
     marginLeft: '16px',
   },
-};
+});
 
-type SiteHeaderProps = WithStyles & WithAuthProps;
-
-const SiteHeader: React.FunctionComponent<SiteHeaderProps> = props => {
-  const { classes, auth } = props;
+const SiteHeader: React.FC<WithAuthProps> = props => {
+  const { auth } = props;
+  const classes = useStyles();
 
   return (
     <AppBar position="static" color="default" className={classes.appBar}>
@@ -70,17 +69,15 @@ const SiteHeader: React.FunctionComponent<SiteHeaderProps> = props => {
             Sign Out
           </Button>
         ) : (
-          <CustomNavLink to="/signin">
-            <Button className={classes.authButton} color="primary" variant="outlined">
-              Login
+            <CustomNavLink to="/signin">
+              <Button className={classes.authButton} color="primary" variant="outlined">
+                Login
             </Button>
-          </CustomNavLink>
-        )}
+            </CustomNavLink>
+          )}
       </Toolbar>
     </AppBar>
   );
 };
 
-const StyledSiteHeader = withStyles(styles)(SiteHeader);
-
-export default withAuth<{}>(StyledSiteHeader);
+export default withAuth<{}>(SiteHeader);

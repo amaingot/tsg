@@ -2,18 +2,16 @@ import * as React from 'react';
 
 import Button from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
-import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import AddIcon from '@material-ui/icons/Add';
 
-import { EmployeeForm } from 'src/components/CustomForm';
-import Modal from 'src/components/Modal';
-import { CreateEmployeeMutationVariables } from 'src/graphql/types';
-import createDialogStyles from 'src/utils/createDialogStyles';
-import { EmployeeFormKey, validateEmployeeFormFields } from 'src/utils/employeeFormHelpers';
-import { FormState, FormValueMap } from 'src/utils/formHelpers';
+import { EmployeeForm } from '../components/CustomForm';
+import Modal from '../components/Modal';
+import useDialogStyles from '../utils/useDialogStyles';
+import { EmployeeFormKey, validateEmployeeFormFields } from '../utils/employeeFormHelpers';
+import { FormState, FormValueMap } from '../utils/formHelpers';
 
-export interface Props extends WithStyles<typeof createDialogStyles> {
-  submit: (variables: CreateEmployeeMutationVariables) => void;
+export interface Props {
+  submit: (variables: any) => void;
   loading: boolean;
 }
 
@@ -55,10 +53,10 @@ class CreateEmployeeDialog extends React.Component<Props, State> {
     }
   };
   public renderActions() {
-    const { classes } = this.props;
+    const classes = useDialogStyles();
 
     return (
-      <>
+      <React.Fragment>
         <Button onClick={this.close} variant="contained" className={classes.button}>
           Cancel
         </Button>
@@ -70,14 +68,16 @@ class CreateEmployeeDialog extends React.Component<Props, State> {
         >
           Create
         </Button>
-      </>
+      </React.Fragment>
     );
   }
 
   public render() {
-    const { loading, classes } = this.props;
+    const { loading } = this.props;
+    const classes = useDialogStyles();
+
     return (
-      <>
+      <React.Fragment>
         <Fab color="primary" aria-label="Add" onClick={this.open} className={classes.fab}>
           <AddIcon />
         </Fab>
@@ -94,9 +94,9 @@ class CreateEmployeeDialog extends React.Component<Props, State> {
             loading={loading}
           />
         </Modal>
-      </>
+      </React.Fragment>
     );
   }
 }
 
-export default withStyles(createDialogStyles)(CreateEmployeeDialog);
+export default CreateEmployeeDialog;

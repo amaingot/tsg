@@ -1,24 +1,23 @@
 import * as React from 'react';
 
-import { StyleRules, withStyles, WithStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-import CustomerModal from 'src/components/CreateJobDialog';
-import withCustomers, { WithCustomersProps } from 'src/enhancers/withCustomers';
-import { goTo } from 'src/utils/history';
+import CustomerModal from '../components/CreateJobDialog';
+import { makeStyles } from '../utils/Theme';
+// import { goTo } from '../utils/history';
 
-const styles: StyleRules = {
+const useStyles = makeStyles({
   table: {
     minWidth: 700,
   },
   tableWrapper: {
     overflowX: 'auto',
   },
-};
+});
 
 interface CustomerTableProps {
   rowsPerPage?: number;
@@ -26,15 +25,15 @@ interface CustomerTableProps {
   tableFooter?: React.ReactNode;
 }
 
-type AllProps = CustomerTableProps & WithCustomersProps & WithStyles<typeof styles>;
+const CustomerTable: React.FC<CustomerTableProps> = props => {
+  const { tableFooter } = props;
+  const classes = useStyles();
 
-const CustomerTable: React.FunctionComponent<AllProps> = props => {
-  const { classes, listCustomersData: data, createCustomer, tableFooter } = props;
-  const customers = data.listCustomers && data.listCustomers.items ? data.listCustomers.items : [];
+  // const customers = data.listCustomers && data.listCustomers.items ? data.listCustomers.items : [];
 
   return (
     <>
-      <CustomerModal submit={createCustomer} loading={data.loading} />
+      <CustomerModal submit={() => { }} loading={false} />
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
@@ -46,7 +45,7 @@ const CustomerTable: React.FunctionComponent<AllProps> = props => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {customers.map(
+          {/* {customers.map(
             c =>
               c && (
                 <TableRow key={c.id} hover onClick={() => goTo(`/app/customer/${c.id}`)}>
@@ -59,7 +58,7 @@ const CustomerTable: React.FunctionComponent<AllProps> = props => {
                   <TableCell>{c.lastUpdated}</TableCell>
                 </TableRow>
               )
-          )}
+          )} */}
         </TableBody>
         {tableFooter}
       </Table>
@@ -67,6 +66,4 @@ const CustomerTable: React.FunctionComponent<AllProps> = props => {
   );
 };
 
-const StyledCustomerTable = withStyles(styles)(CustomerTable);
-
-export default withCustomers<CustomerTableProps>()(StyledCustomerTable);
+export default CustomerTable;

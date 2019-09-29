@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router';
 
 import Typography from '@material-ui/core/Typography';
 
-import PagePaper from 'src/components/PagePaper';
+import PagePaper from '../components/PagePaper';
 
 type Props = RouteComponentProps;
 

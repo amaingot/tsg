@@ -1,127 +1,136 @@
-version: 2
+version: 2.1
+
 jobs:
-    build:
-        working_directory: ~/tsg
-        docker:
-            - image: circleci/node:11
-        steps:
-            - checkout
+  build-web:
+    working_directory: ~/tsg
+    docker:
+      - image: circleci/node:latest-browsers
+    steps:
+      - checkout
 
-            - restore_cache:
-                keys:
-                    - v1-dependencies-{{ checksum "package-lock.json" }}
-                    - v1-dependencies
+      - restore_cache:
+          keys:
+            - v1-web-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "web/yarn.lock" }}
+            - v1-web-dependencies
 
-            - run: 
-                name: Installing All Packages
-                command: npm install
+      - run:
+          name: Installing root dependencies
+          command: yarn install
 
-            - run:
-                name: TypeScript Linter
-                command: mkdir reports && npm run lint:ci
+      - run:
+          name: Installing web dependencies
+          command: yarn --cwd web install
 
-            - run:
-                name: Running tests
-                command: npm run test:ci
-                environment:
-                    JEST_JUNIT_OUTPUT: "reports/test-results.xml"
+      - run:
+          name: Run front end web tests
+          command: yarn test:web
 
-            - run:
-                name: Running test coverage
-                command: npm run test:coverage:ci
-                environment:
-                    JEST_JUNIT_OUTPUT: "reports/test-coverage.xml"
+      - run:
+          name: Build bundle and all assets
+          command: REACT_APP_VERSION=${CIRCLE_SHA1} yarn build:web
 
-            - run:
-                name: Build Bundle for Distribution
-                command: npm run build
+      - save_cache:
+          paths:
+            - node_modules
+            - web/node_modules
+          key: v1-web-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "web/yarn.lock" }}
 
-            - save_cache:
-                paths:
-                    - node_modules
-                key: v1-dependencies-{{ checksum "package-lock.json" }}
+      - run:
+          name: Clean up workspace
+          command: rm -rf web/node_modules
 
-            - run:
-                name: Clean up workspace
-                command: rm -rf node_modules
-            
-            - store_test_results:
-                path: reports/
-            - store_artifacts:
-                path: reports/
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./
 
-            - persist_to_workspace:
-                root: ./
-                paths:
-                    - ./
+  deploy-web:
+    working_directory: ~/tsg
+    docker:
+      - image: circleci/node:latest
+    steps:
+      - attach_workspace:
+          at: ./
 
-    deploy-env:
-        working_directory: ~/tsg
-        docker:
-            - image: circleci/python:2.7-jessie
-        steps:
-            - checkout
-            - attach_workspace:
-                at: ./
-            - run: 
-                name: Install awscli
-                command: sudo pip install awscli
-            - run: 
-                name: Deploy bundle to S3
-                command: aws s3 sync build/ s3://tsg.maingot.us/${CIRCLE_BRANCH} --acl public-read
-            - run:
-                name: Purge cache for environment bundle
-                command: aws cloudfront create-invalidation --distribution-id E55LWJKU769O9 --paths "/${CIRCLE_BRANCH}/*"
+      - run:
+          name: Move sourcemaps to their own directory
+          command: mkdir sm && mv web/build/static/js/*.map sm/
 
-    deploy-prod:
-        working_directory: ~/tsg
-        docker:
-            - image: circleci/python:2.7-jessie
-        steps:
-            - checkout
-            - attach_workspace:
-                at: ./
-            - run: 
-                name: Install awscli
-                command: sudo pip install awscli
-            - run: 
-                name: Deploy bundle to S3
-                command: aws s3 sync build/ s3://tsg.maingot.us/production --acl public-read
-            - run: 
-                name: Deploy index.html
-                command: aws s3 sync public/ s3://tsg.maingot.us --acl public-read
-            - run:
-                name: Purge cache for everything
-                command: aws cloudfront create-invalidation --distribution-id E55LWJKU769O9 --paths "/*"
+      - run:
+          name: Upload production web bundle to S3 and invalidate CloudFront distribution
+          command: yarn deploy:web
+
+      - run:
+          name: Deployment notification to Rollbar for me-web
+          command: |
+            curl https://api.rollbar.com/api/1/deploy/ \
+              -F access_token=$ROLLBAR_WEB_DEPLOY_TOKEN \
+              -F environment=production \
+              -F revision=$CIRCLE_SHA1 \
+              -F local_username=$CIRCLE_USERNAME
+
+      - run:
+          name: Move JS files to the sourcemap directory
+          command: mv web/build/static/js/*.js sm/
+
+      - run:
+          name: Upload Rollbar sourcemaps
+          command: |
+            cd sm
+            find **.js | while read file
+            do
+              curl https://api.rollbar.com/api/1/sourcemap/ \
+                -F access_token=$ROLLBAR_WEB_DEPLOY_TOKEN \
+                -F version=$CIRCLE_SHA1 \
+                -F minified_url=https://hmm.dev/static/js/$file \
+                -F source_map=@"${file}.map"
+            done
+
+  deploy-api:
+    working_directory: ~/tsg
+    docker:
+      - image: circleci/node:latest
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v2-api-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "api/yarn.lock" }}
+            - v2-api-dependencies
+
+      - run:
+          name: Installing API dependencies
+          command: yarn --cwd api install
+
+      - run:
+          name: Deploying API
+          command: yarn --cwd api deploy:prod
+
+      - save_cache:
+          paths:
+            - node_modules
+            - api/node_modules
+          key: v2-api-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "api/yarn.lock" }}
 
 workflows:
-    version: 2
-    tsg:
-        jobs:
-            - build:
-                context: maingot
-                filters:
-                    branches:
-                        only: /.*/
-                    tags:
-                        only: /.*/
+  version: 2
+  me:
+    jobs:
+      - build-web:
+          context: maingot
 
-            - deploy-env:
-                context: maingot
-                requires:
-                    - build
-                filters:
-                    branches:
-                        only: /^(?!production).*$/
-                    tags:
-                        ignore: /.*/
+      - deploy-web:
+          context: maingot
+          requires:
+            - build-web
+          filters:
+            branches:
+                only: master
 
-            - deploy-prod:
-                context: maingot
-                requires:
-                    - build
-                filters:
-                    branches:
-                        ignore: /.*/
-                    tags:
-                        only: /^(v\d+)\.\d+.(\d+)$/
+      - deploy-api:
+          context: maingot
+          requires:
+            - deploy-web
+          filters:
+            branches:
+                only: master

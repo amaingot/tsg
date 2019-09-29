@@ -2,8 +2,20 @@
   "name": "tsg",
   "version": "1.0.0",
   "description": "Tennis Shop Guru",
+  "author": "Alex Maingot (alex@maingot.us)",
+  "homepage": "https://github.com/amaingot/tsg#readme",
+  "private": true,
   "scripts": {
-    "fresh": "rm -rf node_modules"
+    "bootstrap": "lerna bootstrap",
+    "start": "lerna run start --parallel",
+    "test:web": "lerna run --scope web test",
+    "build:web": "lerna run --scope web build",
+    "deploy:api": "lerna run --scope api deploy:prod",
+    "deploy:web": "s3-deploy './web/build/**' --cwd './web/build/' --region $AWS_REGION --bucket $S3_BUCKET_NAME --deleteRemoved --distId $CLOUDFRONT_DIST_ID --invalidate '/*'",
+    "fresh": "rm -rf node_modules && lerna run fresh"
+  },
+  "devDependencies": {
+    "lerna": "^3.16.4"
   },
   "repository": {
     "type": "git",
@@ -14,11 +26,5 @@
     "amplify",
     "typescript",
     "aws"
-  ],
-  "author": "Alex Maingot (alex@maingot.us)",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/amaingot/tsg/issues"
-  },
-  "homepage": "https://github.com/amaingot/tsg#readme"
+  ]
 }

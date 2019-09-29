@@ -1,4 +1,4 @@
-import { FormFieldArray, FormValueMap } from 'src/utils/formHelpers';
+import { FormFieldArray, FormValueMap } from './formHelpers';
 
 export type JobFieldKey = 'name' | 'racket' | 'tension' | 'gauge' | 'stringName';
 

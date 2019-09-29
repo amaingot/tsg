@@ -17,7 +17,7 @@ export interface FormFieldProps {
   required?: boolean;
 }
 
-const FormField: React.FunctionComponent<FormFieldProps> = props => {
+const FormField: React.FC<FormFieldProps> = props => {
   const { id, label, disabled, error, onChange, type, autoFocus, value, required } = props;
   return (
     <FormControl

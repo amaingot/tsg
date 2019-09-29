@@ -7,12 +7,13 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import Grid from '@material-ui/core/Grid';
-import { StyleRulesCallback, withStyles, WithStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import StarIcon from '@material-ui/icons/StarBorder';
-import Hero from 'src/components/Hero';
 
-const styles: StyleRulesCallback = theme => ({
+import Hero from '../components/Hero';
+import { makeStyles } from '../utils/Theme';
+
+const useStyles = makeStyles(theme => ({
   cardHeader: {
     backgroundColor: theme.palette.grey[200],
   },
@@ -20,21 +21,21 @@ const styles: StyleRulesCallback = theme => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'baseline',
-    marginBottom: theme.spacing.unit * 2,
+    marginBottom: theme.spacing(2),
   },
   cardActions: {
     [theme.breakpoints.up('sm')]: {
-      paddingBottom: theme.spacing.unit * 2,
+      paddingBottom: theme.spacing(2),
     },
   },
-});
+}));
 
 interface Tier {
   title: string;
   price: string;
   description: string[];
   buttonText: string;
-  buttonVariant?: 'text' | 'flat' | 'outlined' | 'contained' | 'raised' | 'fab' | 'extendedFab';
+  buttonVariant?: 'text' | 'outlined' | 'contained';
 
   subheader?: string;
 }
@@ -74,10 +75,9 @@ const tiers: Tier[] = [
   },
 ];
 
-type Props = WithStyles & RouteComponentProps;
 
-const Pricing: React.SFC<Props> = props => {
-  const { classes } = props;
+const Pricing: React.FC<RouteComponentProps> = props => {
+  const classes = useStyles();
 
   return (
     <React.Fragment>
@@ -85,7 +85,7 @@ const Pricing: React.SFC<Props> = props => {
         title="Pricing"
         description="Quickly build an effective pricing table for your potential customers with this layout. It's built with default Material-UI components with little customization."
       />
-      <Grid container spacing={40} alignItems="flex-end">
+      <Grid container spacing={10} alignItems="flex-end">
         {tiers.map(tier => (
           <Grid item key={tier.title} xs={12} sm={tier.title === 'Enterprise' ? 12 : 6} md={4}>
             <Card>
@@ -125,4 +125,4 @@ const Pricing: React.SFC<Props> = props => {
   );
 };
 
-export default withStyles(styles)(Pricing);
+export default Pricing;

@@ -4,30 +4,28 @@ import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
-import withStyles, { StyleRulesCallback, WithStyles } from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
-import HeaderIcon from 'src/components/HeaderIcon';
-import { withAuth, WithAuthProps } from 'src/enhancers/withAuth';
-import SimpleLayout from 'src/layouts/SimpleLayout';
+import HeaderIcon from '../components/HeaderIcon';
+import { withAuth, WithAuthProps } from '../enhancers/withAuth';
+import SimpleLayout from '../layouts/SimpleLayout';
+import { makeStyles } from '../utils/Theme';
 
-const styles: StyleRulesCallback = theme => ({
+const useStyles = makeStyles(theme => ({
   form: {
     width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing(1),
   },
   submit: {
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
   },
   loadingContainer: {
     minHeight: '170px',
     margin: 'auto',
     padding: '100px 0',
   },
-});
-
-type Props = WithStyles & WithAuthProps;
+}));
 
 interface State {
   email: string;
@@ -35,8 +33,8 @@ interface State {
   rememberMe: boolean;
 }
 
-class SignInPage extends React.Component<Props, State> {
-  constructor(props: Props) {
+class SignInPage extends React.Component<WithAuthProps, State> {
+  constructor(props: WithAuthProps) {
     super(props);
     this.state = {
       email: '',
@@ -81,7 +79,8 @@ class SignInPage extends React.Component<Props, State> {
   };
 
   public renderForm(loading: boolean) {
-    const { classes, auth } = this.props;
+    const classes = useStyles();
+    const { auth } = this.props;
 
     return (
       <form className={classes.form} onSubmit={this.handleSubmit}>
@@ -140,6 +139,4 @@ class SignInPage extends React.Component<Props, State> {
   }
 }
 
-const StyledSignInPage = withStyles(styles)(SignInPage);
-
-export default withAuth(StyledSignInPage);
+export default withAuth(SignInPage);

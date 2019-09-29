@@ -1,4 +1,4 @@
-import { FormFieldArray, FormValueMap } from 'src/utils/formHelpers';
+import { FormFieldArray, FormValueMap } from '../utils/formHelpers';
 
 export type CustomerFieldKey =
   | 'lastName'

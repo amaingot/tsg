@@ -1,23 +1,22 @@
 import * as React from 'react';
 
-import { StyleRulesCallback, withStyles, WithStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-import CreateEmployeeDialog from 'src/components/CreateEmployeeDialog';
-import withEmployees, { WithEmployeesProps } from 'src/enhancers/withEmployees';
+import { makeStyles } from '../utils/Theme';
+import CreateEmployeeDialog from './CreateEmployeeDialog';
 
-const styles: StyleRulesCallback = theme => ({
+const useStyles = makeStyles(theme => ({
   table: {
     minWidth: 700,
   },
   tableWrapper: {
     overflowX: 'auto',
   },
-});
+}));
 
 interface EmployeeTableProps {
   rowsPerPage?: number;
@@ -25,15 +24,13 @@ interface EmployeeTableProps {
   tableFooter?: React.ReactNode;
 }
 
-type AllProps = EmployeeTableProps & WithEmployeesProps & WithStyles;
-
-const EmployeeTable: React.FunctionComponent<AllProps> = props => {
-  const { classes, listEmployeesData: data, createEmployee, tableFooter } = props;
-  const employee = data.listEmployees && data.listEmployees.items ? data.listEmployees.items : [];
+const EmployeeTable: React.FC<EmployeeTableProps> = props => {
+  const { tableFooter } = props;
+  const classes = useStyles();
 
   return (
-    <>
-      <CreateEmployeeDialog submit={createEmployee} loading={data.loading} />
+    <React.Fragment>
+      <CreateEmployeeDialog submit={() => {}} loading={false} />
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
@@ -42,7 +39,7 @@ const EmployeeTable: React.FunctionComponent<AllProps> = props => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {employee.map(
+          {/* {employee.map(
             e =>
               e && (
                 <TableRow key={e.id}>
@@ -52,14 +49,12 @@ const EmployeeTable: React.FunctionComponent<AllProps> = props => {
                   <TableCell>{e.email}</TableCell>
                 </TableRow>
               )
-          )}
+          )} */}
         </TableBody>
         {tableFooter}
       </Table>
-    </>
+    </React.Fragment>
   );
 };
 
-const StyledEmployeeTable = withStyles(styles)(EmployeeTable);
-
-export default withEmployees<EmployeeTableProps>()(StyledEmployeeTable);
+export default EmployeeTable;

@@ -5,14 +5,14 @@ interface CustomRouteProps extends NavLinkProps {
   to: string;
 }
 
-const CustomNavLink: React.SFC<CustomRouteProps> = (props: CustomRouteProps) => {
+const CustomNavLink: React.FC<CustomRouteProps> = (props: CustomRouteProps) => {
   const { to, ...rest } = props;
 
   return (
     <NavLink
       to={{
         pathname: to,
-        search: App.webEnv === 'production' ? '' : `?env=${App.webEnv}`,
+        // search: App.webEnv === 'production' ? '' : `?env=${App.webEnv}`,
       }}
       style={{
         textDecoration: 'none',

@@ -2,19 +2,18 @@ import classNames from 'classnames';
 import * as React from 'react';
 
 import Grid from '@material-ui/core/Grid';
-import { StyleRulesCallback, WithStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
-import { siteLayoutStyles } from 'src/layouts/SiteLayout';
+import { useSiteLayoutStyles } from '../layouts/SiteLayout';
+import { makeStyles } from '../utils/Theme';
 
-const styles: StyleRulesCallback = theme => ({
-  ...siteLayoutStyles(theme),
+const useStyles = makeStyles(theme => ({
   footer: {
-    marginTop: theme.spacing.unit * 8,
+    marginTop: theme.spacing(8),
     borderTop: `1px solid ${theme.palette.divider}`,
-    padding: `${theme.spacing.unit * 6}px 0`,
+    padding: `${theme.spacing(6)} 0`,
   },
-});
+}));
 
 interface FooterItem {
   title: string;
@@ -40,14 +39,14 @@ const footers: FooterItem[] = [
   },
 ];
 
-type SiteFooterProps = WithStyles;
 
-const SiteFooter: React.FunctionComponent<SiteFooterProps> = props => {
-  const { classes } = props;
+const SiteFooter: React.FC = () => {
+  const classes = useStyles();
+  const siteLayoutClasses = useSiteLayoutStyles();
 
   return (
-    <footer className={classNames(classes.footer, classes.layout)}>
-      <Grid container spacing={32} justify="space-evenly">
+    <footer className={classNames(classes.footer, siteLayoutClasses.layout)}>
+      <Grid container spacing={10} justify="space-evenly">
         {footers.map(footer => (
           <Grid item xs key={footer.title}>
             <Typography variant="h6" color="textPrimary" gutterBottom>
@@ -65,4 +64,4 @@ const SiteFooter: React.FunctionComponent<SiteFooterProps> = props => {
   );
 };
 
-export default withStyles(styles)(SiteFooter);
+export default SiteFooter;

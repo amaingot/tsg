@@ -2,12 +2,12 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { StyleRulesCallback, withStyles, WithStyles } from '@material-ui/core/styles';
-import SiteFooter from 'src/components/SiteFooter';
-import SiteHeader from 'src/components/SiteHeader';
-import { SiteRoutesSwitch } from 'src/routes/SiteRoutes';
+import SiteFooter from '../components/SiteFooter';
+import SiteHeader from '../components/SiteHeader';
+import { SiteRoutesSwitch } from '../routes/SiteRoutes';
+import { makeStyles } from '../utils/Theme';
 
-export const siteLayoutStyles: StyleRulesCallback = theme => ({
+export const useSiteLayoutStyles = makeStyles(theme => ({
   '@global': {
     body: {
       backgroundColor: theme.palette.common.white,
@@ -15,20 +15,19 @@ export const siteLayoutStyles: StyleRulesCallback = theme => ({
   },
   layout: {
     width: 'auto',
-    marginLeft: theme.spacing.unit * 3,
-    marginRight: theme.spacing.unit * 3,
-    [theme.breakpoints.up(900 + theme.spacing.unit * 3 * 2)]: {
+    marginLeft: theme.spacing(3),
+    marginRight: theme.spacing(3),
+    [theme.breakpoints.up(900 + theme.spacing(3) * 2)]: {
       width: 900,
       marginLeft: 'auto',
       marginRight: 'auto',
     },
   },
-});
+}));
 
-type Props = WithStyles & RouteComponentProps;
 
-const SiteLayout: React.FunctionComponent<Props> = props => {
-  const { classes } = props;
+const SiteLayout: React.FC<RouteComponentProps> = props => {
+  const classes = useSiteLayoutStyles();
   return (
     <React.Fragment>
       <CssBaseline />
@@ -41,4 +40,4 @@ const SiteLayout: React.FunctionComponent<Props> = props => {
   );
 };
 
-export default withStyles(siteLayoutStyles)(SiteLayout);
+export default SiteLayout;

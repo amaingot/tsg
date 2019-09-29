@@ -1,20 +1,20 @@
 import * as React from 'react';
 
-import withStyles, { StyleRulesCallback, WithStyles } from '@material-ui/core/styles/withStyles';
 import Typography from '@material-ui/core/Typography';
 
-import FormField, { FormFieldProps } from 'src/components/FormField';
-import { CustomerFieldKey, customerFormFields } from 'src/utils/customerFormHelpers';
-import { employeeFormFields, EmployeeFormKey } from 'src/utils/employeeFormHelpers';
-import { FormFieldArray, FormRecord, FormValueMap } from 'src/utils/formHelpers';
-import { JobFieldKey, jobFormFields } from 'src/utils/jobFormHelpers';
+import FormField, { FormFieldProps } from '../components/FormField';
+import { CustomerFieldKey, customerFormFields } from '../utils/customerFormHelpers';
+import { employeeFormFields, EmployeeFormKey } from '../utils/employeeFormHelpers';
+import { FormFieldArray, FormRecord, FormValueMap } from '../utils/formHelpers';
+import { JobFieldKey, jobFormFields } from '../utils/jobFormHelpers';
+import { makeStyles } from '../utils/Theme';
 
-const styles: StyleRulesCallback<'form'> = theme => ({
+const useStyles = makeStyles(theme => ({
   form: {
     width: '100%',
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing(1),
   },
-});
+}));
 
 export interface GenericFormProps<Key extends string> {
   loading: boolean;
@@ -24,10 +24,10 @@ export interface GenericFormProps<Key extends string> {
   handleChange: (key: Key) => (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const UnstyledCustomForm = <Key extends string>(
-  fields: FormFieldArray<Key>
-): React.SFC<GenericFormProps<Key> & WithStyles<typeof styles>> => props => {
-  const { error, values, handleChange, errors, loading, classes } = props;
+const CustomForm = <Key extends string>(fields: FormFieldArray<Key>): React.FC<GenericFormProps<Key>> => props => {
+  const { error, values, handleChange, errors, loading } = props;
+  const classes = useStyles();
+
   const renderFormField = (f: FormRecord<Key>, i: number) => {
     const formProps: FormFieldProps = {
       id: f.key,
@@ -53,9 +53,6 @@ const UnstyledCustomForm = <Key extends string>(
   );
 };
 
-const StyledCustomForm = <K extends string>(fields: FormFieldArray<K>) =>
-  withStyles(styles)(UnstyledCustomForm<K>(fields));
-
-export const CustomerForm = StyledCustomForm<CustomerFieldKey>(customerFormFields);
-export const JobForm = StyledCustomForm<JobFieldKey>(jobFormFields);
-export const EmployeeForm = StyledCustomForm<EmployeeFormKey>(employeeFormFields);
+export const CustomerForm = CustomForm<CustomerFieldKey>(customerFormFields);
+export const JobForm = CustomForm<JobFieldKey>(jobFormFields);
+export const EmployeeForm = CustomForm<EmployeeFormKey>(employeeFormFields);
