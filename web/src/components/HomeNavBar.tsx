@@ -34,8 +34,11 @@ const HomeNavBar: React.FC = () => {
           Tennis Shop Guru
       </Typography>
         <nav>
-          <Link component={RouterLink} variant="button" color="textPrimary" to="/" className={classes.link}>
+        <Link component={RouterLink} variant="button" color="textPrimary" to="/" className={classes.link}>
             Home
+          </Link>
+          <Link component={RouterLink} variant="button" color="textPrimary" to="/features" className={classes.link}>
+            Features
           </Link>
           <Link component={RouterLink} variant="button" color="textPrimary" to="/pricing" className={classes.link}>
             Pricing
