@@ -61,7 +61,7 @@ jobs:
           command: yarn deploy:web
 
       - run:
-          name: Deployment notification to Rollbar for me-web
+          name: Deployment notification to Rollbar for tsg-web
           command: |
             curl https://api.rollbar.com/api/1/deploy/ \
               -F access_token=$ROLLBAR_WEB_DEPLOY_TOKEN \
@@ -82,7 +82,7 @@ jobs:
               curl https://api.rollbar.com/api/1/sourcemap/ \
                 -F access_token=$ROLLBAR_WEB_DEPLOY_TOKEN \
                 -F version=$CIRCLE_SHA1 \
-                -F minified_url=https://hmm.dev/static/js/$file \
+                -F minified_url=https://tsg.hmm.dev/static/js/$file \
                 -F source_map=@"${file}.map"
             done
 
@@ -95,8 +95,8 @@ jobs:
 
       - restore_cache:
           keys:
-            - v2-api-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "api/yarn.lock" }}
-            - v2-api-dependencies
+            - v1-api-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "api/yarn.lock" }}
+            - v1-api-dependencies
 
       - run:
           name: Installing API dependencies
@@ -110,11 +110,11 @@ jobs:
           paths:
             - node_modules
             - api/node_modules
-          key: v2-api-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "api/yarn.lock" }}
+          key: v1-api-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "api/yarn.lock" }}
 
 workflows:
   version: 2
-  me:
+  tsg:
     jobs:
       - build-web:
           context: maingot
