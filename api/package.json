@@ -1,0 +1,27 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "Tennis Shop Guru API",
+  "private": true,
+  "author": "Alex Maingot (alex@maingot.us)",
+  "scripts": {
+    "start": "serverless offline",
+    "deploy:prod": "serverless deploy -v --stage prod",
+    "deploy:dev": "serverless deploy -v --stage dev",
+    "fresh": "rm -rf node_modules"
+  },
+  "dependencies": {
+    "source-map-support": "^0.5.10"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.17",
+    "@types/node": "^10.12.18",
+    "serverless": "^1.53.0",
+    "serverless-dotenv-plugin": "^2.1.1",
+    "serverless-offline": "^5.11.0",
+    "serverless-webpack": "^5.2.0",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.2.4",
+    "webpack": "^4.29.0"
+  }
+}

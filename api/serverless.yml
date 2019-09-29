@@ -1,0 +1,41 @@
+service:
+  name: tsg-api
+  app: tsg
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+  - serverless-dotenv-plugin
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  tracing:
+    apiGateway: true
+    lambda: true
+  logs:
+    restApi:
+      level: INFO
+      executionLogging: true
+      fullExecutionData: true
+    frameworkLambda: true
+  individually: true
+  memorySize: 128
+  iamManagedPolicies:
+    - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+    - 'arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess'
+  environment:
+    AWS_XRAY_CONTEXT_MISSING: LOG_ERROR
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          method: get
+          path: hello
+
+custom:
+  serverless-offline:
+    port: 3001
+  # secrets: ${ssm:/aws/reference/secretsmanager/${env:AWS_SECRET_NAME}~true}
