@@ -21,12 +21,13 @@
     "react-router-dom": "^5.1.1"
   },
   "devDependencies": {
-    "@types/react-router-dom": "^5.1.0",
     "@types/jest": "24.0.18",
     "@types/node": "12.7.8",
     "@types/react": "16.9.3",
     "@types/react-dom": "16.9.1",
+    "@types/react-router-dom": "^5.1.0",
     "react-scripts": "3.1.2",
+    "rollbar": "^2.13.0",
     "typescript": "3.6.3"
   },
   "eslintConfig": {
