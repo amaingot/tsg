@@ -14,6 +14,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import AccountIcon from '@material-ui/icons/AccountCircle';
+import Auth from '@aws-amplify/auth';
 
 const drawerWidth = 240;
 
@@ -65,6 +66,10 @@ const AppNavBar: React.FC<Props> = props => {
     setAnchorEl(null);
   };
 
+  const handleLogout = () => {
+    setAnchorEl(null);
+    Auth.signOut();
+  };
 
   return (
     <AppBar position="absolute" className={clsx(classes.appBar, drawerOpen && classes.appBarShift)}>
@@ -98,7 +103,7 @@ const AppNavBar: React.FC<Props> = props => {
         >
           <MenuItem onClick={handleClose}>Profile</MenuItem>
           <MenuItem onClick={handleClose}>My Account</MenuItem>
-          <MenuItem component={NavLink} to="/" onClick={handleClose}>Logout</MenuItem>
+          <MenuItem component={NavLink} to="/" onClick={handleLogout}>Logout</MenuItem>
         </Menu>
       </Toolbar>
     </AppBar>

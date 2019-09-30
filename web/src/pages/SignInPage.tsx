@@ -1,12 +1,11 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { RouteComponentProps } from 'react-router';
+import Auth from '@aws-amplify/auth';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
@@ -16,6 +15,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
 import Copyright from '../components/Copyright';
+import updateRollbarPerson from '../utils/updateRollbarPerson';
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -42,8 +42,57 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const SignInPage: React.FC<RouteComponentProps> = () => {
+const SignInPage: React.FC<RouteComponentProps> = (props) => {
+  const { history } = props;
   const classes = useStyles();
+
+  const [challenge, setChallenge] = React.useState<string>();
+  const [error, setError] = React.useState<string>();
+
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+
+  const [mfaCode, setMfaCode] = React.useState('');
+  const [newPassword, setNewPassword] = React.useState('');
+  const [passwordAgain, setPassAgain] = React.useState('');
+
+
+  const handleSignIn: React.FormEventHandler = async (e) => {
+    e.preventDefault();
+    try {
+      const user = await Auth.signIn(email, password);
+      if (user.challengeName === 'MFA_SETUP') {
+        window.Rollbar.error('User requires MFA_SETUP', user);
+        setError('Uh oh! Looks like your account got into a weird state. Please file a support ticket to get help.');
+      } else if (user.challengeName) {
+        setChallenge(user.challengeName);
+      } else {
+        updateRollbarPerson(window.Rollbar);
+        history.push('/app');
+      }
+    } catch (err) {
+      if (err.code === 'UserNotConfirmedException') {
+        // The error happens if the user didn't finish the confirmation step when signing up
+        // In this case you need to resend the code and confirm the user
+        // About how to resend the code and confirm the user, please check the signUp part
+        setError('Looks like you didn\'t finish the confirmation step when signing up. Please file a support ticket to get help.');
+      } else if (err.code === 'PasswordResetRequiredException') {
+        // The error happens when the password is reset in the Cognito console
+        // In this case you need to call forgotPassword to reset the password
+        // Please check the Forgot Password part.
+        setError('Looks like your password has been reset. Please click "Forgot Password" below.');
+      } else if (err.code === 'NotAuthorizedException') {
+        // The error happens when the incorrect password is provided
+        setError('Uh oh! Wrong password! Want to try again?');
+      } else if (err.code === 'UserNotFoundException') {
+        // The error happens when the supplied username/email does not exist in the Cognito user pool
+        setError('Hmmm! Interesting!? I can\'t find you in my system!');
+      } else {
+        setError('Woah! We\'ve never seen this before! Please file a support ticket to get help.');
+        window.Rollbar.error('Unexpected user login error', err);
+      }
+    }
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -54,33 +103,90 @@ const SignInPage: React.FC<RouteComponentProps> = () => {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
+        <form className={classes.form} onSubmit={handleSignIn}>
+          {!challenge && (
+            <>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+              />
+            </>
+          )}
+
+          {(challenge === 'SMS_MFA' || challenge === 'SOFTWARE_TOKEN_MFA') && (
+            <>
+              <Typography>We just sent you a code via text message. Type it below to log in.</Typography>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="mfa-code"
+                label="Verification Code"
+                name="mfa-code"
+                autoFocus
+                value={mfaCode}
+                onChange={e => setMfaCode(e.target.value)}
+              />
+            </>
+          )}
+
+          {challenge === 'NEW_PASSWORD_REQUIRED' && (
+            <>
+              <Typography>Looks like we need to you to change your password!</Typography>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="new-password"
+                label="New Password"
+                type="password"
+                name="new-password"
+                autoFocus
+                value={newPassword}
+                onChange={e => setNewPassword(e.target.value)}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="confirm-new-password"
+                label="Confirm New Password"
+                type="password"
+                id="confirm-new-password"
+                value={passwordAgain}
+                onChange={e => setPassAgain(e.target.value)}
+              />
+            </>
+          )}
+
+          {error && (
+            <Typography color="error">{error}</Typography>
+          )}
           <Button
             type="submit"
             fullWidth
