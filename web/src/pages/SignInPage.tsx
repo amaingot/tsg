@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { RouteComponentProps } from 'react-router';
-import Auth from '@aws-amplify/auth';
+import Auth, { CognitoUser } from '@aws-amplify/auth';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -15,7 +15,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
 import Copyright from '../components/Copyright';
-import updateRollbarPerson from '../utils/updateRollbarPerson';
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -42,6 +41,8 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+type GenericCallback = () => void;
+
 const SignInPage: React.FC<RouteComponentProps> = (props) => {
   const { history } = props;
   const classes = useStyles();
@@ -56,19 +57,67 @@ const SignInPage: React.FC<RouteComponentProps> = (props) => {
   const [newPassword, setNewPassword] = React.useState('');
   const [passwordAgain, setPassAgain] = React.useState('');
 
+  const [nextAction, setNextAction] = React.useState<GenericCallback>();
+
+  const handleLoginSuccess = (user: any) => {
+    if (user instanceof CognitoUser) {
+      user.getUserData((error, userData) =>
+        !error && !!userData && window.Rollbar.configure({
+          payload: {
+            person: {
+              id: userData.Username,
+              username: (userData.UserAttributes.find(a => a.Name === 'email') || {}).Value,
+              email: (userData.UserAttributes.find(a => a.Name === 'email') || {}).Value
+            },
+          }
+        })
+      );
+    }
+    history.push('/app');
+  };
 
   const handleSignIn: React.FormEventHandler = async (e) => {
     e.preventDefault();
+
+    if (nextAction) {
+      return nextAction();
+    };
+
     try {
       const user = await Auth.signIn(email, password);
-      if (user.challengeName === 'MFA_SETUP') {
+
+      if (user.challengeName === 'SMS_MFA' || user.challengeName === 'SOFTWARE_TOKEN_MFA') {
+        // You need to get the code from the UI inputs
+        // and then trigger the following function with a button click
+        setNextAction(() => {
+          Auth.confirmSignIn(user, mfaCode, user.challengeName)
+            .then(handleSignIn)
+            .catch(e => {
+              setError('Uh oh! Maybe a bad code?');
+              window.Rollbar.error('MFA login error', e);
+            });
+        });
+        setChallenge(user.challengeName);
+      } else if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
+        // You need to get the new password and required attributes from the UI inputs
+        // and then trigger the following function with a button click
+        // For example, the email and phone_number are required attributes
+        setNextAction(() => {
+          if (newPassword === passwordAgain) {
+            Auth.completeNewPassword(user, newPassword, { email })
+              .then(handleSignIn)
+              .catch(e => {
+                setError('Uh oh! We seem to have had an error! Please file a support ticket to get help.');
+                window.Rollbar.error('Complete new password login error', e);
+              });
+          }
+        });
+        setChallenge(user.challengeName);
+      } else if (user.challengeName === 'MFA_SETUP') {
         window.Rollbar.error('User requires MFA_SETUP', user);
         setError('Uh oh! Looks like your account got into a weird state. Please file a support ticket to get help.');
-      } else if (user.challengeName) {
-        setChallenge(user.challengeName);
       } else {
-        updateRollbarPerson(window.Rollbar);
-        history.push('/app');
+        handleLoginSuccess(user);
       }
     } catch (err) {
       if (err.code === 'UserNotConfirmedException') {
@@ -196,6 +245,7 @@ const SignInPage: React.FC<RouteComponentProps> = (props) => {
           >
             Sign In
           </Button>
+
           <Grid container>
             <Grid item xs>
               <Link component={RouterLink} to="/forgot-password" variant="body2">

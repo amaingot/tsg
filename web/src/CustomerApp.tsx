@@ -10,7 +10,6 @@ import DashboardPage from './pages/DashboardPage';
 import CustomersPage from './pages/CustomersPage';
 import EmployeesPage from './pages/EmployeesPage';
 import JobsPage from './pages/JobsPage';
-import updateRollbarPerson from './utils/updateRollbarPerson';
 
 const App: React.FC<RouteComponentProps> = (props) => {
   const { location, history } = props;
@@ -23,7 +22,19 @@ const App: React.FC<RouteComponentProps> = (props) => {
     Auth.currentAuthenticatedUser().then(user => {
       setUser(user);
       setLoading(false);
-      updateRollbarPerson(window.Rollbar);
+      if (user instanceof CognitoUser) {
+        user.getUserData((error, userData) =>
+          !error && !!userData && window.Rollbar.configure({
+            payload: {
+              person: {
+                id: userData.Username,
+                username: (userData.UserAttributes.find(a => a.Name === 'email') || {}).Value,
+                email: (userData.UserAttributes.find(a => a.Name === 'email') || {}).Value
+              },
+            }
+          })
+        );
+      }
     }).catch(e => {
       window.Rollbar.error('Unknown auth error when validating if a customer is logged in', e);
       history.push('/');
