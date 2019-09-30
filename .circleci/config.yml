@@ -10,8 +10,13 @@ jobs:
 
       - restore_cache:
           keys:
-            - v1-web-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "web/yarn.lock" }}
+            - v1-web-dependencies-{{ checksum "web/yarn.lock" }}
             - v1-web-dependencies
+
+      - restore_cache:
+          keys:
+            - v1-root-dependencies-{{ checksum "yarn.lock" }}
+            - v1-root-dependencies
 
       - run:
           name: Installing root dependencies
@@ -31,9 +36,14 @@ jobs:
 
       - save_cache:
           paths:
+            - web/node_modules
+          key: v1-web-dependencies-{{ checksum "web/yarn.lock" }}
+
+      - save_cache:
+          paths:
             - node_modules
             - web/node_modules
-          key: v1-web-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "web/yarn.lock" }}
+          key: v1-root-dependencies-{{ checksum "yarn.lock" }}
 
       - run:
           name: Clean up workspace
@@ -91,30 +101,17 @@ jobs:
     docker:
       - image: circleci/node:8
     steps:
-      - checkout
+      - attach_workspace:
+          at: ./
 
       - restore_cache:
           keys:
-            - v1-api-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "api/yarn.lock" }}
+            - v1-api-dependencies-{{ checksum "api/yarn.lock" }}
             - v1-api-dependencies
 
       - run:
-          name: Installing Amplify
-          command: sudo npm install -g @aws-amplify/cli --unsafe-perm=true
-
-      - run:
-          name: Setup init script
-          command: chmod +rx scripts/amplify-init.sh
-
-      - run:
-          name: Initialize the Amplify local environment
-          command: ./scripts/amplify-init.sh
-          environment:
-            AMPLIFY_ENV_NAME: prod
-
-      - run:
           name: Deploy Amplify
-          command: amplify push --yes
+          command: yarn deploy:amplify
 
       - run:
           name: Installing API dependencies
@@ -122,13 +119,12 @@ jobs:
 
       - run:
           name: Deploying API
-          command: yarn --cwd api deploy:prod
+          command: yarn deploy:api
 
       - save_cache:
           paths:
-            - node_modules
             - api/node_modules
-          key: v1-api-dependencies-{{ checksum "yarn.lock" }}-{{ checksum "api/yarn.lock" }}
+          key: v1-api-dependencies-{{ checksum "api/yarn.lock" }}
 
 workflows:
   version: 2

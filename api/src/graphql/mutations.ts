@@ -19,21 +19,6 @@ export const createCustomer = `mutation CreateCustomer($input: CreateCustomerInp
     workPhone
     lastUpdated
     createdAt
-    jobs {
-      items {
-        id
-        name
-        racket
-        tension
-        gauge
-        recieved
-        finished
-        stringName
-        lastUpdated
-        createdAt
-      }
-      nextToken
-    }
   }
 }
 `;
@@ -55,21 +40,6 @@ export const updateCustomer = `mutation UpdateCustomer($input: UpdateCustomerInp
     workPhone
     lastUpdated
     createdAt
-    jobs {
-      items {
-        id
-        name
-        racket
-        tension
-        gauge
-        recieved
-        finished
-        stringName
-        lastUpdated
-        createdAt
-      }
-      nextToken
-    }
   }
 }
 `;
@@ -91,21 +61,6 @@ export const deleteCustomer = `mutation DeleteCustomer($input: DeleteCustomerInp
     workPhone
     lastUpdated
     createdAt
-    jobs {
-      items {
-        id
-        name
-        racket
-        tension
-        gauge
-        recieved
-        finished
-        stringName
-        lastUpdated
-        createdAt
-      }
-      nextToken
-    }
   }
 }
 `;
@@ -121,37 +76,6 @@ export const createJob = `mutation CreateJob($input: CreateJobInput!) {
     stringName
     lastUpdated
     createdAt
-    customer {
-      id
-      memNumber
-      lastName
-      firstName
-      middleInitial
-      email
-      address
-      address2
-      city
-      state
-      zip
-      homePhone
-      cellPhone
-      workPhone
-      lastUpdated
-      createdAt
-      jobs {
-        nextToken
-      }
-    }
-    employee {
-      id
-      firstName
-      lastName
-      email
-      owner
-      jobs {
-        nextToken
-      }
-    }
   }
 }
 `;
@@ -167,37 +91,6 @@ export const updateJob = `mutation UpdateJob($input: UpdateJobInput!) {
     stringName
     lastUpdated
     createdAt
-    customer {
-      id
-      memNumber
-      lastName
-      firstName
-      middleInitial
-      email
-      address
-      address2
-      city
-      state
-      zip
-      homePhone
-      cellPhone
-      workPhone
-      lastUpdated
-      createdAt
-      jobs {
-        nextToken
-      }
-    }
-    employee {
-      id
-      firstName
-      lastName
-      email
-      owner
-      jobs {
-        nextToken
-      }
-    }
   }
 }
 `;
@@ -213,37 +106,6 @@ export const deleteJob = `mutation DeleteJob($input: DeleteJobInput!) {
     stringName
     lastUpdated
     createdAt
-    customer {
-      id
-      memNumber
-      lastName
-      firstName
-      middleInitial
-      email
-      address
-      address2
-      city
-      state
-      zip
-      homePhone
-      cellPhone
-      workPhone
-      lastUpdated
-      createdAt
-      jobs {
-        nextToken
-      }
-    }
-    employee {
-      id
-      firstName
-      lastName
-      email
-      owner
-      jobs {
-        nextToken
-      }
-    }
   }
 }
 `;
@@ -254,21 +116,6 @@ export const createEmployee = `mutation CreateEmployee($input: CreateEmployeeInp
     lastName
     email
     owner
-    jobs {
-      items {
-        id
-        name
-        racket
-        tension
-        gauge
-        recieved
-        finished
-        stringName
-        lastUpdated
-        createdAt
-      }
-      nextToken
-    }
   }
 }
 `;
@@ -279,21 +126,6 @@ export const updateEmployee = `mutation UpdateEmployee($input: UpdateEmployeeInp
     lastName
     email
     owner
-    jobs {
-      items {
-        id
-        name
-        racket
-        tension
-        gauge
-        recieved
-        finished
-        stringName
-        lastUpdated
-        createdAt
-      }
-      nextToken
-    }
   }
 }
 `;
@@ -304,21 +136,6 @@ export const deleteEmployee = `mutation DeleteEmployee($input: DeleteEmployeeInp
     lastName
     email
     owner
-    jobs {
-      items {
-        id
-        name
-        racket
-        tension
-        gauge
-        recieved
-        finished
-        stringName
-        lastUpdated
-        createdAt
-      }
-      nextToken
-    }
   }
 }
 `;

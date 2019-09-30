@@ -5,7 +5,6 @@ service:
 plugins:
   - serverless-webpack
   - serverless-offline
-  - serverless-dotenv-plugin
 
 provider:
   name: aws
@@ -50,7 +49,12 @@ resources:
           Ref: 'ApiGatewayRestApi'
         Type: COGNITO_USER_POOLS
         ProviderARNs:
-          - ${env:USER_POOL_ARN}
+          - 'Fn::Join':
+              - ':'
+              - - 'arn:aws:cognito-idp'
+                - Ref: 'AWS::Region'
+                - Ref: 'AWS::AccountId'
+                - 'userpool/${file(../amplify/backend/amplify-meta.json):auth.tsgAuth.output.UserPoolId}'
 
 
 custom:

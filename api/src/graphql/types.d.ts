@@ -114,8 +114,8 @@ export type ModelCustomerFilterInput = {
   workPhone?: ModelStringFilterInput | null,
   lastUpdated?: ModelStringFilterInput | null,
   createdAt?: ModelStringFilterInput | null,
-  and?: Array<ModelCustomerFilterInput | null> | null,
-  or?: Array<ModelCustomerFilterInput | null> | null,
+  and?: Array< ModelCustomerFilterInput | null > | null,
+  or?: Array< ModelCustomerFilterInput | null > | null,
   not?: ModelCustomerFilterInput | null,
 };
 
@@ -128,7 +128,7 @@ export type ModelIDFilterInput = {
   gt?: string | null,
   contains?: string | null,
   notContains?: string | null,
-  between?: Array<string | null> | null,
+  between?: Array< string | null > | null,
   beginsWith?: string | null,
 };
 
@@ -141,7 +141,7 @@ export type ModelStringFilterInput = {
   gt?: string | null,
   contains?: string | null,
   notContains?: string | null,
-  between?: Array<string | null> | null,
+  between?: Array< string | null > | null,
   beginsWith?: string | null,
 };
 
@@ -156,8 +156,8 @@ export type ModelJobFilterInput = {
   stringName?: ModelStringFilterInput | null,
   lastUpdated?: ModelStringFilterInput | null,
   createdAt?: ModelStringFilterInput | null,
-  and?: Array<ModelJobFilterInput | null> | null,
-  or?: Array<ModelJobFilterInput | null> | null,
+  and?: Array< ModelJobFilterInput | null > | null,
+  or?: Array< ModelJobFilterInput | null > | null,
   not?: ModelJobFilterInput | null,
 };
 
@@ -167,8 +167,8 @@ export type ModelEmployeeFilterInput = {
   lastName?: ModelStringFilterInput | null,
   email?: ModelStringFilterInput | null,
   owner?: ModelStringFilterInput | null,
-  and?: Array<ModelEmployeeFilterInput | null> | null,
-  or?: Array<ModelEmployeeFilterInput | null> | null,
+  and?: Array< ModelEmployeeFilterInput | null > | null,
+  or?: Array< ModelEmployeeFilterInput | null > | null,
   not?: ModelEmployeeFilterInput | null,
 };
 
@@ -189,8 +189,8 @@ export type SearchableCustomerFilterInput = {
   workPhone?: SearchableStringFilterInput | null,
   lastUpdated?: SearchableStringFilterInput | null,
   createdAt?: SearchableStringFilterInput | null,
-  and?: Array<SearchableCustomerFilterInput | null> | null,
-  or?: Array<SearchableCustomerFilterInput | null> | null,
+  and?: Array< SearchableCustomerFilterInput | null > | null,
+  or?: Array< SearchableCustomerFilterInput | null > | null,
   not?: SearchableCustomerFilterInput | null,
 };
 
@@ -260,8 +260,8 @@ export type SearchableJobFilterInput = {
   stringName?: SearchableStringFilterInput | null,
   lastUpdated?: SearchableStringFilterInput | null,
   createdAt?: SearchableStringFilterInput | null,
-  and?: Array<SearchableJobFilterInput | null> | null,
-  or?: Array<SearchableJobFilterInput | null> | null,
+  and?: Array< SearchableJobFilterInput | null > | null,
+  or?: Array< SearchableJobFilterInput | null > | null,
   not?: SearchableJobFilterInput | null,
 };
 
@@ -289,7 +289,7 @@ export type CreateCustomerMutationVariables = {
 };
 
 export type CreateCustomerMutation = {
-  createCustomer: {
+  createCustomer:  {
     __typename: "Customer",
     id: string,
     memNumber: string | null,
@@ -307,23 +307,6 @@ export type CreateCustomerMutation = {
     workPhone: string | null,
     lastUpdated: string | null,
     createdAt: string | null,
-    jobs: {
-      __typename: "ModelJobConnection",
-      items: Array<{
-        __typename: "Job",
-        id: string,
-        name: string | null,
-        racket: string | null,
-        tension: string | null,
-        gauge: string | null,
-        recieved: string | null,
-        finished: string | null,
-        stringName: string | null,
-        lastUpdated: string | null,
-        createdAt: string | null,
-      } | null> | null,
-      nextToken: string | null,
-    } | null,
   } | null,
 };
 
@@ -332,7 +315,7 @@ export type UpdateCustomerMutationVariables = {
 };
 
 export type UpdateCustomerMutation = {
-  updateCustomer: {
+  updateCustomer:  {
     __typename: "Customer",
     id: string,
     memNumber: string | null,
@@ -350,23 +333,6 @@ export type UpdateCustomerMutation = {
     workPhone: string | null,
     lastUpdated: string | null,
     createdAt: string | null,
-    jobs: {
-      __typename: "ModelJobConnection",
-      items: Array<{
-        __typename: "Job",
-        id: string,
-        name: string | null,
-        racket: string | null,
-        tension: string | null,
-        gauge: string | null,
-        recieved: string | null,
-        finished: string | null,
-        stringName: string | null,
-        lastUpdated: string | null,
-        createdAt: string | null,
-      } | null> | null,
-      nextToken: string | null,
-    } | null,
   } | null,
 };
 
@@ -375,7 +341,7 @@ export type DeleteCustomerMutationVariables = {
 };
 
 export type DeleteCustomerMutation = {
-  deleteCustomer: {
+  deleteCustomer:  {
     __typename: "Customer",
     id: string,
     memNumber: string | null,
@@ -393,23 +359,6 @@ export type DeleteCustomerMutation = {
     workPhone: string | null,
     lastUpdated: string | null,
     createdAt: string | null,
-    jobs: {
-      __typename: "ModelJobConnection",
-      items: Array<{
-        __typename: "Job",
-        id: string,
-        name: string | null,
-        racket: string | null,
-        tension: string | null,
-        gauge: string | null,
-        recieved: string | null,
-        finished: string | null,
-        stringName: string | null,
-        lastUpdated: string | null,
-        createdAt: string | null,
-      } | null> | null,
-      nextToken: string | null,
-    } | null,
   } | null,
 };
 
@@ -418,7 +367,7 @@ export type CreateJobMutationVariables = {
 };
 
 export type CreateJobMutation = {
-  createJob: {
+  createJob:  {
     __typename: "Job",
     id: string,
     name: string | null,
@@ -430,41 +379,6 @@ export type CreateJobMutation = {
     stringName: string | null,
     lastUpdated: string | null,
     createdAt: string | null,
-    customer: {
-      __typename: "Customer",
-      id: string,
-      memNumber: string | null,
-      lastName: string | null,
-      firstName: string | null,
-      middleInitial: string | null,
-      email: string | null,
-      address: string | null,
-      address2: string | null,
-      city: string | null,
-      state: string | null,
-      zip: string | null,
-      homePhone: string | null,
-      cellPhone: string | null,
-      workPhone: string | null,
-      lastUpdated: string | null,
-      createdAt: string | null,
-      jobs: {
-        __typename: "ModelJobConnection",
-        nextToken: string | null,
-      } | null,
-    } | null,
-    employee: {
-      __typename: "Employee",
-      id: string,
-      firstName: string | null,
-      lastName: string | null,
-      email: string | null,
-      owner: string,
-      jobs: {
-        __typename: "ModelJobConnection",
-        nextToken: string | null,
-      } | null,
-    } | null,
   } | null,
 };
 
@@ -473,7 +387,7 @@ export type UpdateJobMutationVariables = {
 };
 
 export type UpdateJobMutation = {
-  updateJob: {
+  updateJob:  {
     __typename: "Job",
     id: string,
     name: string | null,
@@ -485,41 +399,6 @@ export type UpdateJobMutation = {
     stringName: string | null,
     lastUpdated: string | null,
     createdAt: string | null,
-    customer: {
-      __typename: "Customer",
-      id: string,
-      memNumber: string | null,
-      lastName: string | null,
-      firstName: string | null,
-      middleInitial: string | null,
-      email: string | null,
-      address: string | null,
-      address2: string | null,
-      city: string | null,
-      state: string | null,
-      zip: string | null,
-      homePhone: string | null,
-      cellPhone: string | null,
-      workPhone: string | null,
-      lastUpdated: string | null,
-      createdAt: string | null,
-      jobs: {
-        __typename: "ModelJobConnection",
-        nextToken: string | null,
-      } | null,
-    } | null,
-    employee: {
-      __typename: "Employee",
-      id: string,
-      firstName: string | null,
-      lastName: string | null,
-      email: string | null,
-      owner: string,
-      jobs: {
-        __typename: "ModelJobConnection",
-        nextToken: string | null,
-      } | null,
-    } | null,
   } | null,
 };
 
@@ -528,7 +407,7 @@ export type DeleteJobMutationVariables = {
 };
 
 export type DeleteJobMutation = {
-  deleteJob: {
+  deleteJob:  {
     __typename: "Job",
     id: string,
     name: string | null,
@@ -540,41 +419,6 @@ export type DeleteJobMutation = {
     stringName: string | null,
     lastUpdated: string | null,
     createdAt: string | null,
-    customer: {
-      __typename: "Customer",
-      id: string,
-      memNumber: string | null,
-      lastName: string | null,
-      firstName: string | null,
-      middleInitial: string | null,
-      email: string | null,
-      address: string | null,
-      address2: string | null,
-      city: string | null,
-      state: string | null,
-      zip: string | null,
-      homePhone: string | null,
-      cellPhone: string | null,
-      workPhone: string | null,
-      lastUpdated: string | null,
-      createdAt: string | null,
-      jobs: {
-        __typename: "ModelJobConnection",
-        nextToken: string | null,
-      } | null,
-    } | null,
-    employee: {
-      __typename: "Employee",
-      id: string,
-      firstName: string | null,
-      lastName: string | null,
-      email: string | null,
-      owner: string,
-      jobs: {
-        __typename: "ModelJobConnection",
-        nextToken: string | null,
-      } | null,
-    } | null,
   } | null,
 };
 
@@ -583,30 +427,13 @@ export type CreateEmployeeMutationVariables = {
 };
 
 export type CreateEmployeeMutation = {
-  createEmployee: {
+  createEmployee:  {
     __typename: "Employee",
     id: string,
     firstName: string | null,
     lastName: string | null,
     email: string | null,
     owner: string,
-    jobs: {
-      __typename: "ModelJobConnection",
-      items: Array<{
-        __typename: "Job",
-        id: string,
-        name: string | null,
-        racket: string | null,
-        tension: string | null,
-        gauge: string | null,
-        recieved: string | null,
-        finished: string | null,
-        stringName: string | null,
-        lastUpdated: string | null,
-        createdAt: string | null,
-      } | null> | null,
-      nextToken: string | null,
-    } | null,
   } | null,
 };
 
@@ -615,30 +442,13 @@ export type UpdateEmployeeMutationVariables = {
 };
 
 export type UpdateEmployeeMutation = {
-  updateEmployee: {
+  updateEmployee:  {
     __typename: "Employee",
     id: string,
     firstName: string | null,
     lastName: string | null,
     email: string | null,
     owner: string,
-    jobs: {
-      __typename: "ModelJobConnection",
-      items: Array<{
-        __typename: "Job",
-        id: string,
-        name: string | null,
-        racket: string | null,
-        tension: string | null,
-        gauge: string | null,
-        recieved: string | null,
-        finished: string | null,
-        stringName: string | null,
-        lastUpdated: string | null,
-        createdAt: string | null,
-      } | null> | null,
-      nextToken: string | null,
-    } | null,
   } | null,
 };
 
@@ -647,30 +457,13 @@ export type DeleteEmployeeMutationVariables = {
 };
 
 export type DeleteEmployeeMutation = {
-  deleteEmployee: {
+  deleteEmployee:  {
     __typename: "Employee",
     id: string,
     firstName: string | null,
     lastName: string | null,
     email: string | null,
     owner: string,
-    jobs: {
-      __typename: "ModelJobConnection",
-      items: Array<{
-        __typename: "Job",
-        id: string,
-        name: string | null,
-        racket: string | null,
-        tension: string | null,
-        gauge: string | null,
-        recieved: string | null,
-        finished: string | null,
-        stringName: string | null,
-        lastUpdated: string | null,
-        createdAt: string | null,
-      } | null> | null,
-      nextToken: string | null,
-    } | null,
   } | null,
 };
 
@@ -679,7 +472,7 @@ export type GetCustomerQueryVariables = {
 };
 
 export type GetCustomerQuery = {
-  getCustomer: {
+  getCustomer:  {
     __typename: "Customer",
     id: string,
     memNumber: string | null,
@@ -697,23 +490,6 @@ export type GetCustomerQuery = {
     workPhone: string | null,
     lastUpdated: string | null,
     createdAt: string | null,
-    jobs: {
-      __typename: "ModelJobConnection",
-      items: Array<{
-        __typename: "Job",
-        id: string,
-        name: string | null,
-        racket: string | null,
-        tension: string | null,
-        gauge: string | null,
-        recieved: string | null,
-        finished: string | null,
-        stringName: string | null,
-        lastUpdated: string | null,
-        createdAt: string | null,
-      } | null> | null,
-      nextToken: string | null,
-    } | null,
   } | null,
 };
 
@@ -724,31 +500,8 @@ export type ListCustomersQueryVariables = {
 };
 
 export type ListCustomersQuery = {
-  listCustomers: {
+  listCustomers:  {
     __typename: "ModelCustomerConnection",
-    items: Array<{
-      __typename: "Customer",
-      id: string,
-      memNumber: string | null,
-      lastName: string | null,
-      firstName: string | null,
-      middleInitial: string | null,
-      email: string | null,
-      address: string | null,
-      address2: string | null,
-      city: string | null,
-      state: string | null,
-      zip: string | null,
-      homePhone: string | null,
-      cellPhone: string | null,
-      workPhone: string | null,
-      lastUpdated: string | null,
-      createdAt: string | null,
-      jobs: {
-        __typename: "ModelJobConnection",
-        nextToken: string | null,
-      } | null,
-    } | null> | null,
     nextToken: string | null,
   } | null,
 };
@@ -758,7 +511,7 @@ export type GetJobQueryVariables = {
 };
 
 export type GetJobQuery = {
-  getJob: {
+  getJob:  {
     __typename: "Job",
     id: string,
     name: string | null,
@@ -770,41 +523,6 @@ export type GetJobQuery = {
     stringName: string | null,
     lastUpdated: string | null,
     createdAt: string | null,
-    customer: {
-      __typename: "Customer",
-      id: string,
-      memNumber: string | null,
-      lastName: string | null,
-      firstName: string | null,
-      middleInitial: string | null,
-      email: string | null,
-      address: string | null,
-      address2: string | null,
-      city: string | null,
-      state: string | null,
-      zip: string | null,
-      homePhone: string | null,
-      cellPhone: string | null,
-      workPhone: string | null,
-      lastUpdated: string | null,
-      createdAt: string | null,
-      jobs: {
-        __typename: "ModelJobConnection",
-        nextToken: string | null,
-      } | null,
-    } | null,
-    employee: {
-      __typename: "Employee",
-      id: string,
-      firstName: string | null,
-      lastName: string | null,
-      email: string | null,
-      owner: string,
-      jobs: {
-        __typename: "ModelJobConnection",
-        nextToken: string | null,
-      } | null,
-    } | null,
   } | null,
 };
 
@@ -815,48 +533,8 @@ export type ListJobsQueryVariables = {
 };
 
 export type ListJobsQuery = {
-  listJobs: {
+  listJobs:  {
     __typename: "ModelJobConnection",
-    items: Array<{
-      __typename: "Job",
-      id: string,
-      name: string | null,
-      racket: string | null,
-      tension: string | null,
-      gauge: string | null,
-      recieved: string | null,
-      finished: string | null,
-      stringName: string | null,
-      lastUpdated: string | null,
-      createdAt: string | null,
-      customer: {
-        __typename: "Customer",
-        id: string,
-        memNumber: string | null,
-        lastName: string | null,
-        firstName: string | null,
-        middleInitial: string | null,
-        email: string | null,
-        address: string | null,
-        address2: string | null,
-        city: string | null,
-        state: string | null,
-        zip: string | null,
-        homePhone: string | null,
-        cellPhone: string | null,
-        workPhone: string | null,
-        lastUpdated: string | null,
-        createdAt: string | null,
-      } | null,
-      employee: {
-        __typename: "Employee",
-        id: string,
-        firstName: string | null,
-        lastName: string | null,
-        email: string | null,
-        owner: string,
-      } | null,
-    } | null> | null,
     nextToken: string | null,
   } | null,
 };
@@ -866,30 +544,13 @@ export type GetEmployeeQueryVariables = {
 };
 
 export type GetEmployeeQuery = {
-  getEmployee: {
+  getEmployee:  {
     __typename: "Employee",
     id: string,
     firstName: string | null,
     lastName: string | null,
     email: string | null,
     owner: string,
-    jobs: {
-      __typename: "ModelJobConnection",
-      items: Array<{
-        __typename: "Job",
-        id: string,
-        name: string | null,
-        racket: string | null,
-        tension: string | null,
-        gauge: string | null,
-        recieved: string | null,
-        finished: string | null,
-        stringName: string | null,
-        lastUpdated: string | null,
-        createdAt: string | null,
-      } | null> | null,
-      nextToken: string | null,
-    } | null,
   } | null,
 };
 
@@ -900,20 +561,8 @@ export type ListEmployeesQueryVariables = {
 };
 
 export type ListEmployeesQuery = {
-  listEmployees: {
+  listEmployees:  {
     __typename: "ModelEmployeeConnection",
-    items: Array<{
-      __typename: "Employee",
-      id: string,
-      firstName: string | null,
-      lastName: string | null,
-      email: string | null,
-      owner: string,
-      jobs: {
-        __typename: "ModelJobConnection",
-        nextToken: string | null,
-      } | null,
-    } | null> | null,
     nextToken: string | null,
   } | null,
 };
@@ -926,31 +575,8 @@ export type SearchCustomersQueryVariables = {
 };
 
 export type SearchCustomersQuery = {
-  searchCustomers: {
+  searchCustomers:  {
     __typename: "SearchableCustomerConnection",
-    items: Array<{
-      __typename: "Customer",
-      id: string,
-      memNumber: string | null,
-      lastName: string | null,
-      firstName: string | null,
-      middleInitial: string | null,
-      email: string | null,
-      address: string | null,
-      address2: string | null,
-      city: string | null,
-      state: string | null,
-      zip: string | null,
-      homePhone: string | null,
-      cellPhone: string | null,
-      workPhone: string | null,
-      lastUpdated: string | null,
-      createdAt: string | null,
-      jobs: {
-        __typename: "ModelJobConnection",
-        nextToken: string | null,
-      } | null,
-    } | null> | null,
     nextToken: string | null,
   } | null,
 };
@@ -963,54 +589,14 @@ export type SearchJobsQueryVariables = {
 };
 
 export type SearchJobsQuery = {
-  searchJobs: {
+  searchJobs:  {
     __typename: "SearchableJobConnection",
-    items: Array<{
-      __typename: "Job",
-      id: string,
-      name: string | null,
-      racket: string | null,
-      tension: string | null,
-      gauge: string | null,
-      recieved: string | null,
-      finished: string | null,
-      stringName: string | null,
-      lastUpdated: string | null,
-      createdAt: string | null,
-      customer: {
-        __typename: "Customer",
-        id: string,
-        memNumber: string | null,
-        lastName: string | null,
-        firstName: string | null,
-        middleInitial: string | null,
-        email: string | null,
-        address: string | null,
-        address2: string | null,
-        city: string | null,
-        state: string | null,
-        zip: string | null,
-        homePhone: string | null,
-        cellPhone: string | null,
-        workPhone: string | null,
-        lastUpdated: string | null,
-        createdAt: string | null,
-      } | null,
-      employee: {
-        __typename: "Employee",
-        id: string,
-        firstName: string | null,
-        lastName: string | null,
-        email: string | null,
-        owner: string,
-      } | null,
-    } | null> | null,
     nextToken: string | null,
   } | null,
 };
 
 export type OnCreateCustomerSubscription = {
-  onCreateCustomer: {
+  onCreateCustomer:  {
     __typename: "Customer",
     id: string,
     memNumber: string | null,
@@ -1028,28 +614,11 @@ export type OnCreateCustomerSubscription = {
     workPhone: string | null,
     lastUpdated: string | null,
     createdAt: string | null,
-    jobs: {
-      __typename: "ModelJobConnection",
-      items: Array<{
-        __typename: "Job",
-        id: string,
-        name: string | null,
-        racket: string | null,
-        tension: string | null,
-        gauge: string | null,
-        recieved: string | null,
-        finished: string | null,
-        stringName: string | null,
-        lastUpdated: string | null,
-        createdAt: string | null,
-      } | null> | null,
-      nextToken: string | null,
-    } | null,
   } | null,
 };
 
 export type OnUpdateCustomerSubscription = {
-  onUpdateCustomer: {
+  onUpdateCustomer:  {
     __typename: "Customer",
     id: string,
     memNumber: string | null,
@@ -1067,28 +636,11 @@ export type OnUpdateCustomerSubscription = {
     workPhone: string | null,
     lastUpdated: string | null,
     createdAt: string | null,
-    jobs: {
-      __typename: "ModelJobConnection",
-      items: Array<{
-        __typename: "Job",
-        id: string,
-        name: string | null,
-        racket: string | null,
-        tension: string | null,
-        gauge: string | null,
-        recieved: string | null,
-        finished: string | null,
-        stringName: string | null,
-        lastUpdated: string | null,
-        createdAt: string | null,
-      } | null> | null,
-      nextToken: string | null,
-    } | null,
   } | null,
 };
 
 export type OnDeleteCustomerSubscription = {
-  onDeleteCustomer: {
+  onDeleteCustomer:  {
     __typename: "Customer",
     id: string,
     memNumber: string | null,
@@ -1106,28 +658,11 @@ export type OnDeleteCustomerSubscription = {
     workPhone: string | null,
     lastUpdated: string | null,
     createdAt: string | null,
-    jobs: {
-      __typename: "ModelJobConnection",
-      items: Array<{
-        __typename: "Job",
-        id: string,
-        name: string | null,
-        racket: string | null,
-        tension: string | null,
-        gauge: string | null,
-        recieved: string | null,
-        finished: string | null,
-        stringName: string | null,
-        lastUpdated: string | null,
-        createdAt: string | null,
-      } | null> | null,
-      nextToken: string | null,
-    } | null,
   } | null,
 };
 
 export type OnCreateJobSubscription = {
-  onCreateJob: {
+  onCreateJob:  {
     __typename: "Job",
     id: string,
     name: string | null,
@@ -1139,46 +674,11 @@ export type OnCreateJobSubscription = {
     stringName: string | null,
     lastUpdated: string | null,
     createdAt: string | null,
-    customer: {
-      __typename: "Customer",
-      id: string,
-      memNumber: string | null,
-      lastName: string | null,
-      firstName: string | null,
-      middleInitial: string | null,
-      email: string | null,
-      address: string | null,
-      address2: string | null,
-      city: string | null,
-      state: string | null,
-      zip: string | null,
-      homePhone: string | null,
-      cellPhone: string | null,
-      workPhone: string | null,
-      lastUpdated: string | null,
-      createdAt: string | null,
-      jobs: {
-        __typename: "ModelJobConnection",
-        nextToken: string | null,
-      } | null,
-    } | null,
-    employee: {
-      __typename: "Employee",
-      id: string,
-      firstName: string | null,
-      lastName: string | null,
-      email: string | null,
-      owner: string,
-      jobs: {
-        __typename: "ModelJobConnection",
-        nextToken: string | null,
-      } | null,
-    } | null,
   } | null,
 };
 
 export type OnUpdateJobSubscription = {
-  onUpdateJob: {
+  onUpdateJob:  {
     __typename: "Job",
     id: string,
     name: string | null,
@@ -1190,46 +690,11 @@ export type OnUpdateJobSubscription = {
     stringName: string | null,
     lastUpdated: string | null,
     createdAt: string | null,
-    customer: {
-      __typename: "Customer",
-      id: string,
-      memNumber: string | null,
-      lastName: string | null,
-      firstName: string | null,
-      middleInitial: string | null,
-      email: string | null,
-      address: string | null,
-      address2: string | null,
-      city: string | null,
-      state: string | null,
-      zip: string | null,
-      homePhone: string | null,
-      cellPhone: string | null,
-      workPhone: string | null,
-      lastUpdated: string | null,
-      createdAt: string | null,
-      jobs: {
-        __typename: "ModelJobConnection",
-        nextToken: string | null,
-      } | null,
-    } | null,
-    employee: {
-      __typename: "Employee",
-      id: string,
-      firstName: string | null,
-      lastName: string | null,
-      email: string | null,
-      owner: string,
-      jobs: {
-        __typename: "ModelJobConnection",
-        nextToken: string | null,
-      } | null,
-    } | null,
   } | null,
 };
 
 export type OnDeleteJobSubscription = {
-  onDeleteJob: {
+  onDeleteJob:  {
     __typename: "Job",
     id: string,
     name: string | null,
@@ -1241,124 +706,38 @@ export type OnDeleteJobSubscription = {
     stringName: string | null,
     lastUpdated: string | null,
     createdAt: string | null,
-    customer: {
-      __typename: "Customer",
-      id: string,
-      memNumber: string | null,
-      lastName: string | null,
-      firstName: string | null,
-      middleInitial: string | null,
-      email: string | null,
-      address: string | null,
-      address2: string | null,
-      city: string | null,
-      state: string | null,
-      zip: string | null,
-      homePhone: string | null,
-      cellPhone: string | null,
-      workPhone: string | null,
-      lastUpdated: string | null,
-      createdAt: string | null,
-      jobs: {
-        __typename: "ModelJobConnection",
-        nextToken: string | null,
-      } | null,
-    } | null,
-    employee: {
-      __typename: "Employee",
-      id: string,
-      firstName: string | null,
-      lastName: string | null,
-      email: string | null,
-      owner: string,
-      jobs: {
-        __typename: "ModelJobConnection",
-        nextToken: string | null,
-      } | null,
-    } | null,
   } | null,
 };
 
 export type OnCreateEmployeeSubscription = {
-  onCreateEmployee: {
+  onCreateEmployee:  {
     __typename: "Employee",
     id: string,
     firstName: string | null,
     lastName: string | null,
     email: string | null,
     owner: string,
-    jobs: {
-      __typename: "ModelJobConnection",
-      items: Array<{
-        __typename: "Job",
-        id: string,
-        name: string | null,
-        racket: string | null,
-        tension: string | null,
-        gauge: string | null,
-        recieved: string | null,
-        finished: string | null,
-        stringName: string | null,
-        lastUpdated: string | null,
-        createdAt: string | null,
-      } | null> | null,
-      nextToken: string | null,
-    } | null,
   } | null,
 };
 
 export type OnUpdateEmployeeSubscription = {
-  onUpdateEmployee: {
+  onUpdateEmployee:  {
     __typename: "Employee",
     id: string,
     firstName: string | null,
     lastName: string | null,
     email: string | null,
     owner: string,
-    jobs: {
-      __typename: "ModelJobConnection",
-      items: Array<{
-        __typename: "Job",
-        id: string,
-        name: string | null,
-        racket: string | null,
-        tension: string | null,
-        gauge: string | null,
-        recieved: string | null,
-        finished: string | null,
-        stringName: string | null,
-        lastUpdated: string | null,
-        createdAt: string | null,
-      } | null> | null,
-      nextToken: string | null,
-    } | null,
   } | null,
 };
 
 export type OnDeleteEmployeeSubscription = {
-  onDeleteEmployee: {
+  onDeleteEmployee:  {
     __typename: "Employee",
     id: string,
     firstName: string | null,
     lastName: string | null,
     email: string | null,
     owner: string,
-    jobs: {
-      __typename: "ModelJobConnection",
-      items: Array<{
-        __typename: "Job",
-        id: string,
-        name: string | null,
-        racket: string | null,
-        tension: string | null,
-        gauge: string | null,
-        recieved: string | null,
-        finished: string | null,
-        stringName: string | null,
-        lastUpdated: string | null,
-        createdAt: string | null,
-      } | null> | null,
-      nextToken: string | null,
-    } | null,
   } | null,
 };

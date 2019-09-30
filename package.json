@@ -8,13 +8,16 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "start": "lerna run start --parallel",
+    "amp:init": "chmod +rx scripts/amplify-init.sh && AMPLIFY_ENV_NAME=prod ./scripts/amplify-init.sh",
     "test:web": "lerna run --scope web test",
     "build:web": "lerna run --scope web build",
+    "deploy:amplify": "amplify push --yes",
     "deploy:api": "lerna run --scope api deploy:prod",
     "deploy:web": "s3-deploy './web/build/**' --cwd './web/build/' --region $AWS_REGION --bucket $S3_BUCKET_NAME --deleteRemoved --distId $CLOUDFRONT_DIST_ID --invalidate '/*'",
     "fresh": "rm -rf node_modules && lerna run fresh"
   },
   "devDependencies": {
+    "@aws-amplify/cli": "^3.10.0",
     "lerna": "^3.16.4",
     "s3-deploy": "^1.4.0",
     "serverless": "^1.53.0"

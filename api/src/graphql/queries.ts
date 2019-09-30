@@ -19,21 +19,6 @@ export const getCustomer = `query GetCustomer($id: ID!) {
     workPhone
     lastUpdated
     createdAt
-    jobs {
-      items {
-        id
-        name
-        racket
-        tension
-        gauge
-        recieved
-        finished
-        stringName
-        lastUpdated
-        createdAt
-      }
-      nextToken
-    }
   }
 }
 `;
@@ -43,27 +28,6 @@ export const listCustomers = `query ListCustomers(
   $nextToken: String
 ) {
   listCustomers(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      memNumber
-      lastName
-      firstName
-      middleInitial
-      email
-      address
-      address2
-      city
-      state
-      zip
-      homePhone
-      cellPhone
-      workPhone
-      lastUpdated
-      createdAt
-      jobs {
-        nextToken
-      }
-    }
     nextToken
   }
 }
@@ -80,79 +44,11 @@ export const getJob = `query GetJob($id: ID!) {
     stringName
     lastUpdated
     createdAt
-    customer {
-      id
-      memNumber
-      lastName
-      firstName
-      middleInitial
-      email
-      address
-      address2
-      city
-      state
-      zip
-      homePhone
-      cellPhone
-      workPhone
-      lastUpdated
-      createdAt
-      jobs {
-        nextToken
-      }
-    }
-    employee {
-      id
-      firstName
-      lastName
-      email
-      owner
-      jobs {
-        nextToken
-      }
-    }
   }
 }
 `;
 export const listJobs = `query ListJobs($filter: ModelJobFilterInput, $limit: Int, $nextToken: String) {
   listJobs(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      name
-      racket
-      tension
-      gauge
-      recieved
-      finished
-      stringName
-      lastUpdated
-      createdAt
-      customer {
-        id
-        memNumber
-        lastName
-        firstName
-        middleInitial
-        email
-        address
-        address2
-        city
-        state
-        zip
-        homePhone
-        cellPhone
-        workPhone
-        lastUpdated
-        createdAt
-      }
-      employee {
-        id
-        firstName
-        lastName
-        email
-        owner
-      }
-    }
     nextToken
   }
 }
@@ -164,21 +60,6 @@ export const getEmployee = `query GetEmployee($id: ID!) {
     lastName
     email
     owner
-    jobs {
-      items {
-        id
-        name
-        racket
-        tension
-        gauge
-        recieved
-        finished
-        stringName
-        lastUpdated
-        createdAt
-      }
-      nextToken
-    }
   }
 }
 `;
@@ -188,16 +69,6 @@ export const listEmployees = `query ListEmployees(
   $nextToken: String
 ) {
   listEmployees(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      firstName
-      lastName
-      email
-      owner
-      jobs {
-        nextToken
-      }
-    }
     nextToken
   }
 }
@@ -214,27 +85,6 @@ export const searchCustomers = `query SearchCustomers(
     limit: $limit
     nextToken: $nextToken
   ) {
-    items {
-      id
-      memNumber
-      lastName
-      firstName
-      middleInitial
-      email
-      address
-      address2
-      city
-      state
-      zip
-      homePhone
-      cellPhone
-      workPhone
-      lastUpdated
-      createdAt
-      jobs {
-        nextToken
-      }
-    }
     nextToken
   }
 }
@@ -251,43 +101,6 @@ export const searchJobs = `query SearchJobs(
     limit: $limit
     nextToken: $nextToken
   ) {
-    items {
-      id
-      name
-      racket
-      tension
-      gauge
-      recieved
-      finished
-      stringName
-      lastUpdated
-      createdAt
-      customer {
-        id
-        memNumber
-        lastName
-        firstName
-        middleInitial
-        email
-        address
-        address2
-        city
-        state
-        zip
-        homePhone
-        cellPhone
-        workPhone
-        lastUpdated
-        createdAt
-      }
-      employee {
-        id
-        firstName
-        lastName
-        email
-        owner
-      }
-    }
     nextToken
   }
 }

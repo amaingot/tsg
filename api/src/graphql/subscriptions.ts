@@ -19,21 +19,6 @@ export const onCreateCustomer = `subscription OnCreateCustomer {
     workPhone
     lastUpdated
     createdAt
-    jobs {
-      items {
-        id
-        name
-        racket
-        tension
-        gauge
-        recieved
-        finished
-        stringName
-        lastUpdated
-        createdAt
-      }
-      nextToken
-    }
   }
 }
 `;
@@ -55,21 +40,6 @@ export const onUpdateCustomer = `subscription OnUpdateCustomer {
     workPhone
     lastUpdated
     createdAt
-    jobs {
-      items {
-        id
-        name
-        racket
-        tension
-        gauge
-        recieved
-        finished
-        stringName
-        lastUpdated
-        createdAt
-      }
-      nextToken
-    }
   }
 }
 `;
@@ -91,21 +61,6 @@ export const onDeleteCustomer = `subscription OnDeleteCustomer {
     workPhone
     lastUpdated
     createdAt
-    jobs {
-      items {
-        id
-        name
-        racket
-        tension
-        gauge
-        recieved
-        finished
-        stringName
-        lastUpdated
-        createdAt
-      }
-      nextToken
-    }
   }
 }
 `;
@@ -121,37 +76,6 @@ export const onCreateJob = `subscription OnCreateJob {
     stringName
     lastUpdated
     createdAt
-    customer {
-      id
-      memNumber
-      lastName
-      firstName
-      middleInitial
-      email
-      address
-      address2
-      city
-      state
-      zip
-      homePhone
-      cellPhone
-      workPhone
-      lastUpdated
-      createdAt
-      jobs {
-        nextToken
-      }
-    }
-    employee {
-      id
-      firstName
-      lastName
-      email
-      owner
-      jobs {
-        nextToken
-      }
-    }
   }
 }
 `;
@@ -167,37 +91,6 @@ export const onUpdateJob = `subscription OnUpdateJob {
     stringName
     lastUpdated
     createdAt
-    customer {
-      id
-      memNumber
-      lastName
-      firstName
-      middleInitial
-      email
-      address
-      address2
-      city
-      state
-      zip
-      homePhone
-      cellPhone
-      workPhone
-      lastUpdated
-      createdAt
-      jobs {
-        nextToken
-      }
-    }
-    employee {
-      id
-      firstName
-      lastName
-      email
-      owner
-      jobs {
-        nextToken
-      }
-    }
   }
 }
 `;
@@ -213,37 +106,6 @@ export const onDeleteJob = `subscription OnDeleteJob {
     stringName
     lastUpdated
     createdAt
-    customer {
-      id
-      memNumber
-      lastName
-      firstName
-      middleInitial
-      email
-      address
-      address2
-      city
-      state
-      zip
-      homePhone
-      cellPhone
-      workPhone
-      lastUpdated
-      createdAt
-      jobs {
-        nextToken
-      }
-    }
-    employee {
-      id
-      firstName
-      lastName
-      email
-      owner
-      jobs {
-        nextToken
-      }
-    }
   }
 }
 `;
@@ -254,21 +116,6 @@ export const onCreateEmployee = `subscription OnCreateEmployee {
     lastName
     email
     owner
-    jobs {
-      items {
-        id
-        name
-        racket
-        tension
-        gauge
-        recieved
-        finished
-        stringName
-        lastUpdated
-        createdAt
-      }
-      nextToken
-    }
   }
 }
 `;
@@ -279,21 +126,6 @@ export const onUpdateEmployee = `subscription OnUpdateEmployee {
     lastName
     email
     owner
-    jobs {
-      items {
-        id
-        name
-        racket
-        tension
-        gauge
-        recieved
-        finished
-        stringName
-        lastUpdated
-        createdAt
-      }
-      nextToken
-    }
   }
 }
 `;
@@ -304,21 +136,6 @@ export const onDeleteEmployee = `subscription OnDeleteEmployee {
     lastName
     email
     owner
-    jobs {
-      items {
-        id
-        name
-        racket
-        tension
-        gauge
-        recieved
-        finished
-        stringName
-        lastUpdated
-        createdAt
-      }
-      nextToken
-    }
   }
 }
 `;
