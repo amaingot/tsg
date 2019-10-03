@@ -6,9 +6,35 @@ Properties:
       AttributeType: S
     - AttributeName: clientId
       AttributeType: S
+    - AttributeName: memNumber
+      AttributeType: S
+    - AttributeName: lastName
+      AttributeType: S
+    - AttributeName: firstName
+      AttributeType: S
+    - AttributeName: middleInitial
+      AttributeType: S
+    - AttributeName: email
+      AttributeType: S
+    - AttributeName: address
+      AttributeType: S
+    - AttributeName: address2
+      AttributeType: S
+    - AttributeName: city
+      AttributeType: S
+    - AttributeName: state
+      AttributeType: S
+    - AttributeName: zip
+      AttributeType: S
+    - AttributeName: homePhone
+      AttributeType: S
+    - AttributeName: cellPhone
+      AttributeType: S
+    - AttributeName: workPhone
+      AttributeType: S
   KeySchema:
     - AttributeName: id
       KeyType: HASH
     - AttributeName: clientId
-      KeyType: HASH
+      KeyType: RANGE
   BillingMode: PAY_PER_REQUEST

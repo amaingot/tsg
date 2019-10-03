@@ -6,9 +6,17 @@ Properties:
       AttributeType: S
     - AttributeName: clientId
       AttributeType: S
+    - AttributeName: firstName
+      AttributeType: S
+    - AttributeName: lastName
+      AttributeType: S
+    - AttributeName: email
+      AttributeType: S
+    - AttributeName: clientId
+      AttributeType: S
   KeySchema:
     - AttributeName: id
       KeyType: HASH
     - AttributeName: clientId
-      KeyType: HASH
+      KeyType: RANGE
   BillingMode: PAY_PER_REQUEST
