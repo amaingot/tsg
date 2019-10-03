@@ -24,7 +24,6 @@ const useStyles = makeStyles(theme => ({
 const DashboardPage: React.FC<RouteComponentProps> = () => {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-  const [response, setResponse] = React.useState("");
 
   const callApi = async () => {
     const resp = await axios({
@@ -50,7 +49,6 @@ const DashboardPage: React.FC<RouteComponentProps> = () => {
           <Paper className={fixedHeightPaper}>
             Orders
             <Button onClick={callApi}>Call API</Button>
-            {response}
           </Paper>
         </Grid>
       </Grid>
