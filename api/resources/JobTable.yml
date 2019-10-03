@@ -1,5 +1,4 @@
 Type: AWS::DynamoDB::Table
-DeletionPolicy: Retain
 Properties:
   TableName: ${self:provider.environment.JOB_TABLE}
   AttributeDefinitions:
