@@ -62,6 +62,36 @@ functions:
           method: post
           path: signup
           cors: *corsConfig
+
+  resend-confirm-code:
+    handler: handlers/resendCode.default
+    layers:
+      - { Ref: SharedLambdaLayer }
+    events:
+      - http:
+          method: post
+          path: signup/resend
+          cors: *corsConfig
+
+  confirm-user:
+    handler: handlers/confirmUser.default
+    layers:
+      - { Ref: SharedLambdaLayer }
+    events:
+      - http:
+          method: post
+          path: signup/confirm
+          cors: *corsConfig
+
+  get-customers:
+    handler: handlers/getCustomers.default
+    layers:
+      - { Ref: SharedLambdaLayer }
+    events:
+      - http:
+          method: get
+          path: customers
+          cors: *corsConfig
           authorizer: *authorizerConfig
 
 resources:
