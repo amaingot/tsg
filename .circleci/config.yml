@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  build-web:
+  test:
     working_directory: ~/tsg
     docker:
       - image: circleci/node:10-browsers
