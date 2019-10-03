@@ -4,10 +4,6 @@ Properties:
   AttributeDefinitions:
     - AttributeName: id
       AttributeType: S
-    - AttributeName: name
-      AttributeType: S
-    - AttributeName: phone
-      AttributeType: S
   KeySchema:
     - AttributeName: id
       KeyType: HASH

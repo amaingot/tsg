@@ -4,37 +4,7 @@ Properties:
   AttributeDefinitions:
     - AttributeName: id
       AttributeType: S
-    - AttributeName: clientId
-      AttributeType: S
-    - AttributeName: customerId
-      AttributeType: S
-    - AttributeName: userId
-      AttributeType: S
-    - AttributeName: name
-      AttributeType: S
-    - AttributeName: racket
-      AttributeType: S
-    - AttributeName: tension
-      AttributeType: S
-    - AttributeName: gauge
-      AttributeType: S
-    - AttributeName: recieved
-      AttributeType: S
-    - AttributeName: finished
-      AttributeType: S
-    - AttributeName: stringName
-      AttributeType: S
-    - AttributeName: lastUpdated
-      AttributeType: S
-    - AttributeName: createdAt
-      AttributeType: S
   KeySchema:
     - AttributeName: id
       KeyType: HASH
-    - AttributeName: clientId
-      KeyType: RANGE
-    - AttributeName: customerId
-      KeyType: RANGE
-    - AttributeName: userId
-      KeyType: RANGE
   BillingMode: PAY_PER_REQUEST
