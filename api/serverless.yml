@@ -30,6 +30,8 @@ provider:
     CUSTOMER_TABLE: ${self:service.app}-CustomerTable-${self:provider.stage}
     JOB_TABLE: ${self:service.app}-JobTable-${self:provider.stage}
     NODE_PATH: "./:/opt/node_modules"
+    ENV: ${self:provider.stage}
+    CODE_VERSION: ${env:CIRCLE_SHA1}
 
 layers:
   shared:
@@ -42,14 +44,13 @@ layers:
 custom:
   serverless-offline:
     port: 3001
-  lambdaAuth: &lambdaAuth
-    cors:
-      origin: "*"
-      allowCredentials: true
-    authorizer:
-      type: COGNITO_USER_POOLS
-      authorizerId:
-        Ref: ApiGatewayAuthorizer
+  corsConfig: &corsConfig
+    origin: "*"
+    allowCredentials: true
+  authorizerConfig: &authorizerConfig
+    type: COGNITO_USER_POOLS
+    authorizerId:
+      Ref: ApiGatewayAuthorizer
 
 functions:
   signup:
@@ -60,8 +61,8 @@ functions:
       - http:
           method: post
           path: signup
-          <<: *lambdaAuth
-
+          cors: *corsConfig
+          authorizer: *authorizerConfig
 
 resources:
   Resources:
@@ -74,5 +75,3 @@ resources:
     CustomerTable: ${file(./resources/CustomerTable.yml)}
     JobTable: ${file(./resources/JobTable.yml)}
     LambdaRole: ${file(./resources/LambdaRole.yml)}
-
-
