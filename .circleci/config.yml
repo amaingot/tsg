@@ -4,71 +4,69 @@ jobs:
   build-web:
     working_directory: ~/tsg
     docker:
-      - image: circleci/node:8-browsers
+      - image: circleci/node:10-browsers
     steps:
       - checkout
 
       - restore_cache:
           keys:
-            - v1-web-dependencies-{{ checksum "web/yarn.lock" }}
-            - v1-web-dependencies
-
-      - restore_cache:
-          keys:
-            - v1-root-dependencies-{{ checksum "yarn.lock" }}
+            - v1-root-dependencies-{{ checksum "package-lock.json" }}-{{ checksum "web/package-lock.json" }}-{{ checksum "api/package-lock.json" }}-{{ checksum "shared/package-lock.json" }}-{{ checksum "api/layer/package-lock.json" }}
             - v1-root-dependencies
 
       - run:
-          name: Install some stupid dependency that I've never needed
-          command: sudo apt-get install libzmq3-dev
-
-      - run:
           name: Installing root dependencies
-          command: yarn install
+          command: npm install
 
       - run:
-          name: Running Amplify init
-          command: yarn amp:init
-
-      - run:
-          name: Installing web dependencies
-          command: yarn --cwd web install
+          name: Installing all dependencies
+          command: npm run bootstrap --hoist
 
       - run:
           name: Run front end web tests
-          command: yarn test:web
-
-      - run:
-          name: Build bundle and all assets
-          command: REACT_APP_VERSION=${CIRCLE_SHA1} yarn build:web
-
-      - save_cache:
-          paths:
-            - web/node_modules
-          key: v1-web-dependencies-{{ checksum "web/yarn.lock" }}
+          command: npm run test-web
 
       - save_cache:
           paths:
             - node_modules
-            - web/node_modules
-          key: v1-root-dependencies-{{ checksum "yarn.lock" }}
-
-      - run:
-          name: Clean up workspace
-          command: rm -rf web/node_modules
+          key: v1-root-dependencies-{{ checksum "package-lock.json" }}-{{ checksum "web/package-lock.json" }}-{{ checksum "api/package-lock.json" }}-{{ checksum "shared/package-lock.json" }}-{{ checksum "api/layer/package-lock.json" }}
 
       - persist_to_workspace:
           root: ./
           paths:
             - ./
 
-  deploy-web:
+  deploy-api:
     working_directory: ~/tsg
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:10
     steps:
       - attach_workspace:
           at: ./
+
+      - run:
+          name: Deploying API
+          command: npm run deploy-api
+
+      - run:
+          name: Deployment notification to Rollbar for tsg-api
+          command: |
+            curl https://api.rollbar.com/api/1/deploy/ \
+              -F access_token=$ROLLBAR_API_DEPLOY_TOKEN \
+              -F environment=production \
+              -F revision=$CIRCLE_SHA1 \
+              -F local_username=$CIRCLE_USERNAME
+
+  deploy-web:
+    working_directory: ~/tsg
+    docker:
+      - image: circleci/node:10
+    steps:
+      - attach_workspace:
+          at: ./
+
+      - run:
+          name: Build web bundle and all assets
+          command: REACT_APP_VERSION=${CIRCLE_SHA1} npm run build-web
 
       - run:
           name: Move sourcemaps to their own directory
@@ -76,7 +74,7 @@ jobs:
 
       - run:
           name: Upload production web bundle to S3 and invalidate CloudFront distribution
-          command: yarn deploy:web
+          command: npm run deploy-web
 
       - run:
           name: Deployment notification to Rollbar for tsg-web
@@ -104,55 +102,25 @@ jobs:
                 -F source_map=@"${file}.map"
             done
 
-  deploy-api:
-    working_directory: ~/tsg
-    docker:
-      - image: circleci/node:8
-    steps:
-      - attach_workspace:
-          at: ./
-
-      - restore_cache:
-          keys:
-            - v1-api-dependencies-{{ checksum "api/yarn.lock" }}
-            - v1-api-dependencies
-
-      - run:
-          name: Deploy Amplify
-          command: yarn deploy:amplify
-
-      - run:
-          name: Installing API dependencies
-          command: yarn --cwd api install
-
-      - run:
-          name: Deploying API
-          command: yarn deploy:api
-
-      - save_cache:
-          paths:
-            - api/node_modules
-          key: v1-api-dependencies-{{ checksum "api/yarn.lock" }}
-
 workflows:
   version: 2
   tsg:
     jobs:
-      - build-web:
+      - test:
           context: maingot
-
-      - deploy-web:
-          context: maingot
-          requires:
-            - build-web
-          filters:
-            branches:
-                only: master
 
       - deploy-api:
           context: maingot
           requires:
-            - deploy-web
+            - test
           filters:
             branches:
-                only: master
+              only: master
+
+      - deploy-web:
+          context: maingot
+          requires:
+            - deploy-api
+          filters:
+            branches:
+              only: master

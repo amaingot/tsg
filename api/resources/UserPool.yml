@@ -1,0 +1,10 @@
+Type: AWS::Cognito::UserPool
+Properties:
+  UserPoolName: ${self:service.app}-UserPool-${self:provider.stage}
+  UsernameAttributes:
+    - email
+  AutoVerifiedAttributes:
+    - email
+  EmailVerificationSubject: Your verification code
+  EmailVerificationMessage: Your verification code is {####}
+  SmsVerificationMessage: Your verification code is {####}

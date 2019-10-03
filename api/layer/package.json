@@ -1,0 +1,19 @@
+{
+  "name": "tsg-layer",
+  "author": "Alex Maingot (alex@maingot.us)",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AWS Lambda Layer containing all NPM dependencies",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo \"Nothing to build here!\"",
+    "fresh": "rm -rf node_modules",
+    "start": "echo \"Nothing to start here!\""
+  },
+  "dependencies": {
+    "aws-sdk": "^2.541.0",
+    "rollbar": "^2.13.0",
+    "uuid": "^3.3.3",
+    "tsg-shared": "^1.0.0"
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "tsg-api",
   "version": "1.0.0",
   "description": "Tennis Shop Guru API",
   "private": true,
@@ -8,19 +8,25 @@
     "start": "serverless offline",
     "deploy:prod": "serverless deploy -v --stage prod",
     "deploy:dev": "serverless deploy -v --stage dev",
-    "fresh": "rm -rf node_modules"
+    "package": "serverless package -v",
+    "fresh": "rm -rf node_modules .serverless"
   },
   "dependencies": {
-    "source-map-support": "^0.5.10"
+    "aws-sdk": "^2.541.0",
+    "rollbar": "^2.13.0",
+    "tsg-shared": "^1.0.0",
+    "uuid": "^3.3.3"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.17",
-    "@types/node": "^10.12.18",
-    "serverless": "^1.53.0",
+    "@types/node": "^12.7.9",
+    "serverless-dotenv-plugin": "^2.1.1",
+    "serverless-dynamodb-local": "^0.2.38",
     "serverless-offline": "^5.11.0",
     "serverless-webpack": "^5.2.0",
+    "serverless": "^1.53.0",
     "ts-loader": "^5.3.3",
-    "typescript": "^3.2.4",
+    "typescript": "^3.6.3",
     "webpack": "^4.29.0"
   }
 }

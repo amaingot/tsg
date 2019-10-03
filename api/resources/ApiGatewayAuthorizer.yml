@@ -1,0 +1,9 @@
+Type: AWS::ApiGateway::Authorizer
+Properties:
+  Name: ${self:service.app}-CognitoUserPoolAuthorizer-${self:provider.stage}
+  RestApiId:
+    Ref: ApiGatewayRestApi
+  Type: COGNITO_USER_POOLS
+  ProviderARNs:
+    - Fn::GetAtt: [UserPool, Arn]
+  IdentitySource: method.request.header.Authorization

@@ -7,20 +7,16 @@
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap",
+    "fresh": "rm -rf node_modules && lerna run fresh",
     "start": "lerna run start --parallel",
-    "amp:init": "chmod +rx scripts/amplify-init.sh && AMPLIFY_ENV_NAME=prod ./scripts/amplify-init.sh",
-    "test:web": "lerna run --scope web test",
-    "build:web": "lerna run --scope web build",
-    "deploy:amplify": "amplify push --yes",
-    "deploy:api": "lerna run --scope api deploy:prod",
-    "deploy:web": "s3-deploy './web/build/**' --cwd './web/build/' --region $AWS_REGION --bucket $S3_BUCKET_NAME --deleteRemoved --distId $CLOUDFRONT_DIST_ID --invalidate '/*'",
-    "fresh": "rm -rf node_modules && lerna run fresh"
+    "deploy-api": "lerna run --scope tsg-api deploy:prod --stream",
+    "test-web": "lerna run --scope tsg-web test --stream",
+    "build-web": "lerna run --scope tsg-web build --stream",
+    "deploy-web": "s3-deploy './web/build/**' --cwd './web/build/' --region $AWS_REGION --bucket $S3_BUCKET_NAME --deleteRemoved --distId $CLOUDFRONT_DIST_ID --invalidate '/*'"
   },
   "devDependencies": {
-    "@aws-amplify/cli": "^3.10.0",
     "lerna": "^3.16.4",
-    "s3-deploy": "^1.4.0",
-    "serverless": "^1.53.0"
+    "s3-deploy": "^1.4.0"
   },
   "repository": {
     "type": "git",
@@ -28,7 +24,6 @@
   },
   "keywords": [
     "react",
-    "amplify",
     "typescript",
     "aws"
   ]

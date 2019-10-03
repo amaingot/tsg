@@ -1,0 +1,21 @@
+{
+  "name": "tsg-shared",
+  "version": "1.0.0",
+  "author": "Alex Maingot (alex@maingot.us)",
+  "private": true,
+  "description": "Shared types for the TSG monorepo",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "fresh": "rm -rf node_modules lib",
+    "build": "tsc",
+    "start": "tsc --watch",
+    "postinstall": "npm run build"
+  },
+  "devDependencies": {
+    "typescript": "^3.6.3"
+  },
+  "dependencies": {
+    "@types/node": "^12.7.9"
+  }
+}
