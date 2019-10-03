@@ -12,8 +12,10 @@
   },
   "dependencies": {
     "aws-sdk": "^2.541.0",
+    "aws-xray-sdk-core": "^2.3.6",
     "rollbar": "^2.13.0",
+    "tsg-shared": "^1.0.0",
     "uuid": "^3.3.3",
-    "tsg-shared": "^1.0.0"
+    "winston": "^3.2.1"
   }
 }

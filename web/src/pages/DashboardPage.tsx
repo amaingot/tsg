@@ -1,13 +1,13 @@
 import React from "react";
 import { RouteComponentProps } from "react-router";
 import clsx from "clsx";
-import API from "@aws-amplify/api";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+import axios from "../utils/axios";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -27,9 +27,11 @@ const DashboardPage: React.FC<RouteComponentProps> = () => {
   const [response, setResponse] = React.useState("");
 
   const callApi = async () => {
-    const resp = await API.post("tsg", "/signup", {});
+    const resp = await axios({
+      method: "POST",
+      url: "/signup"
+    });
     console.log(resp);
-    setResponse(resp);
   };
 
   return (

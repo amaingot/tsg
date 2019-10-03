@@ -39,8 +39,20 @@ layers:
     compatibleRuntimes:
       - ${self:provider.runtime}
 
+custom:
+  serverless-offline:
+    port: 3001
+  lambdaAuth: &lambdaAuth
+    cors:
+      origin: "*"
+      allowCredentials: true
+    authorizer:
+      type: COGNITO_USER_POOLS
+      authorizerId:
+        Ref: ApiGatewayAuthorizer
+
 functions:
-  hello:
+  signup:
     handler: handlers/signUp.default
     layers:
       - { Ref: SharedLambdaLayer }
@@ -48,11 +60,8 @@ functions:
       - http:
           method: post
           path: signup
-          cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
+          <<: *lambdaAuth
+
 
 resources:
   Resources:
@@ -66,6 +75,4 @@ resources:
     JobTable: ${file(./resources/JobTable.yml)}
     LambdaRole: ${file(./resources/LambdaRole.yml)}
 
-custom:
-  serverless-offline:
-    port: 3001
+
