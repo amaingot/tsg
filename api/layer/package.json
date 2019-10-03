@@ -11,9 +11,11 @@
     "start": "echo \"Nothing to start here!\""
   },
   "dependencies": {
+    "amazon-cognito-identity-js": "^3.0.15",
     "aws-sdk": "^2.541.0",
     "aws-xray-sdk-core": "^2.3.6",
     "rollbar": "^2.13.0",
+    "source-map-support": "^0.5.13",
     "tsg-shared": "^1.0.0",
     "uuid": "^3.3.3",
     "winston": "^3.2.1"

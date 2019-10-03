@@ -1,5 +1,6 @@
 import { APIGatewayProxyHandler } from "aws-lambda";
 import uuid from "uuid/v4";
+import "source-map-support/register";
 
 import dynamo from "./utils/dynamo";
 import withRollbar from "./utils/withRollbar";
