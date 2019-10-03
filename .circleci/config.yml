@@ -35,7 +35,7 @@ jobs:
           paths:
             - ./
 
-  deploy-api:
+  deploy:
     working_directory: ~/tsg
     docker:
       - image: circleci/node:10
@@ -55,14 +55,6 @@ jobs:
               -F environment=production \
               -F revision=$CIRCLE_SHA1 \
               -F local_username=$CIRCLE_USERNAME
-
-  deploy-web:
-    working_directory: ~/tsg
-    docker:
-      - image: circleci/node:10
-    steps:
-      - attach_workspace:
-          at: ./
 
       - run:
           name: Build web bundle and all assets
@@ -109,18 +101,10 @@ workflows:
       - test:
           context: maingot
 
-      - deploy-api:
+      - deploy:
           context: maingot
           requires:
             - test
-          filters:
-            branches:
-              only: master
-
-      - deploy-web:
-          context: maingot
-          requires:
-            - deploy-api
           filters:
             branches:
               only: master
