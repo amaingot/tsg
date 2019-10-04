@@ -108,9 +108,9 @@ export const getUserAttributes = async (
 export const getCognitoUser = (email: string): CognitoUser => {
   const userData = {
     Username: email,
-    Pool: userPool,
+    Pool: userPool
   };
 
   const cognitoUser = new CognitoUser(userData);
-  return cognitoUser
-}
+  return cognitoUser;
+};

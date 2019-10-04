@@ -38,7 +38,7 @@ const withRollbar: RollbarEnhancer = (handler: APIGW) => async (
   try {
     AWSXRay.setLogger(rollbar);
 
-    if (event.requestContext.authorizer.claims) {
+    if (event.requestContext.authorizer && event.requestContext.authorizer.claims) {
       rollbar.configure({
         payload: {
           person: {
