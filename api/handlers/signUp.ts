@@ -5,7 +5,7 @@ import { SignUpRequest, UserRoles } from "tsg-shared";
 
 import * as Responses from "./utils/responses";
 import dynamo from "./utils/dynamo";
-import withRollbar from "./utils/withRollbar";
+import withLogger from "./utils/withLogger";
 import { signUpUser, getUserAttributes } from "./utils/cognito";
 
 const handler: APIGatewayProxyHandler = async (event, _context) => {
@@ -87,4 +87,4 @@ const handler: APIGatewayProxyHandler = async (event, _context) => {
   };
 };
 
-export default withRollbar(handler);
+export default withLogger(handler);

@@ -6,6 +6,7 @@ plugins:
   - serverless-dotenv-plugin
   - serverless-webpack
   - serverless-offline
+  - serverless-sentry
 
 provider:
   name: aws
@@ -35,6 +36,8 @@ provider:
     CODE_VERSION: ${env:CIRCLE_SHA1}
     USER_POOL_ID: { Ref: UserPool }
     USER_POOL_CLIENT_ID: { Ref: UserPoolClient }
+    SENTRY_ENVIRONMENT: ${self:provider.stage}
+    SENTRY_DSN: ${env:LAMBDA_SENTRY_DSN}
 
 custom:
   serverless-offline:
@@ -46,6 +49,16 @@ custom:
     type: COGNITO_USER_POOLS
     authorizerId:
       Ref: ApiGatewayAuthorizer
+  sentry:
+    dsn: ${self:provider.environment.SENTRY_DSN}
+    organization: ${env:SENTRY_ORG}
+    project: ${env:LAMBDA_SENTRY_PROJECT}
+    authToken: ${env:SENTRY_API_AUTH_TOKEN}
+    release:
+      version: ${env:CIRCLE_SHA1}
+      refs:
+        - repository: ${env:CIRCLE_PROJECT_REPONAME}
+          commit: ${env:CIRCLE_SHA1}
 
 layers:
   shared:

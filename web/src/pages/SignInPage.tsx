@@ -1,104 +1,112 @@
-import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { RouteComponentProps } from 'react-router';
-import Auth, { CognitoUser } from '@aws-amplify/auth';
+import React from "react";
+import { Link as RouterLink } from "react-router-dom";
+import { RouteComponentProps } from "react-router";
+import Auth, { CognitoUser } from "@aws-amplify/auth";
 
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Link from "@material-ui/core/Link";
+import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
 
-import Copyright from '../components/Copyright';
+import Copyright from "../components/Copyright";
 
 const useStyles = makeStyles(theme => ({
-  '@global': {
+  "@global": {
     body: {
-      backgroundColor: theme.palette.common.white,
-    },
+      backgroundColor: theme.palette.common.white
+    }
   },
   paper: {
     marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center"
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.secondary.main
   },
   form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
+    width: "100%", // Fix IE 11 issue.
+    marginTop: theme.spacing(1)
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
+    margin: theme.spacing(3, 0, 2)
+  }
 }));
 
 type GenericCallback = () => void;
 
-const SignInPage: React.FC<RouteComponentProps> = (props) => {
+const SignInPage: React.FC<RouteComponentProps> = props => {
   const { history } = props;
   const classes = useStyles();
 
   const [challenge, setChallenge] = React.useState<string>();
   const [error, setError] = React.useState<string>();
 
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
-  const [mfaCode, setMfaCode] = React.useState('');
-  const [newPassword, setNewPassword] = React.useState('');
-  const [passwordAgain, setPassAgain] = React.useState('');
+  const [mfaCode, setMfaCode] = React.useState("");
+  const [newPassword, setNewPassword] = React.useState("");
+  const [passwordAgain, setPassAgain] = React.useState("");
 
   const [nextAction, setNextAction] = React.useState<GenericCallback>();
 
   const handleLoginSuccess = (user: any) => {
     if (user instanceof CognitoUser) {
-      user.getUserData((error, userData) =>
-        !error && !!userData && window.Rollbar.configure({
-          payload: {
+      user.getUserData(
+        (error, userData) =>
+          !error &&
+          !!userData &&
+          console.log({
             person: {
               id: userData.Username,
-              username: (userData.UserAttributes.find(a => a.Name === 'email') || {}).Value,
-              email: (userData.UserAttributes.find(a => a.Name === 'email') || {}).Value
-            },
-          }
-        })
+              username: (
+                userData.UserAttributes.find(a => a.Name === "email") || {}
+              ).Value,
+              email: (
+                userData.UserAttributes.find(a => a.Name === "email") || {}
+              ).Value
+            }
+          })
       );
     }
-    history.push('/app');
+    history.push("/app");
   };
 
-  const handleSignIn: React.FormEventHandler = async (e) => {
+  const handleSignIn: React.FormEventHandler = async e => {
     e.preventDefault();
 
     if (nextAction) {
       return nextAction();
-    };
+    }
 
     try {
       const user = await Auth.signIn(email, password);
 
-      if (user.challengeName === 'SMS_MFA' || user.challengeName === 'SOFTWARE_TOKEN_MFA') {
+      if (
+        user.challengeName === "SMS_MFA" ||
+        user.challengeName === "SOFTWARE_TOKEN_MFA"
+      ) {
         // You need to get the code from the UI inputs
         // and then trigger the following function with a button click
         setNextAction(() => {
           Auth.confirmSignIn(user, mfaCode, user.challengeName)
             .then(handleSignIn)
             .catch(e => {
-              setError('Uh oh! Maybe a bad code?');
-              window.Rollbar.error('MFA login error', e);
+              setError("Uh oh! Maybe a bad code?");
+              console.error("MFA login error", e);
             });
         });
         setChallenge(user.challengeName);
-      } else if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
+      } else if (user.challengeName === "NEW_PASSWORD_REQUIRED") {
         // You need to get the new password and required attributes from the UI inputs
         // and then trigger the following function with a button click
         // For example, the email and phone_number are required attributes
@@ -107,41 +115,51 @@ const SignInPage: React.FC<RouteComponentProps> = (props) => {
             Auth.completeNewPassword(user, newPassword, { email })
               .then(handleSignIn)
               .catch(e => {
-                setError('Uh oh! We seem to have had an error! Please file a support ticket to get help.');
-                window.Rollbar.error('Complete new password login error', e);
+                setError(
+                  "Uh oh! We seem to have had an error! Please file a support ticket to get help."
+                );
+                console.error("Complete new password login error", e);
               });
           }
         });
         setChallenge(user.challengeName);
-      } else if (user.challengeName === 'MFA_SETUP') {
-        window.Rollbar.error('User requires MFA_SETUP', user);
-        setError('Uh oh! Looks like your account got into a weird state. Please file a support ticket to get help.');
+      } else if (user.challengeName === "MFA_SETUP") {
+        console.error("User requires MFA_SETUP", user);
+        setError(
+          "Uh oh! Looks like your account got into a weird state. Please file a support ticket to get help."
+        );
       } else {
         handleLoginSuccess(user);
       }
     } catch (err) {
-      if (err.code === 'UserNotConfirmedException') {
+      if (err.code === "UserNotConfirmedException") {
         // The error happens if the user didn't finish the confirmation step when signing up
         // In this case you need to resend the code and confirm the user
         // About how to resend the code and confirm the user, please check the signUp part
-        setError('Looks like you didn\'t finish the confirmation step when signing up. Please file a support ticket to get help.');
-      } else if (err.code === 'PasswordResetRequiredException') {
+        setError(
+          "Looks like you didn't finish the confirmation step when signing up. Please file a support ticket to get help."
+        );
+      } else if (err.code === "PasswordResetRequiredException") {
         // The error happens when the password is reset in the Cognito console
         // In this case you need to call forgotPassword to reset the password
         // Please check the Forgot Password part.
-        setError('Looks like your password has been reset. Please click "Forgot Password" below.');
-      } else if (err.code === 'NotAuthorizedException') {
+        setError(
+          'Looks like your password has been reset. Please click "Forgot Password" below.'
+        );
+      } else if (err.code === "NotAuthorizedException") {
         // The error happens when the incorrect password is provided
-        setError('Uh oh! Wrong password! Want to try again?');
-      } else if (err.code === 'UserNotFoundException') {
+        setError("Uh oh! Wrong password! Want to try again?");
+      } else if (err.code === "UserNotFoundException") {
         // The error happens when the supplied username/email does not exist in the Cognito user pool
-        setError('Hmmm! Interesting!? I can\'t find you in my system!');
+        setError("Hmmm! Interesting!? I can't find you in my system!");
       } else {
-        setError('Woah! We\'ve never seen this before! Please file a support ticket to get help.');
-        window.Rollbar.error('Unexpected user login error', err);
+        setError(
+          "Woah! We've never seen this before! Please file a support ticket to get help."
+        );
+        console.error("Unexpected user login error", err);
       }
     }
-  }
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -184,9 +202,12 @@ const SignInPage: React.FC<RouteComponentProps> = (props) => {
             </>
           )}
 
-          {(challenge === 'SMS_MFA' || challenge === 'SOFTWARE_TOKEN_MFA') && (
+          {(challenge === "SMS_MFA" || challenge === "SOFTWARE_TOKEN_MFA") && (
             <>
-              <Typography>We just sent you a code via text message. Type it below to log in.</Typography>
+              <Typography>
+                We just sent you a code via text message. Type it below to log
+                in.
+              </Typography>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -202,9 +223,11 @@ const SignInPage: React.FC<RouteComponentProps> = (props) => {
             </>
           )}
 
-          {challenge === 'NEW_PASSWORD_REQUIRED' && (
+          {challenge === "NEW_PASSWORD_REQUIRED" && (
             <>
-              <Typography>Looks like we need to you to change your password!</Typography>
+              <Typography>
+                Looks like we need to you to change your password!
+              </Typography>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -233,9 +256,7 @@ const SignInPage: React.FC<RouteComponentProps> = (props) => {
             </>
           )}
 
-          {error && (
-            <Typography color="error">{error}</Typography>
-          )}
+          {error && <Typography color="error">{error}</Typography>}
           <Button
             type="submit"
             fullWidth
@@ -248,7 +269,11 @@ const SignInPage: React.FC<RouteComponentProps> = (props) => {
 
           <Grid container>
             <Grid item xs>
-              <Link component={RouterLink} to="/forgot-password" variant="body2">
+              <Link
+                component={RouterLink}
+                to="/forgot-password"
+                variant="body2"
+              >
                 Forgot password?
               </Link>
             </Grid>
