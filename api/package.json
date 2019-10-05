@@ -24,6 +24,7 @@
     "uuid": "^3.3.3"
   },
   "devDependencies": {
+    "@sentry/cli": "^1.47.2",
     "@sentry/webpack-plugin": "^1.8.1",
     "@types/aws-lambda": "^8.10.17",
     "@types/node": "^12.7.9",
