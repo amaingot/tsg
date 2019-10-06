@@ -1,7 +1,7 @@
 import { APIGatewayProxyHandler } from "aws-lambda";
 import "source-map-support/register";
 
-import withLogger from "./utils/withLogger";
+import withRollbar from "./utils/withRollbar";
 import { getCognitoUser } from "./utils/cognito";
 import * as Responses from "./utils/responses";
 
@@ -33,4 +33,4 @@ const handler: APIGatewayProxyHandler = async (event, _context) => {
   return Responses.success();
 };
 
-export default withLogger(handler);
+export default withRollbar(handler);

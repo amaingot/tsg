@@ -46,8 +46,6 @@ jobs:
       - run:
           name: Deploying API
           command: npm run deploy-api
-          environment:
-            SENTRY_PROJECT: tsg-api
 
       - run:
           name: Deployment notification to Rollbar for tsg-api

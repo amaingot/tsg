@@ -1,6 +1,5 @@
 const path = require("path");
 const slsw = require("serverless-webpack");
-const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 
 const layerPackageJson = require("./layer/package.json");
 const layerExternals = Object.keys(layerPackageJson.dependencies).reduce(
@@ -32,13 +31,5 @@ module.exports = {
       { test: /\.tsx?$/, loader: "ts-loader" }
     ]
   },
-  externals: slsw.lib.webpack.isLocal ? {} : layerExternals,
-  plugins: [
-    new SentryWebpackPlugin({
-      include: '.',
-      ignoreFile: '.sentrycliignore',
-      ignore: ['node_modules', 'webpack.config.js'],
-      configFile: 'sentry.properties'
-    })
-  ]
+  externals: slsw.lib.webpack.isLocal ? {} : layerExternals
 };

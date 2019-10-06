@@ -3,7 +3,7 @@ import "source-map-support/register";
 
 import * as Responses from "./utils/responses";
 import dynamo from "./utils/dynamo";
-import withLogger from "./utils/withLogger";
+import withRollbar from "./utils/withRollbar";
 import { getCognitoUser, getUserAttributes } from "./utils/cognito";
 
 const handler: APIGatewayProxyHandler = async (event, _context) => {
@@ -47,24 +47,22 @@ const handler: APIGatewayProxyHandler = async (event, _context) => {
     })
     .promise();
 
-  const customers = await dynamo
-    .query({
-      TableName: process.env.CUSTOMER_TABLE,
-      KeyConditionExpression: "#clientId = :currentClientId",
-      ExpressionAttributeNames: {
-        "#clientId": "clientId"
-      },
-      ExpressionAttributeValues: {
-        ":currentClientId": clientRecord.Item.id
-      }
-    })
-    .promise();
+  const customers = await dynamo.query({
+    TableName: process.env.CUSTOMER_TABLE,
+    KeyConditionExpression: "#clientId = :currentClientId",
+    ExpressionAttributeNames: {
+      "#clientId": "clientId"
+    },
+    ExpressionAttributeValues: {
+      ":currentClientId": clientRecord.Item.id
+    }
+  }).promise();
 
   return Responses.success({
     data: customers.Items,
     count: customers.Count,
-    scannedCount: customers.ScannedCount
+    scannedCount: customers.ScannedCount,
   });
 };
 
-export default withLogger(handler);
+export default withRollbar(handler);
