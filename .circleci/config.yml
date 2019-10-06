@@ -59,6 +59,8 @@ jobs:
       - run:
           name: Build web bundle and all assets
           command: REACT_APP_VERSION=${CIRCLE_SHA1} npm run build-web
+          environment:
+            REACT_APP_ENV: prod
 
       - run:
           name: Move sourcemaps to their own directory
