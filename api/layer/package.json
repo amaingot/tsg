@@ -14,6 +14,7 @@
     "amazon-cognito-identity-js": "^3.0.15",
     "aws-sdk": "^2.541.0",
     "aws-xray-sdk-core": "^2.3.6",
+    "fetch": "^1.1.0",
     "rollbar": "^2.13.0",
     "source-map-support": "^0.5.13",
     "tsg-shared": "^1.0.0",
