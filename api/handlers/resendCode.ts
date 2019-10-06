@@ -1,5 +1,4 @@
 import { APIGatewayProxyHandler } from "aws-lambda";
-import "source-map-support/register";
 
 import withLogger from "./utils/withLogger";
 import { getCognitoUser } from "./utils/cognito";

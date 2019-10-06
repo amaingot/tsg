@@ -26,5 +26,8 @@
     "react",
     "typescript",
     "aws"
-  ]
+  ],
+  "dependencies": {
+    "@sentry/cli": "^1.47.2"
+  }
 }

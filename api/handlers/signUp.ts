@@ -1,6 +1,5 @@
 import { APIGatewayProxyHandler } from "aws-lambda";
 import uuid from "uuid/v4";
-import "source-map-support/register";
 import { SignUpRequest, UserRoles } from "tsg-shared";
 
 import * as Responses from "./utils/responses";

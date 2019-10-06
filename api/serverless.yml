@@ -53,7 +53,7 @@ custom:
     dsn: ${self:provider.environment.SENTRY_DSN}
     organization: ${env:SENTRY_ORG}
     project: ${env:LAMBDA_SENTRY_PROJECT}
-    authToken: ${env:SENTRY_API_AUTH_TOKEN}
+    authToken: ${env:SENTRY_AUTH_TOKEN}
     release:
       version: ${env:CIRCLE_SHA1}
       refs:
