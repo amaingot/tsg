@@ -6,7 +6,7 @@ import { SignUpRequest, UserRoles } from "tsg-shared";
 import * as Responses from "./utils/responses";
 import dynamo from "./utils/dynamo";
 import withRollbar from "./utils/withRollbar";
-import { signUpUser, getUserAttributes } from "./utils/cognito";
+import { signUpUser, getUser } from "./utils/cognito";
 
 const handler: APIGatewayProxyHandler = async (event, _context) => {
   const signUpRequest: Partial<SignUpRequest> = JSON.parse(event.body);
@@ -33,7 +33,7 @@ const handler: APIGatewayProxyHandler = async (event, _context) => {
     return Responses.badRequest();
   }
 
-  const cognitoUser = await signUpUser({
+  await signUpUser({
     email,
     password,
     lastName,
@@ -41,7 +41,9 @@ const handler: APIGatewayProxyHandler = async (event, _context) => {
     phoneNumber: cellPhone
   });
 
-  const { id: cognitoUserId } = await getUserAttributes(cognitoUser);
+  const newCognitoUser = await getUser(email);
+  console.log("Cognito user created: ", newCognitoUser);
+  const { id: cognitoUserId } = newCognitoUser;
 
   const newClient = await dynamo
     .put({
@@ -56,7 +58,9 @@ const handler: APIGatewayProxyHandler = async (event, _context) => {
     })
     .promise();
 
-  const newUser = await dynamo
+  console.log("Created client record: ", newClient);
+
+  const newUserRecord = await dynamo
     .put({
       TableName: process.env.USER_TABLE,
       Item: {
@@ -73,11 +77,13 @@ const handler: APIGatewayProxyHandler = async (event, _context) => {
     })
     .promise();
 
+  console.log("Created user record: ", newUserRecord);
+
   return {
     statusCode: 200,
     body: JSON.stringify(
       {
-        userId: newUser.Attributes.id,
+        userId: newUserRecord.Attributes.id,
         clientId: newClient.Attributes.id,
         cognitoId: cognitoUserId
       },

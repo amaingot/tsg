@@ -11,6 +11,7 @@ import * as Responses from "./responses";
 
 const rollbar = new Rollbar({
   accessToken: process.env.LAMBDA_ROLLBAR_TOKEN,
+  enabled: process.env.ENV !== "dev",
   captureUncaught: true,
   captureUnhandledRejections: true,
   reportLevel: "warning",

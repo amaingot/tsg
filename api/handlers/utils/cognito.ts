@@ -1,18 +1,21 @@
 import * as NodeFetch from "node-fetch";
 global["fetch"] = NodeFetch;
-
+import * as AWS from "aws-sdk";
 import {
   CognitoUserPool,
   CognitoUserAttribute,
   CognitoUser
 } from "amazon-cognito-identity-js";
 
-const poolData = {
+const Config = {
   UserPoolId: process.env.USER_POOL_ID,
   ClientId: process.env.USER_POOL_CLIENT_ID
 };
 
-const userPool = new CognitoUserPool(poolData);
+const userPool = new CognitoUserPool(Config);
+const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider({
+  apiVersion: "2016-04-18"
+});
 
 export default userPool;
 
@@ -80,40 +83,45 @@ export const signUpUser = async (
   return user;
 };
 
-interface UserAttributes extends InitialUserAttributes {
+interface UserRecord extends InitialUserAttributes {
   id: string;
+  enabled: boolean;
+  emailVerified: boolean;
+  phoneVerified: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  status: string;
 }
 
-export const getUserAttributes = async (
-  cognitoUser: CognitoUser
-): Promise<UserAttributes> => {
-  return new Promise<UserAttributes>((resolve, reject) => {
-    cognitoUser.getUserAttributes((err, result) => {
-      if (err) {
-        console.error("Failed fetching user id, ", err);
-        reject(err);
-      } else if (!result) {
-        console.log("Failed fetching user id. No user id present");
-        reject(err);
-      } else {
-        const params = result.reduce((prev, curr) => {
-          return {
-            ...prev,
-            [curr.getName()]: curr.getValue()
-          };
-        }, {}) as UserAttributes;
-        resolve(params);
-      }
-    });
-  });
-};
+export const getUser = async (email: string): Promise<UserRecord> => {
+  const userResponse = await cognitoidentityserviceprovider
+    .adminGetUser({ UserPoolId: Config.UserPoolId, Username: email })
+    .promise();
 
-export const getCognitoUser = (email: string): CognitoUser => {
-  const userData = {
-    Username: email,
-    Pool: userPool
+  const attrResponse = userResponse.UserAttributes;
+  const phoneNumber = attrResponse.find(a => a.Name === "phone_number");
+  const phoneVerified = attrResponse.find(
+    a => a.Name === "phone_number_verified"
+  );
+  const emailVerified = attrResponse.find(a => a.Name === "email_verified");
+  const firstName = attrResponse.find(a => a.Name === "given_name");
+  const lastName = attrResponse.find(a => a.Name === "family_name");
+
+  console.log(userResponse);
+
+  let attrs: UserRecord = {
+    id: userResponse.Username,
+    email,
+    phoneNumber: phoneNumber ? phoneNumber.Value : "",
+    phoneVerified: phoneVerified ? Boolean(phoneVerified.Value) : false,
+    emailVerified: emailVerified ? Boolean(emailVerified.Value) : false,
+    firstName: firstName ? firstName.Value : "",
+    lastName: lastName ? lastName.Value : "",
+    enabled: userResponse.Enabled,
+    createdAt: userResponse.UserCreateDate,
+    updatedAt: userResponse.UserLastModifiedDate,
+    status: userResponse.UserStatus
   };
 
-  const cognitoUser = new CognitoUser(userData);
-  return cognitoUser;
+  return attrs;
 };

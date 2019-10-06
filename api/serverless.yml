@@ -35,7 +35,7 @@ provider:
     LAMBDA_ROLLBAR_TOKEN: ${env:LAMBDA_ROLLBAR_TOKEN}
     CODE_VERSION: ${env:CIRCLE_SHA1}
     USER_POOL_ID: { Ref: UserPool }
-    USER_POOL_CLIENT_ID: { Ref: UserPoolClient }
+    USER_POOL_CLIENT_ID: { Ref: UserPoolClientServer }
 
 package:
   individually: true
@@ -105,6 +105,7 @@ resources:
   Resources:
     UserPool: ${file(./resources/UserPool.yml)}
     UserPoolClient: ${file(./resources/UserPoolClient.yml)}
+    UserPoolClientServer: ${file(./resources/UserPoolClientServer.yml)}
     ApiGatewayAuthorizer: ${file(./resources/ApiGatewayAuthorizer.yml)}
     GatewayResponseDefault4XX: ${file(./resources/GatewayResponseDefault4XX.yml)}
     ClientTable: ${file(./resources/ClientTable.yml)}
