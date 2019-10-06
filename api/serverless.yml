@@ -37,6 +37,9 @@ provider:
     USER_POOL_ID: { Ref: UserPool }
     USER_POOL_CLIENT_ID: { Ref: UserPoolClient }
 
+package:
+  individually: true
+
 custom:
   serverless-offline:
     port: 3001
