@@ -38,5 +38,6 @@ Properties:
           - Effect: Allow
             Action:
               - userpool:*
+              - cognito-idp:*
             Resource:
               - Fn::GetAtt: [UserPool, Arn]
