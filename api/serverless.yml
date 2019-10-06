@@ -57,7 +57,7 @@ custom:
     release:
       version: ${env:CIRCLE_SHA1}
       refs:
-        - repository: amaingot/tsg
+        - repository: ${env:CIRCLE_PROJECT_REPONAME}
           commit: ${env:CIRCLE_SHA1}
 
 layers:
