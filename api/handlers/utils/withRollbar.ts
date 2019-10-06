@@ -7,6 +7,7 @@ import {
 } from "aws-lambda";
 import * as Rollbar from "rollbar";
 import AWSXRay from "aws-xray-sdk-core";
+import * as Responses from "./responses";
 
 const rollbar = new Rollbar({
   accessToken: process.env.LAMBDA_ROLLBAR_TOKEN,
@@ -55,10 +56,11 @@ const withRollbar: RollbarEnhancer = (handler: APIGW) => async (
     rollbar.log("Received event:", event);
     return await handler(event, context, callback);
   } catch (err) {
-    rollbar.error("Fatal error: ", err);
+    rollbar.error("Fatal error", err);
     rollbar.wait(() => {
       throw err;
     });
+    return Responses.internalError(err);
   }
 };
 
