@@ -55,7 +55,7 @@ const withRollbar: RollbarEnhancer = (handler: APIGW) => async (
     rollbar.log("Received event:", event);
     return await handler(event, context, callback);
   } catch (err) {
-    rollbar.error(err);
+    rollbar.error("Fatal error: ", err);
     rollbar.wait(() => {
       throw err;
     });
