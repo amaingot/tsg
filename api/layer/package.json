@@ -15,8 +15,6 @@
     "amazon-cognito-identity-js": "^3.0.15",
     "aws-sdk": "^2.541.0",
     "aws-xray-sdk-core": "^2.3.6",
-    "cookie": "^0.4.0",
-    "is-buffer": "^2.0.4",
     "raven": "^2.6.4",
     "serverless-sentry-lib": "^1.1.2",
     "source-map-support": "^0.5.13",

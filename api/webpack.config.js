@@ -35,8 +35,10 @@ module.exports = {
   externals: slsw.lib.webpack.isLocal ? {} : layerExternals,
   plugins: [
     new SentryWebpackPlugin({
-      include: 'handlers',
-      ignore: ['layer', 'node_modules', 'webpack.config.js']
+      include: '.',
+      ignoreFile: '.sentrycliignore',
+      ignore: ['node_modules', 'webpack.config.js'],
+      configFile: 'sentry.properties'
     })
   ]
 };

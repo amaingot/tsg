@@ -1,4 +1,5 @@
 import { APIGatewayProxyHandler } from "aws-lambda";
+import "source-map-support/register";
 
 import * as Responses from "./utils/responses";
 import dynamo from "./utils/dynamo";
