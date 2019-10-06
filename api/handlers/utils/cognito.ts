@@ -1,3 +1,6 @@
+import * as NodeFetch from "node-fetch";
+global["fetch"] = NodeFetch;
+
 import {
   CognitoUserPool,
   CognitoUserAttribute,
