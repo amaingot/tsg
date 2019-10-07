@@ -10,7 +10,7 @@ const handler: Handler = logger => async event => {
   if (!email) {
     return Responses.badRequest();
   }
-  logger.info("Resending code for: ", email);
+  logger.info(`Resending code for ${email}`);
 
   const cognitoUser = await getCognitoUser(email);
 

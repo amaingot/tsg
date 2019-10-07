@@ -16,6 +16,7 @@ const rollbarConfig = {
   enabled: process.env.ENV !== "dev",
   captureUncaught: true,
   captureUnhandledRejections: true,
+  logLevel: "warning",
   payload: {
     environment: process.env.ENV,
     client: {
@@ -52,7 +53,7 @@ const withLogger: LoggerEnhancer = (handler: Handler) => async (
   }
 
   const logger = Winston.createLogger({
-    transports: [new RollbarTransport({ rollbarConfig, level: "info" })]
+    transports: [new RollbarTransport({ rollbarConfig, level: "warning" })]
   });
   AWSXRay.setLogger(logger);
 
