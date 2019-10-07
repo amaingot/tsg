@@ -1,19 +1,19 @@
-import { APIGatewayProxyHandler } from "aws-lambda";
 import "source-map-support/register";
-
-import withRollbar from "./utils/withRollbar";
+import withLogger, { Handler } from "./utils/withLogger";
 import { getCognitoUser } from "./utils/cognito";
 import * as Responses from "./utils/responses";
 
-const handler: APIGatewayProxyHandler = async (event, _context) => {
+const handler: Handler = logger => async event => {
   const { email, code } = JSON.parse(event.body);
 
-  const cognitoUser = getCognitoUser(email);
+  logger.info(`Confirming user: ${email} with code ${code}`);
+
+  const cognitoUser = await getCognitoUser(email);
 
   const promise = new Promise((resolve, reject) => {
     cognitoUser.confirmRegistration(code, true, (err, result) => {
       if (err) {
-        console.error("Failed to confirm a user", err);
+        logger.error("Failed to confirm a user", err);
         reject(err);
       }
       resolve(result);
@@ -33,4 +33,4 @@ const handler: APIGatewayProxyHandler = async (event, _context) => {
   return Responses.success();
 };
 
-export default withRollbar(handler);
+export default withLogger(handler);

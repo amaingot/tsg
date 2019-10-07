@@ -1,14 +1,13 @@
-import { APIGatewayProxyHandler } from "aws-lambda";
 import uuid from "uuid/v4";
 import "source-map-support/register";
 import { SignUpRequest, UserRoles } from "tsg-shared";
 
 import * as Responses from "./utils/responses";
 import dynamo from "./utils/dynamo";
-import withRollbar from "./utils/withRollbar";
-import { signUpUser, getUser } from "./utils/cognito";
+import withLogger, { Handler } from "./utils/withLogger";
+import { signUpUser, getUser, UserRecord } from "./utils/cognito";
 
-const handler: APIGatewayProxyHandler = async (event, _context) => {
+const handler: Handler = logger => async event => {
   const signUpRequest: Partial<SignUpRequest> = JSON.parse(event.body);
 
   const {
@@ -33,59 +32,80 @@ const handler: APIGatewayProxyHandler = async (event, _context) => {
     return Responses.badRequest();
   }
 
-  await signUpUser({
-    email,
-    password,
-    lastName,
-    firstName,
-    phoneNumber: cellPhone
-  });
+  try {
+    await signUpUser({
+      email,
+      password,
+      lastName,
+      firstName,
+      phoneNumber: cellPhone
+    });
+  } catch (e) {
+    logger.error("Error when signing up user", e);
+    return Responses.internalError(e);
+  }
 
-  const newCognitoUser = await getUser(email);
-  console.log("Cognito user created: ", newCognitoUser);
+  let newCognitoUser: UserRecord;
+
+  try {
+    newCognitoUser = await getUser(email);
+    logger.info("Cognito user created: ", newCognitoUser);
+  } catch (e) {
+    logger.error("Error when signing up user", e);
+    return Responses.internalError(e);
+  }
   const { id: cognitoUserId } = newCognitoUser;
 
-  const newClient = await dynamo
-    .put({
-      TableName: process.env.CLIENT_TABLE,
-      Item: {
-        id: uuid(),
-        name: companyName,
-        phone: workPhone,
-        updatedAt: new Date().toISOString,
-        createdAt: new Date().toISOString
-      }
-    })
-    .promise();
+  const newClientId = uuid();
 
-  console.log("Created client record: ", newClient);
+  try {
+    const newClient = await dynamo
+      .put({
+        TableName: process.env.CLIENT_TABLE,
+        Item: {
+          id: newClientId,
+          name: companyName,
+          phone: workPhone,
+          updatedAt: new Date().toISOString,
+          createdAt: new Date().toISOString
+        }
+      })
+      .promise();
+    logger.info("Created client record: ", newClient);
+  } catch (e) {
+    logger.error("Error creating a client in the client table", e);
+    return Responses.internalError(e);
+  }
 
-  const newUserRecord = await dynamo
-    .put({
-      TableName: process.env.USER_TABLE,
-      Item: {
-        id: cognitoUserId,
-        clientId: newClient.Attributes.id,
-        email,
-        firstName,
-        lastName,
-        cellPhone,
-        userRole: UserRoles.AccountAdmin,
-        updatedAt: new Date().toISOString,
-        createdAt: new Date().toISOString
-      }
-    })
-    .promise();
-
-  console.log("Created user record: ", newUserRecord);
+  try {
+    const newUserRecord = await dynamo
+      .put({
+        TableName: process.env.USER_TABLE,
+        Item: {
+          id: cognitoUserId,
+          clientId: newClientId,
+          email,
+          firstName,
+          lastName,
+          cellPhone,
+          userRole: UserRoles.AccountAdmin,
+          updatedAt: new Date().toISOString,
+          createdAt: new Date().toISOString
+        }
+      })
+      .promise();
+    logger.info("Created user record: ", newUserRecord);
+  } catch (e) {
+    logger.error("Error creating user record", e);
+    return Responses.internalError(e);
+  }
 
   return {
     statusCode: 200,
     body: JSON.stringify(
       {
-        userId: newUserRecord.Attributes.id,
-        clientId: newClient.Attributes.id,
-        cognitoId: cognitoUserId
+        userId: cognitoUserId,
+        clientId: newClientId
       },
       null,
       2
@@ -93,4 +113,4 @@ const handler: APIGatewayProxyHandler = async (event, _context) => {
   };
 };
 
-export default withRollbar(handler);
+export default withLogger(handler);

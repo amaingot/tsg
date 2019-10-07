@@ -83,7 +83,7 @@ export const signUpUser = async (
   return user;
 };
 
-interface UserRecord extends InitialUserAttributes {
+export interface UserRecord extends InitialUserAttributes {
   id: string;
   enabled: boolean;
   emailVerified: boolean;
@@ -124,4 +124,13 @@ export const getUser = async (email: string): Promise<UserRecord> => {
   };
 
   return attrs;
+};
+
+export const getCognitoUser = async (email: string): Promise<CognitoUser> => {
+  const userData = {
+    Username: email,
+    Pool: userPool
+  };
+
+  return new CognitoUser(userData);
 };
