@@ -7,15 +7,17 @@ import { getUser } from "./utils/cognito";
 const handler: Handler = logger => async event => {
   const { email } = event.requestContext.authorizer.claim;
 
+  logger.info("Getting customers because of this event: ", event);
+
   if (!email) {
     return Responses.forbidden();
   }
 
-  logger.info('Getting customers for: ', email);
+  logger.info("Getting customers for: " + email);
 
   const userAttributes = await getUser(email);
 
-  logger.info('Current user attributes: ', userAttributes);
+  logger.info("Current user attributes: ", userAttributes);
 
   const userId = userAttributes.id;
 
