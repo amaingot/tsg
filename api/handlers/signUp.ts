@@ -100,17 +100,10 @@ const handler: Handler = logger => async event => {
     return Responses.internalError(e);
   }
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify(
-      {
-        userId: cognitoUserId,
-        clientId: newClientId
-      },
-      null,
-      2
-    )
-  };
+  return Responses.success({
+    userId: cognitoUserId,
+    clientId: newClientId
+  });
 };
 
 export default withLogger(handler);
