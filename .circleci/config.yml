@@ -52,7 +52,7 @@ jobs:
           command: |
             curl https://api.rollbar.com/api/1/deploy/ \
               -F access_token=$ROLLBAR_API_DEPLOY_TOKEN \
-              -F environment=production \
+              -F environment=prod \
               -F revision=$CIRCLE_SHA1 \
               -F local_username=$CIRCLE_USERNAME
 
@@ -67,7 +67,7 @@ jobs:
           command: mkdir sm && mv web/build/static/js/*.map sm/
 
       - run:
-          name: Upload production web bundle to S3 and invalidate CloudFront distribution
+          name: Upload prod web bundle to S3 and invalidate CloudFront distribution
           command: npm run deploy-web
 
       - run:
@@ -75,7 +75,7 @@ jobs:
           command: |
             curl https://api.rollbar.com/api/1/deploy/ \
               -F access_token=$ROLLBAR_WEB_DEPLOY_TOKEN \
-              -F environment=production \
+              -F environment=prod \
               -F revision=$CIRCLE_SHA1 \
               -F local_username=$CIRCLE_USERNAME
 
