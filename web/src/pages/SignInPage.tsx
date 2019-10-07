@@ -83,11 +83,43 @@ const SignInPage: React.FC<RouteComponentProps> = props => {
     history.push("/app");
   };
 
-  const handleSignIn: React.FormEventHandler = async e => {
-    e.preventDefault();
+  const handleConfirmUser = async () => {
+    setError(undefined);
+    try {
+      await Auth.confirmSignUp(email, mfaCode);
+    } catch (e) {
+      setError(e.message);
+    }
+  };
 
-    if (nextAction) {
-      return nextAction();
+  const handleNewPassword = async () => {
+    if (newPassword === passwordAgain) {
+      const user = await Auth.signIn(email, password);
+
+      Auth.completeNewPassword(user, newPassword, { email })
+        .then(handleSignIn)
+        .catch(e => {
+          setError(
+            "Uh oh! We seem to have had an error! Please file a support ticket to get help."
+          );
+          window.Rollbar.error("Complete new password login error", e);
+        });
+    } else {
+      setError("Looks like your passwords don't match!");
+    }
+  };
+
+  const handleSignIn = async (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
+
+    if (challenge === "UserNotConfirmedException") {
+      await handleConfirmUser();
+    }
+
+    if (challenge === "NEW_PASSWORD_REQUIRED") {
+      return await handleNewPassword();
     }
 
     try {
@@ -99,31 +131,13 @@ const SignInPage: React.FC<RouteComponentProps> = props => {
       ) {
         // You need to get the code from the UI inputs
         // and then trigger the following function with a button click
-        setNextAction(() => {
-          Auth.confirmSignIn(user, mfaCode, user.challengeName)
-            .then(handleSignIn)
-            .catch(e => {
-              setError("Uh oh! Maybe a bad code?");
-              window.Rollbar.error("MFA login error", e);
-            });
-        });
         setChallenge(user.challengeName);
+        setError("Uh oh! Looks like you need to change your password!");
       } else if (user.challengeName === "NEW_PASSWORD_REQUIRED") {
         // You need to get the new password and required attributes from the UI inputs
         // and then trigger the following function with a button click
         // For example, the email and phone_number are required attributes
-        setNextAction(() => {
-          if (newPassword === passwordAgain) {
-            Auth.completeNewPassword(user, newPassword, { email })
-              .then(handleSignIn)
-              .catch(e => {
-                setError(
-                  "Uh oh! We seem to have had an error! Please file a support ticket to get help."
-                );
-                window.Rollbar.error("Complete new password login error", e);
-              });
-          }
-        });
+        setNextAction(() => {});
         setChallenge(user.challengeName);
       } else if (user.challengeName === "MFA_SETUP") {
         window.Rollbar.error("User requires MFA_SETUP", user);
@@ -138,9 +152,12 @@ const SignInPage: React.FC<RouteComponentProps> = props => {
         // The error happens if the user didn't finish the confirmation step when signing up
         // In this case you need to resend the code and confirm the user
         // About how to resend the code and confirm the user, please check the signUp part
+        setChallenge(err.code);
         setError(
-          "Looks like you didn't finish the confirmation step when signing up. Please file a support ticket to get help."
+          "Looks like you didn't finish the confirmation step when signing up. Check your email and enter the verification code above."
         );
+
+        Auth.resendSignUp(email);
       } else if (err.code === "PasswordResetRequiredException") {
         // The error happens when the password is reset in the Cognito console
         // In this case you need to call forgotPassword to reset the password
@@ -204,11 +221,12 @@ const SignInPage: React.FC<RouteComponentProps> = props => {
             </>
           )}
 
-          {(challenge === "SMS_MFA" || challenge === "SOFTWARE_TOKEN_MFA") && (
+          {(challenge === "SMS_MFA" ||
+            challenge === "UserNotConfirmedException" ||
+            challenge === "SOFTWARE_TOKEN_MFA") && (
             <>
               <Typography>
-                We just sent you a code via text message. Type it below to log
-                in.
+                We just sent you a code message. Type it below to log in.
               </Typography>
               <TextField
                 variant="outlined"
