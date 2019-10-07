@@ -2,6 +2,7 @@ import "source-map-support/register";
 import withLogger, { Handler } from "./utils/withLogger";
 import { getCognitoUser } from "./utils/cognito";
 import * as Responses from "./utils/responses";
+import { Response } from "aws-sdk";
 
 const handler: Handler = logger => async event => {
   const { email, code } = JSON.parse(event.body);
@@ -10,27 +11,27 @@ const handler: Handler = logger => async event => {
 
   const cognitoUser = await getCognitoUser(email);
 
-  const promise = new Promise((resolve, reject) => {
+  const promise = new Promise<{
+    result: object;
+    error?: { code: string; name: string; message: string };
+  }>(resolve => {
     cognitoUser.confirmRegistration(code, true, (err, result) => {
       if (err) {
         logger.error("Failed to confirm a user", err);
-        reject(err);
       }
-      resolve(result);
+      resolve({ result, error: err });
     });
   });
 
   const response = await promise;
 
-  if (typeof response === "string") {
-    return Responses.success(JSON.parse(response));
+  console.log(response);
+
+  if (response.error) {
+    return Responses.internalError(response.error);
   }
 
-  if (typeof response === "object") {
-    return Responses.success(response);
-  }
-
-  return Responses.success();
+  return Responses.success({ message: "success" });
 };
 
 export default withLogger(handler);
