@@ -52,6 +52,8 @@ const withLogger: LoggerEnhancer = (handler: Handler) => async (
     };
   }
 
+  AWSXRay.setLogger(Winston);
+
   const logger = Winston.createLogger({
     format: Winston.format.json(),
     level: "debug",
@@ -62,7 +64,6 @@ const withLogger: LoggerEnhancer = (handler: Handler) => async (
       })
     ]
   });
-  AWSXRay.setLogger(logger);
 
   logger.info("Received event:", event);
 
