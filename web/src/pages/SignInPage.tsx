@@ -57,8 +57,6 @@ const SignInPage: React.FC<RouteComponentProps> = props => {
   const [newPassword, setNewPassword] = React.useState("");
   const [passwordAgain, setPassAgain] = React.useState("");
 
-  const [nextAction, setNextAction] = React.useState<GenericCallback>();
-
   const handleLoginSuccess = (user: any) => {
     if (user instanceof CognitoUser) {
       user.getUserData(
@@ -137,7 +135,6 @@ const SignInPage: React.FC<RouteComponentProps> = props => {
         // You need to get the new password and required attributes from the UI inputs
         // and then trigger the following function with a button click
         // For example, the email and phone_number are required attributes
-        setNextAction(() => {});
         setChallenge(user.challengeName);
       } else if (user.challengeName === "MFA_SETUP") {
         window.Rollbar.error("User requires MFA_SETUP", user);
