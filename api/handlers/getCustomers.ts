@@ -5,7 +5,7 @@ import withLogger, { Handler } from "./utils/withLogger";
 import { getUser } from "./utils/cognito";
 
 const handler: Handler = logger => async event => {
-  const { email } = event.requestContext.authorizer.claim;
+  const { email } = event.requestContext.authorizer.claims;
 
   logger.info("Getting customers because of this event: ", event);
 
