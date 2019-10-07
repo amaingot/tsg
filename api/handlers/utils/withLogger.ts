@@ -11,6 +11,21 @@ import * as Responses from "./responses";
 import * as Winston from "winston";
 import RollbarTransport from "winston-transport-rollbar-3";
 
+const rollbarConfig = {
+  accessToken: process.env.LAMBDA_ROLLBAR_TOKEN,
+  enabled: process.env.ENV !== "dev",
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+  payload: {
+    environment: process.env.ENV,
+    client: {
+      javascript: {
+        code_version: process.env.CODE_VERSION
+      }
+    }
+  }
+};
+
 export type Handler = (logger: Winston.Logger) => APIGW;
 
 type LoggerEnhancer = (
@@ -26,22 +41,6 @@ const withLogger: LoggerEnhancer = (handler: Handler) => async (
   context,
   callback
 ) => {
-  const rollbarConfig = {
-    accessToken: process.env.LAMBDA_ROLLBAR_TOKEN,
-    enabled: process.env.ENV !== "dev",
-    captureUncaught: true,
-    captureUnhandledRejections: true,
-    reportLevel: "warning",
-    payload: {
-      environment: process.env.ENV,
-      client: {
-        javascript: {
-          code_version: process.env.CODE_VERSION
-        }
-      }
-    }
-  };
-
   if (
     event.requestContext.authorizer &&
     event.requestContext.authorizer.claims
@@ -53,7 +52,7 @@ const withLogger: LoggerEnhancer = (handler: Handler) => async (
   }
 
   const logger = Winston.createLogger({
-    transports: [new RollbarTransport(rollbarConfig)]
+    transports: [new RollbarTransport({ rollbarConfig, level: "info" })]
   });
   AWSXRay.setLogger(logger);
 
