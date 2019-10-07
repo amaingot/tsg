@@ -17,6 +17,7 @@
     "node-fetch": "^2.6.0",
     "rollbar": "^2.13.0",
     "source-map-support": "^0.5.13",
+    "stripe": "^7.9.1",
     "tsg-shared": "^1.0.0",
     "uuid": "^3.3.3",
     "winston": "^3.2.1",

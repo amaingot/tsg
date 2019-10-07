@@ -18,6 +18,7 @@
     "node-fetch": "^2.6.0",
     "rollbar": "^2.13.0",
     "source-map-support": "^0.5.13",
+    "stripe": "^7.9.1",
     "tsg-shared": "^1.0.0",
     "uuid": "^3.3.3",
     "winston": "^3.2.1",
@@ -26,6 +27,7 @@
   "devDependencies": {
     "@types/aws-lambda": "^8.10.17",
     "@types/node": "^12.7.9",
+    "@types/stripe": "^6.32.8",
     "serverless": "^1.53.0",
     "serverless-dotenv-plugin": "^2.1.1",
     "serverless-dynamodb-local": "^0.2.38",

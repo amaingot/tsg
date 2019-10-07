@@ -6,6 +6,7 @@ import * as Responses from "./utils/responses";
 import dynamo from "./utils/dynamo";
 import withLogger, { Handler } from "./utils/withLogger";
 import { signUpUser, getUser, UserRecord } from "./utils/cognito";
+import Stripe from "./utils/stripe";
 
 const handler: Handler = logger => async event => {
   const signUpRequest: Partial<SignUpRequest> = JSON.parse(event.body);
@@ -56,6 +57,12 @@ const handler: Handler = logger => async event => {
   }
   const { id: cognitoUserId } = newCognitoUser;
 
+  const stripeCustomer = await Stripe().customers.create({
+    name: companyName,
+    email: email,
+    phone: workPhone
+  });
+
   const newClientId = uuid();
 
   try {
@@ -66,6 +73,7 @@ const handler: Handler = logger => async event => {
           id: newClientId,
           name: companyName,
           phone: workPhone,
+          stripeCustomerId: stripeCustomer.id,
           updatedAt: new Date().toISOString,
           createdAt: new Date().toISOString
         }
