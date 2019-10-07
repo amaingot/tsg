@@ -6,6 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { RouteComponentProps } from 'react-router';
+import axios from '../utils/axios';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -22,6 +23,13 @@ const useStyles = makeStyles(theme => ({
 const CustomersPage: React.FC<RouteComponentProps> = () => {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
+  React.useEffect(() => {
+    axios({
+      method: 'GET',
+      url: '/customers'
+    })
+  })
 
   return (
     <React.Fragment>
