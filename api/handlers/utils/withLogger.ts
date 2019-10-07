@@ -53,7 +53,14 @@ const withLogger: LoggerEnhancer = (handler: Handler) => async (
   }
 
   const logger = Winston.createLogger({
-    transports: [new RollbarTransport({ rollbarConfig, level: "warning" })]
+    format: Winston.format.json(),
+    level: "debug",
+    transports: [
+      new RollbarTransport({ rollbarConfig, level: "warning" }),
+      new Winston.transports.Console({
+        format: Winston.format.simple()
+      })
+    ]
   });
   AWSXRay.setLogger(logger);
 
