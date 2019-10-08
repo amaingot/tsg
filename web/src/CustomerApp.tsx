@@ -7,6 +7,10 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 import AppLayout from "./components/AppLayout";
 import DashboardPage from "./pages/DashboardPage";
+import ManageAccountPage from "./pages/ManageAccountPage";
+import ManageUserProfile from "./pages/ManageUserProfile";
+import CreateCustomerPage from "./pages/CreateCustomerPage";
+import CustomerDetailPage from "./pages/CustomerDetailPage";
 import CustomersPage from "./pages/CustomersPage";
 import EmployeesPage from "./pages/EmployeesPage";
 import JobsPage from "./pages/JobsPage";
@@ -63,7 +67,11 @@ const App: React.FC<RouteComponentProps> = props => {
     <AppLayout>
       <Switch>
         <Route path="/app/dashboard" component={DashboardPage} />
-        <Route path="/app/customers" component={CustomersPage} />
+        <Route path="/app/settings/account" component={ManageAccountPage} />
+        <Route path="/app/settings/user" component={ManageUserProfile} />
+        <Route path="/app/customers/create" component={CreateCustomerPage} />
+        <Route path="/app/customers/:id" component={CustomerDetailPage} />
+        <Route path="/app/customers" exact component={CustomersPage} />
         <Route path="/app/employees" component={EmployeesPage} />
         <Route path="/app/jobs" component={JobsPage} />
         <Redirect from="/app" to="/app/dashboard" />

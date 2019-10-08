@@ -111,11 +111,11 @@ const AppNavDrawer: React.FC<Props> = props => {
       <Divider />
       <List>
         <ListSubheader inset>Shortcuts</ListSubheader>
-        <ListItem component={NavLink} to="/app" button>
+        <ListItem component={NavLink} to="/app/customers/create" button>
           <ListItemIcon>
             <AddIcon />
           </ListItemIcon>
-          <ListItemText primary="New Job" />
+          <ListItemText primary="New Customer" />
         </ListItem>
       </List>
     </Drawer>

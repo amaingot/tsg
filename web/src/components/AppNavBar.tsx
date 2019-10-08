@@ -113,8 +113,20 @@ const AppNavBar: React.FC<Props> = props => {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem onClick={handleClose}>Profile</MenuItem>
-          <MenuItem onClick={handleClose}>My Account</MenuItem>
+          <MenuItem
+            component={NavLink}
+            to="/app/settings/user"
+            onClick={handleClose}
+          >
+            User Settings
+          </MenuItem>
+          <MenuItem
+            component={NavLink}
+            to="/app/settings/account"
+            onClick={handleClose}
+          >
+            Account Settings
+          </MenuItem>
           <MenuItem component={NavLink} to="/" onClick={handleLogout}>
             Logout
           </MenuItem>
