@@ -6,8 +6,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -18,13 +16,6 @@ const useStyles = makeStyles(theme => ({
   },
   fixedHeight: {
     height: 240
-  },
-  addButton: {
-    position: "absolute",
-    right: 0
-  },
-  title: {
-    position: "relative"
   }
 }));
 
@@ -34,11 +25,8 @@ const JobsPage: React.FC<RouteComponentProps> = () => {
 
   return (
     <React.Fragment>
-      <Typography variant="h4" gutterBottom className={classes.title}>
+      <Typography variant="h4" gutterBottom >
         Jobs
-        <Fab color="primary" aria-label="add" className={classes.addButton}>
-          <AddIcon />
-        </Fab>
       </Typography>
 
       <Grid container spacing={3}>

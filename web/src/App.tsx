@@ -11,6 +11,7 @@ import HomePage from "./pages/HomePage";
 import FeaturesPage from "./pages/FeaturesPage";
 
 import CustomerApp from "./CustomerApp";
+import ErrorPage from "./pages/ErrorPage";
 
 const App: React.FC = () => {
   return (
@@ -25,6 +26,7 @@ const App: React.FC = () => {
         <Route path="/sign-up" component={SignUpPage} />
         <Redirect from="/sign-in" to="/login" />
         <Route path="/app" component={CustomerApp} />
+        <Route component={ErrorPage} />
       </Switch>
     </BrowserRouter>
   );

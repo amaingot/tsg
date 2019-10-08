@@ -1,5 +1,6 @@
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
+import Auth, { CognitoUser } from "@aws-amplify/auth";
 
 import AppBar from "@material-ui/core/AppBar";
 import Button from "@material-ui/core/Button";
@@ -26,6 +27,44 @@ const useStyles = makeStyles(theme => ({
 
 const HomeNavBar: React.FC = () => {
   const classes = useStyles();
+
+  const [user, setUser] = React.useState<CognitoUser>();
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    setLoading(true);
+    Auth.currentAuthenticatedUser()
+      .then(user => {
+        setUser(user);
+        setLoading(false);
+        if (user instanceof CognitoUser) {
+          user.getUserData(
+            (error, userData) =>
+              !error &&
+              !!userData &&
+              window.Rollbar.configure({
+                payload: {
+                  person: {
+                    id: userData.Username,
+                    username: (
+                      userData.UserAttributes.find(a => a.Name === "email") ||
+                      {}
+                    ).Value,
+                    email: (
+                      userData.UserAttributes.find(a => a.Name === "email") ||
+                      {}
+                    ).Value
+                  }
+                }
+              })
+          );
+        }
+      })
+      .catch(() => {
+        // do nothing
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <AppBar
@@ -82,12 +121,13 @@ const HomeNavBar: React.FC = () => {
         </nav>
         <Button
           component={RouterLink}
-          to="/sign-in"
+          to={!user ? "/sign-in" : "/app"}
           color="primary"
           variant="outlined"
           className={classes.link}
+          disabled={loading}
         >
-          Login
+          {!user ? "Login" : "App"}
         </Button>
       </Toolbar>
     </AppBar>

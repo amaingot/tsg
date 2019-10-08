@@ -14,6 +14,7 @@ import CustomerDetailPage from "./pages/CustomerDetailPage";
 import CustomersPage from "./pages/CustomersPage";
 import EmployeesPage from "./pages/EmployeesPage";
 import JobsPage from "./pages/JobsPage";
+import ErrorPage from "./pages/ErrorPage";
 
 const App: React.FC<RouteComponentProps> = props => {
   const { location, history } = props;
@@ -66,15 +67,24 @@ const App: React.FC<RouteComponentProps> = props => {
   return (
     <AppLayout>
       <Switch>
-        <Route path="/app/dashboard" component={DashboardPage} />
-        <Route path="/app/settings/account" component={ManageAccountPage} />
-        <Route path="/app/settings/user" component={ManageUserProfile} />
-        <Route path="/app/customers/create" component={CreateCustomerPage} />
-        <Route path="/app/customers/:id" component={CustomerDetailPage} />
+        <Route path="/app/dashboard" exact component={DashboardPage} />
+        <Route
+          path="/app/settings/account"
+          exact
+          component={ManageAccountPage}
+        />
+        <Route path="/app/settings/user" exact component={ManageUserProfile} />
+        <Route
+          path="/app/customers/create"
+          exact
+          component={CreateCustomerPage}
+        />
+        <Route path="/app/customers/:id" exact component={CustomerDetailPage} />
         <Route path="/app/customers" exact component={CustomersPage} />
-        <Route path="/app/employees" component={EmployeesPage} />
-        <Route path="/app/jobs" component={JobsPage} />
-        <Redirect from="/app" to="/app/dashboard" />
+        <Route path="/app/employees" exact component={EmployeesPage} />
+        <Route path="/app/jobs" exact component={JobsPage} />
+        <Redirect from="/app" exact to="/app/dashboard" />
+        <Route component={ErrorPage} />
       </Switch>
     </AppLayout>
   );

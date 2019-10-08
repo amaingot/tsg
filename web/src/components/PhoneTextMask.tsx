@@ -38,4 +38,17 @@ const PhoneTextMask: React.FC<Props> = props => {
 
 export const PhoneMaskInitialValue = "(   )   -    ";
 
+export const phoneNumberIsValid = (num: string): boolean => {
+  if (!/[0-9]/.test(num)) {
+    return true;
+  }
+  return /\([0-9]{3}\) [0-9]{3}-[0-9]{4}/.test(num);
+};
+
+export const parsePhoneNum = (p: string): string => {
+  const digits = p.match(/[0-9]/);
+
+  return `+1${digits}`;
+};
+
 export default PhoneTextMask;

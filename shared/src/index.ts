@@ -39,9 +39,7 @@ export interface Job {
   createdAt: string;
 }
 
-export interface Customer {
-  id: string;
-  clientId: string;
+export interface NewCustomer {
   memNumber?: string;
   lastName?: string;
   firstName?: string;
@@ -54,6 +52,11 @@ export interface Customer {
   homePhone?: string;
   cellPhone?: string;
   workPhone?: string;
+}
+
+export interface Customer extends NewCustomer {
+  id: string;
+  clientId: string;
   updatedAt: string;
   createdAt: string;
 }

@@ -5,7 +5,6 @@ import axios from "axios";
 
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
@@ -17,11 +16,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 
 import Copyright from "../components/Copyright";
-import parsePhoneNum from "../utils/parsePhoneNum";
 import { ApiBaseURL } from "../utils/axios";
-import PhoneTextMask, {
-  PhoneMaskInitialValue
+import {
+  PhoneMaskInitialValue,
+  parsePhoneNum,
+  phoneNumberIsValid
 } from "../components/PhoneTextMask";
+import TextField from "../components/TextField";
 
 const useStyles = makeStyles(theme => ({
   "@global": {
@@ -71,9 +72,9 @@ const SignUpPage: React.FC<RouteComponentProps> = props => {
 
     if (password !== passAgain) {
       setError("Passwords do not match, please try again");
-    } else if (cellPhone.trim().length < 14) {
+    } else if (cellPhone.trim().length < 14 && phoneNumberIsValid(cellPhone)) {
       setError("Please fill out your cell phone number");
-    } else if (workPhone.trim().length < 14) {
+    } else if (workPhone.trim().length < 14 && phoneNumberIsValid(workPhone)) {
       setError("Please fill out your work phone number");
     } else {
       const response = await axios({
@@ -114,11 +115,8 @@ const SignUpPage: React.FC<RouteComponentProps> = props => {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
-                autoComplete="fname"
-                name="firstName"
-                variant="outlined"
                 required
-                fullWidth
+                autoComplete="fname"
                 id="firstName"
                 label="First Name"
                 autoFocus
@@ -128,12 +126,9 @@ const SignUpPage: React.FC<RouteComponentProps> = props => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                variant="outlined"
                 required
-                fullWidth
                 id="lastName"
                 label="Last Name"
-                name="lastName"
                 autoComplete="lname"
                 value={lastName}
                 onChange={e => setLastName(e.target.value)}
@@ -141,60 +136,38 @@ const SignUpPage: React.FC<RouteComponentProps> = props => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                variant="outlined"
                 required
-                fullWidth
                 id="company"
                 label="Company Name"
-                name="company"
                 value={company}
                 onChange={e => setCompany(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                variant="outlined"
                 required
-                fullWidth
                 id="work-phone"
                 label="Work Phone"
-                name="work-phone"
                 type="tel"
-                InputProps={
-                  {
-                    inputComponent: PhoneTextMask
-                  } as any
-                }
                 value={workPhone}
                 onChange={e => setWorkPhone(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                variant="outlined"
                 required
-                fullWidth
                 id="cell-phone"
                 label="Cell Phone"
-                name="cell-phone"
                 type="tel"
-                InputProps={
-                  {
-                    inputComponent: PhoneTextMask
-                  } as any
-                }
                 value={cellPhone}
                 onChange={e => setCellPhone(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                variant="outlined"
                 required
-                fullWidth
                 id="email"
                 label="Email Address"
-                name="email"
                 autoComplete="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -202,10 +175,7 @@ const SignUpPage: React.FC<RouteComponentProps> = props => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                variant="outlined"
                 required
-                fullWidth
-                name="password"
                 label="Password"
                 type="password"
                 id="password"
@@ -216,10 +186,7 @@ const SignUpPage: React.FC<RouteComponentProps> = props => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                variant="outlined"
                 required
-                fullWidth
-                name="password-again"
                 label="Confirm Password"
                 type="password"
                 id="password-again"
