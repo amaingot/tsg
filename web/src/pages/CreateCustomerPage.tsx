@@ -113,7 +113,12 @@ const CreateCustomerPage: React.FC<RouteComponentProps> = props => {
       <form onSubmit={handleSubmit}>
         <Typography variant="h4" gutterBottom className={classes.title}>
           New Customer
-          <Fab color="primary" aria-label="add" className={classes.addButton}>
+          <Fab
+            type="submit"
+            color="primary"
+            aria-label="add"
+            className={classes.addButton}
+          >
             <SaveIcon />
           </Fab>
         </Typography>

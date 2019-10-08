@@ -1,7 +1,7 @@
 import React from "react";
 import { RouteComponentProps } from "react-router";
 import { NavLink } from "react-router-dom";
-import clsx from "clsx";
+import { ListCustomersResponse, Customer } from "tsg-shared";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -9,6 +9,11 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
 
 import axios from "../utils/axios";
 
@@ -33,12 +38,13 @@ const useStyles = makeStyles(theme => ({
 
 const CustomersPage: React.FC<RouteComponentProps> = () => {
   const classes = useStyles();
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  const [customers, setCustomers] = React.useState<Array<Customer>>();
 
   React.useEffect(() => {
-    axios({
-      method: "GET",
-      url: "/customers/list"
+    axios.get<ListCustomersResponse>("/customers/list").then(resp => {
+      if (resp.status === 200) {
+        setCustomers(resp.data.data);
+      }
     });
   }, []);
 
@@ -57,14 +63,34 @@ const CustomersPage: React.FC<RouteComponentProps> = () => {
         </Fab>
       </Typography>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={8} lg={9}>
-          <Paper className={fixedHeightPaper}>Customers</Paper>
-        </Grid>
-        <Grid item xs={12} md={4} lg={3}>
-          <Paper className={fixedHeightPaper}>Deposits</Paper>
-        </Grid>
         <Grid item xs={12}>
-          <Paper className={classes.paper}>Orders</Paper>
+          <Paper className={classes.paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Cell Phone</TableCell>
+                  <TableCell>Home phone</TableCell>
+                  <TableCell>Work Phone</TableCell>
+                  <TableCell>Last Updated</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {customers &&
+                  customers.map(c => (
+                    <TableRow key={c.id}>
+                      <TableCell component="th" scope="row">
+                        {c.firstName} {c.lastName}
+                      </TableCell>
+                      <TableCell>{c.cellPhone}</TableCell>
+                      <TableCell>{c.homePhone}</TableCell>
+                      <TableCell>{c.workPhone}</TableCell>
+                      <TableCell>{c.updatedAt}</TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </Paper>
         </Grid>
       </Grid>
     </React.Fragment>

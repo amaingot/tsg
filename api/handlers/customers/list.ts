@@ -3,6 +3,7 @@ import * as Responses from "../utils/responses";
 import dynamo from "../utils/dynamo";
 import withLogger, { Handler } from "../utils/withLogger";
 import { getUser } from "../utils/cognito";
+import { ListCustomersResponse, Customer } from 'tsg-shared';
 
 const handler: Handler = logger => async event => {
   const { email } = event.requestContext.authorizer.claims;
@@ -85,11 +86,13 @@ const handler: Handler = logger => async event => {
     })
     .promise();
 
-  return Responses.success({
-    data: customers.Items,
+  const response: ListCustomersResponse = {
+    data: customers.Items as Array<Customer>,
     count: customers.Count,
     scannedCount: customers.ScannedCount
-  });
+  };
+
+  return Responses.success(response);
 };
 
 export default withLogger(handler);

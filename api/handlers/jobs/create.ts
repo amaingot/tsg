@@ -1,6 +1,8 @@
 import * as uuid from "uuid/v4";
 import "source-map-support/register";
-import { Job } from "tsg-shared";
+
+import { Job, CreateJobRequest, CreateJobResponse } from "tsg-shared";
+
 import * as Responses from "../utils/responses";
 import dynamo from "../utils/dynamo";
 import withLogger, { Handler } from "../utils/withLogger";
@@ -8,7 +10,12 @@ import { getUser } from "../utils/cognito";
 
 const handler: Handler = logger => async event => {
   const { email: userEmail } = event.requestContext.authorizer.claims;
-  const request = JSON.parse(event.body);
+  const request = JSON.parse(event.body) as Partial<CreateJobRequest>;
+
+  if (!request || !request.data) {
+    logger.error("No data provided");
+    return Responses.badRequest();
+  }
 
   logger.info("Creating a new job because of this event: ", event);
 
@@ -21,7 +28,7 @@ const handler: Handler = logger => async event => {
     gauge,
     recievedAt,
     finishedAt
-  } = request;
+  } = request.data;
 
   if (!customerId || typeof customerId !== "string") {
     logger.error("No customerId provided");
@@ -96,28 +103,31 @@ const handler: Handler = logger => async event => {
     id: newJobId,
     clientId: clientRecord.Item.id as string,
     customerId,
-    name,
-    stringName,
-    racket,
-    tension,
-    gauge,
     finished: finishedAt !== undefined,
     recievedAt: recievedAt || new Date().toISOString(),
-    finishedAt,
     updatedAt: new Date().toISOString(),
     createdAt: new Date().toISOString()
   };
 
-  const newJob = await dynamo
+  if (name) newJobData.name = name;
+  if (stringName) newJobData.stringName = stringName;
+  if (racket) newJobData.racket = racket;
+  if (tension) newJobData.tension = tension;
+  if (gauge) newJobData.gauge = gauge;
+  if (finishedAt) newJobData.finishedAt = finishedAt;
+
+  await dynamo
     .put({
       TableName: process.env.JOB_TABLE,
       Item: newJobData
     })
     .promise();
 
-  return Responses.success({
-    data: { ...newJob.Attributes }
-  });
+  const response: CreateJobResponse = {
+    data: newJobData
+  };
+
+  return Responses.success(response);
 };
 
 export default withLogger(handler);

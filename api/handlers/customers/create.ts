@@ -1,14 +1,24 @@
 import * as uuid from "uuid/v4";
 import "source-map-support/register";
+import {
+  Customer,
+  CreateCustomerResponse,
+  CreateCustomerRequest
+} from "tsg-shared";
+
 import * as Responses from "../utils/responses";
 import dynamo from "../utils/dynamo";
 import withLogger, { Handler } from "../utils/withLogger";
 import { getUser } from "../utils/cognito";
-import { Customer } from "tsg-shared";
 
 const handler: Handler = logger => async event => {
   const { email: userEmail } = event.requestContext.authorizer.claims;
-  const request = JSON.parse(event.body);
+  const request = JSON.parse(event.body) as Partial<CreateCustomerRequest>;
+
+  if (!request || !request.data) {
+    logger.error("No data provided");
+    return Responses.badRequest();
+  }
 
   logger.info("Creating a new customer because of this event: ", event);
 
@@ -25,7 +35,7 @@ const handler: Handler = logger => async event => {
     homePhone,
     cellPhone,
     workPhone
-  } = request;
+  } = request.data;
 
   if (!firstName || !lastName) {
     logger.error("No firstName and/or lastName provided");
@@ -99,32 +109,35 @@ const handler: Handler = logger => async event => {
   const customerData: Customer = {
     id: newCustomerId,
     clientId: clientRecord.Item.id,
-    memNumber,
-    lastName,
-    firstName,
-    middleInitial,
-    email,
-    address,
-    address2,
-    city,
-    zip,
-    homePhone,
-    cellPhone,
-    workPhone,
     updatedAt: new Date().toISOString(),
     createdAt: new Date().toISOString()
   };
 
-  const newCustomer = await dynamo
+  if (memNumber) customerData.memNumber = memNumber;
+  if (lastName) customerData.lastName = lastName;
+  if (firstName) customerData.firstName = firstName;
+  if (middleInitial) customerData.middleInitial = middleInitial;
+  if (email) customerData.email = email;
+  if (address) customerData.address = address;
+  if (address2) customerData.address2 = address2;
+  if (city) customerData.city = city;
+  if (zip) customerData.zip = zip;
+  if (homePhone) customerData.homePhone = homePhone;
+  if (cellPhone) customerData.cellPhone = cellPhone;
+  if (workPhone) customerData.workPhone = workPhone;
+
+  await dynamo
     .put({
       TableName: process.env.CUSTOMER_TABLE,
       Item: customerData
     })
     .promise();
 
-  return Responses.success({
-    data: { ...newCustomer.Attributes }
-  });
+  const response: CreateCustomerResponse = {
+    data: customerData
+  };
+
+  return Responses.success(response);
 };
 
 export default withLogger(handler);
