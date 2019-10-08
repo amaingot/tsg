@@ -62,7 +62,7 @@ layers:
 
 functions:
   signup:
-    handler: handlers/onboarding/signUp.default
+    handler: handlers/onboarding/signup.default
     layers:
       - { Ref: SharedLambdaLayer }
     events:
