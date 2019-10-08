@@ -71,15 +71,14 @@ const handler: Handler = logger => async event => {
   logger.info(`Fetched client record: ${clientRecord}`);
 
   const customers = await dynamo
-    .query({
+    .scan({
       TableName: process.env.CUSTOMER_TABLE,
-      KeyConditionExpression: "#clientId = :currentClientId",
-      ExpressionAttributeNames: {
-        "#clientId": "clientId"
-      },
+      Limit: 100,
+      FilterExpression: "#name0 = :value0",
       ExpressionAttributeValues: {
-        ":currentClientId": clientRecord.Item.id
+        ":value0": { type: "String", stringValue: "123123" }
       },
+      ExpressionAttributeNames: { "#name0": "clientId" },
       ProjectionExpression:
         "#id, clientId, memNumber, lastName, firstName, middleInitial, email, address, address2, city, zip, homePhone, cellPhone, workPhone, lastUpdated, createdAt"
     })
