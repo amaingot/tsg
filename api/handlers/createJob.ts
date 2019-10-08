@@ -1,3 +1,4 @@
+import uuid from "uuid/v4";
 import "source-map-support/register";
 import * as Responses from "./utils/responses";
 import dynamo from "./utils/dynamo";
@@ -5,18 +6,35 @@ import withLogger, { Handler } from "./utils/withLogger";
 import { getUser } from "./utils/cognito";
 
 const handler: Handler = logger => async event => {
-  const { email } = event.requestContext.authorizer.claims;
+  const { email: userEmail } = event.requestContext.authorizer.claims;
+  const request = JSON.parse(event.body);
 
-  logger.info("Getting customers because of this event: ", event);
+  logger.info("Creating a new job because of this event: ", event);
 
-  if (!email) {
-    logger.error('No user claim in event');
+  const {
+    customerId,
+    name,
+    stringName,
+    racket,
+    tension,
+    gauge,
+    recievedAt,
+    finishedAt
+  } = request;
+
+  if (!customerId) {
+    logger.error("No customerId provided");
+    return Responses.badRequest();
+  }
+
+  if (!userEmail) {
+    logger.error("No user claim in event");
     return Responses.forbidden();
   }
 
-  logger.info("Getting customers for: " + email);
+  logger.info("Creating job for: " + userEmail);
 
-  const userAttributes = await getUser(email);
+  const userAttributes = await getUser(userEmail);
 
   logger.info("Current user attributes: ", userAttributes);
 
@@ -71,24 +89,30 @@ const handler: Handler = logger => async event => {
 
   logger.info(`Fetched client record: ${clientRecord}`);
 
-  const customers = await dynamo
-    .scan({
-      TableName: process.env.CUSTOMER_TABLE,
-      Limit: 100,
-      FilterExpression: "#name0 = :value0",
-      ExpressionAttributeValues: {
-        ":value0": { type: "String", stringValue: clientRecord.Item.id }
-      },
-      ExpressionAttributeNames: { "#name0": "clientId" },
-      ProjectionExpression:
-        "id, clientId, memNumber, lastName, firstName, middleInitial, email, address, address2, city, zip, homePhone, cellPhone, workPhone, updatedAt, createdAt"
+  const newJobId = uuid();
+
+  const newJob = await dynamo
+    .put({
+      TableName: process.env.JOB_TABLE,
+      Item: {
+        id: newJobId,
+        clientId: clientRecord.Item.id,
+        customerId,
+        name,
+        stringName,
+        racket,
+        tension,
+        gauge,
+        recievedAt: recievedAt || new Date().toISOString(),
+        finishedAt,
+        updatedAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
+      }
     })
     .promise();
 
   return Responses.success({
-    data: customers.Items,
-    count: customers.Count,
-    scannedCount: customers.ScannedCount
+    data: { ...newJob.Attributes }
   });
 };
 

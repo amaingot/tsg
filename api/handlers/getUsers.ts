@@ -3,18 +3,18 @@ import * as Responses from "./utils/responses";
 import dynamo from "./utils/dynamo";
 import withLogger, { Handler } from "./utils/withLogger";
 import { getUser } from "./utils/cognito";
+import { UserRoles } from "tsg-shared";
 
 const handler: Handler = logger => async event => {
   const { email } = event.requestContext.authorizer.claims;
 
-  logger.info("Getting customers because of this event: ", event);
+  logger.info("Getting users because of this event: ", event);
 
   if (!email) {
-    logger.error('No user claim in event');
     return Responses.forbidden();
   }
 
-  logger.info("Getting customers for: " + email);
+  logger.info("Getting users for: " + email);
 
   const userAttributes = await getUser(email);
 
@@ -49,6 +49,19 @@ const handler: Handler = logger => async event => {
     });
   }
 
+  const { userRole } = userRecord.Item;
+  if (
+    userRole !== UserRoles.AccountAdmin ||
+    userRole !== UserRoles.SuperAdmin
+  ) {
+    logger.error(
+      `The user record does sufficient permissions to create a user. User role: ${userRole}`
+    );
+    return Responses.forbidden({
+      message: "You do not have sufficient permissions to create a user."
+    });
+  }
+
   logger.info(`Fetched user record: ${userRecord}`);
 
   const clientRecord = await dynamo
@@ -71,9 +84,9 @@ const handler: Handler = logger => async event => {
 
   logger.info(`Fetched client record: ${clientRecord}`);
 
-  const customers = await dynamo
+  const users = await dynamo
     .scan({
-      TableName: process.env.CUSTOMER_TABLE,
+      TableName: process.env.USER_TABLE,
       Limit: 100,
       FilterExpression: "#name0 = :value0",
       ExpressionAttributeValues: {
@@ -81,14 +94,14 @@ const handler: Handler = logger => async event => {
       },
       ExpressionAttributeNames: { "#name0": "clientId" },
       ProjectionExpression:
-        "id, clientId, memNumber, lastName, firstName, middleInitial, email, address, address2, city, zip, homePhone, cellPhone, workPhone, updatedAt, createdAt"
+        "id, clientId, email, firstName, lastName, cellPhone, userRole, updatedAt, createdAt"
     })
     .promise();
 
   return Responses.success({
-    data: customers.Items,
-    count: customers.Count,
-    scannedCount: customers.ScannedCount
+    data: users.Items,
+    count: users.Count,
+    scannedCount: users.ScannedCount
   });
 };
 

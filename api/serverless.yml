@@ -91,6 +91,28 @@ functions:
           path: signup/confirm
           cors: *corsConfig
 
+  get-users:
+    handler: handlers/getUsers.default
+    layers:
+      - { Ref: SharedLambdaLayer }
+    events:
+      - http:
+          method: get
+          path: users/list
+          cors: *corsConfig
+          authorizer: *authorizerConfig
+
+  create-user:
+    handler: handlers/createUser.default
+    layers:
+      - { Ref: SharedLambdaLayer }
+    events:
+      - http:
+          method: post
+          path: users/new
+          cors: *corsConfig
+          authorizer: *authorizerConfig
+
   get-customers:
     handler: handlers/getCustomers.default
     layers:
@@ -98,7 +120,40 @@ functions:
     events:
       - http:
           method: get
-          path: customers
+          path: customers/list
+          cors: *corsConfig
+          authorizer: *authorizerConfig
+
+  create-customer:
+    handler: handlers/createCustomer.default
+    layers:
+      - { Ref: SharedLambdaLayer }
+    events:
+      - http:
+          method: post
+          path: customers/new
+          cors: *corsConfig
+          authorizer: *authorizerConfig
+
+  get-jobs:
+    handler: handlers/getJobs.default
+    layers:
+      - { Ref: SharedLambdaLayer }
+    events:
+      - http:
+          method: get
+          path: jobs/list
+          cors: *corsConfig
+          authorizer: *authorizerConfig
+
+  create-job:
+    handler: handlers/createJob.default
+    layers:
+      - { Ref: SharedLambdaLayer }
+    events:
+      - http:
+          method: post
+          path: jobs/new
           cors: *corsConfig
           authorizer: *authorizerConfig
 

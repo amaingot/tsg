@@ -11,6 +11,8 @@ import Stripe from "./utils/stripe";
 const handler: Handler = logger => async event => {
   const signUpRequest: Partial<SignUpRequest> = JSON.parse(event.body);
 
+  logger.info("Creating a new user signup because of this event: ", event);
+
   const {
     email,
     password,
@@ -30,6 +32,7 @@ const handler: Handler = logger => async event => {
     !cellPhone ||
     !workPhone
   ) {
+    logger.error("Bad signup request", signUpRequest);
     return Responses.badRequest();
   }
 
@@ -52,16 +55,24 @@ const handler: Handler = logger => async event => {
     newCognitoUser = await getUser(email);
     logger.info("Cognito user created: ", newCognitoUser);
   } catch (e) {
-    logger.error("Error when signing up user", e);
+    logger.error("Error when getting newly signed up user", e);
     return Responses.internalError(e);
   }
   const { id: cognitoUserId } = newCognitoUser;
 
-  const stripeCustomer = await Stripe().customers.create({
-    name: companyName,
-    email: email,
-    phone: workPhone
-  });
+  let stripeCustomerId: string;
+
+  try {
+    const stripeCustomer = await Stripe().customers.create({
+      name: companyName,
+      email: email,
+      phone: workPhone
+    });
+    stripeCustomerId = stripeCustomer.id;
+  } catch (e) {
+    logger.error("Error when creating stripe customer", e);
+    return Responses.internalError(e);
+  }
 
   const newClientId = uuid();
 
@@ -73,9 +84,9 @@ const handler: Handler = logger => async event => {
           id: newClientId,
           name: companyName,
           phone: workPhone,
-          stripeCustomerId: stripeCustomer.id,
-          updatedAt: new Date().toISOString,
-          createdAt: new Date().toISOString
+          stripeCustomerId,
+          updatedAt: new Date().toISOString(),
+          createdAt: new Date().toISOString()
         }
       })
       .promise();
@@ -97,8 +108,8 @@ const handler: Handler = logger => async event => {
           lastName,
           cellPhone,
           userRole: UserRoles.AccountAdmin,
-          updatedAt: new Date().toISOString,
-          createdAt: new Date().toISOString
+          updatedAt: new Date().toISOString(),
+          createdAt: new Date().toISOString()
         }
       })
       .promise();
@@ -107,6 +118,8 @@ const handler: Handler = logger => async event => {
     logger.error("Error creating user record", e);
     return Responses.internalError(e);
   }
+
+  logger.info("Succesfully created new signup");
 
   return Responses.success({
     userId: cognitoUserId,
