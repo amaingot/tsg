@@ -1,11 +1,14 @@
 import * as NodeFetch from "node-fetch";
 global["fetch"] = NodeFetch;
-import * as AWS from "aws-sdk";
+import * as AWS_SDK from "aws-sdk";
+import AWSXray from "aws-xray-sdk-core";
 import {
   CognitoUserPool,
   CognitoUserAttribute,
   CognitoUser
 } from "amazon-cognito-identity-js";
+
+const AWS = AWSXray.captureAWS(AWS_SDK);
 
 const Config = {
   UserPoolId: process.env.USER_POOL_ID,
@@ -15,7 +18,7 @@ const Config = {
 const userPool = new CognitoUserPool(Config);
 const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider({
   apiVersion: "2016-04-18"
-});
+}) as AWS_SDK.CognitoIdentityServiceProvider;
 
 export default userPool;
 
