@@ -3,7 +3,7 @@ import * as Responses from "../utils/responses";
 import dynamo from "../utils/dynamo";
 import withLogger, { Handler } from "../utils/withLogger";
 import { getUser } from "../utils/cognito";
-import { ListCustomersResponse, Customer } from 'tsg-shared';
+import { ListCustomersResponse, Customer } from "tsg-shared";
 
 const handler: Handler = logger => async event => {
   const { email } = event.requestContext.authorizer.claims;
@@ -11,7 +11,7 @@ const handler: Handler = logger => async event => {
   logger.info("Getting customers because of this event: ", event);
 
   if (!email) {
-    logger.error('No user claim in event');
+    logger.error("No user claim in event");
     return Responses.forbidden();
   }
 
@@ -80,9 +80,7 @@ const handler: Handler = logger => async event => {
       ExpressionAttributeValues: {
         ":value0": { type: "String", stringValue: clientRecord.Item.id }
       },
-      ExpressionAttributeNames: { "#name0": "clientId" },
-      ProjectionExpression:
-        "id, clientId, memNumber, lastName, firstName, middleInitial, email, address, address2, city, zip, homePhone, cellPhone, workPhone, updatedAt, createdAt"
+      ExpressionAttributeNames: { "#name0": "clientId" }
     })
     .promise();
 

@@ -100,7 +100,7 @@ const CreateCustomerPage: React.FC<RouteComponentProps> = props => {
     const response = await axios({
       url: "/customers/create",
       method: "POST",
-      data: newCust
+      data: { data: newCust }
     });
 
     if (response.status === 200) {
