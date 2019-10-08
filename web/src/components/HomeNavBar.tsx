@@ -123,11 +123,11 @@ const HomeNavBar: React.FC = () => {
           component={RouterLink}
           to={!user ? "/sign-in" : "/app"}
           color="primary"
-          variant="outlined"
+          variant={!user ? "outlined" : "contained"}
           className={classes.link}
           disabled={loading}
         >
-          {!user ? "Login" : "App"}
+          {!user ? "Login" : "TSG App"}
         </Button>
       </Toolbar>
     </AppBar>
