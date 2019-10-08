@@ -71,7 +71,7 @@ functions:
           path: signup
           cors: *corsConfig
 
-  resend-confirm-code:
+  signup-resend-code:
     handler: handlers/onboarding/resendCode.default
     layers:
       - { Ref: SharedLambdaLayer }
@@ -81,7 +81,7 @@ functions:
           path: signup/resend
           cors: *corsConfig
 
-  confirm-user:
+  signup-confirm:
     handler: handlers/onboarding/confirm.default
     layers:
       - { Ref: SharedLambdaLayer }
@@ -91,7 +91,7 @@ functions:
           path: signup/confirm
           cors: *corsConfig
 
-  list-users:
+  user-list:
     handler: handlers/users/list.default
     layers:
       - { Ref: SharedLambdaLayer }
@@ -102,7 +102,7 @@ functions:
           cors: *corsConfig
           authorizer: *authorizerConfig
 
-  create-user:
+  user-create:
     handler: handlers/users/create.default
     layers:
       - { Ref: SharedLambdaLayer }
@@ -113,7 +113,7 @@ functions:
           cors: *corsConfig
           authorizer: *authorizerConfig
 
-  list-customers:
+  customer-list:
     handler: handlers/customers/list.default
     layers:
       - { Ref: SharedLambdaLayer }
@@ -124,7 +124,7 @@ functions:
           cors: *corsConfig
           authorizer: *authorizerConfig
 
-  create-customer:
+  customer-create:
     handler: handlers/customers/create.default
     layers:
       - { Ref: SharedLambdaLayer }
@@ -135,7 +135,7 @@ functions:
           cors: *corsConfig
           authorizer: *authorizerConfig
 
-  update-customer:
+  customer-update:
     handler: handlers/customers/update.default
     layers:
       - { Ref: SharedLambdaLayer }
@@ -150,7 +150,22 @@ functions:
               paths:
                 id: true
 
-  list-jobs:
+  customer-detail:
+    handler: handlers/customers/detail.default
+    layers:
+      - { Ref: SharedLambdaLayer }
+    events:
+      - http:
+          method: get
+          path: customers/{id}/update
+          cors: *corsConfig
+          authorizer: *authorizerConfig
+          request:
+            parameters:
+              paths:
+                id: true
+
+  job-list:
     handler: handlers/jobs/list.default
     layers:
       - { Ref: SharedLambdaLayer }
@@ -161,7 +176,7 @@ functions:
           cors: *corsConfig
           authorizer: *authorizerConfig
 
-  list-pending-jobs:
+  job-list-pending:
     handler: handlers/jobs/list-pending.default
     layers:
       - { Ref: SharedLambdaLayer }
@@ -172,7 +187,7 @@ functions:
           cors: *corsConfig
           authorizer: *authorizerConfig
 
-  create-job:
+  job-create:
     handler: handlers/jobs/create.default
     layers:
       - { Ref: SharedLambdaLayer }
@@ -183,7 +198,7 @@ functions:
           cors: *corsConfig
           authorizer: *authorizerConfig
 
-  update-job:
+  job-update:
     handler: handlers/jobs/update.default
     layers:
       - { Ref: SharedLambdaLayer }
