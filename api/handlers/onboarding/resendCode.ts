@@ -1,8 +1,8 @@
 import "source-map-support/register";
 
-import withLogger, { Handler } from "./utils/withLogger";
-import { getCognitoUser } from "./utils/cognito";
-import * as Responses from "./utils/responses";
+import withLogger, { Handler } from "../utils/withLogger";
+import { getCognitoUser } from "../utils/cognito";
+import * as Responses from "../utils/responses";
 
 const handler: Handler = logger => async event => {
   const { email } = JSON.parse(event.body);

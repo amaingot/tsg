@@ -62,7 +62,7 @@ layers:
 
 functions:
   signup:
-    handler: handlers/signUp.default
+    handler: handlers/onboarding/signUp.default
     layers:
       - { Ref: SharedLambdaLayer }
     events:
@@ -72,7 +72,7 @@ functions:
           cors: *corsConfig
 
   resend-confirm-code:
-    handler: handlers/resendCode.default
+    handler: handlers/onboarding/resendCode.default
     layers:
       - { Ref: SharedLambdaLayer }
     events:
@@ -82,7 +82,7 @@ functions:
           cors: *corsConfig
 
   confirm-user:
-    handler: handlers/confirmUser.default
+    handler: handlers/onboarding/confirmUser.default
     layers:
       - { Ref: SharedLambdaLayer }
     events:
@@ -91,8 +91,8 @@ functions:
           path: signup/confirm
           cors: *corsConfig
 
-  get-users:
-    handler: handlers/getUsers.default
+  list-users:
+    handler: handlers/users/list.default
     layers:
       - { Ref: SharedLambdaLayer }
     events:
@@ -103,18 +103,18 @@ functions:
           authorizer: *authorizerConfig
 
   create-user:
-    handler: handlers/createUser.default
+    handler: handlers/users/create.default
     layers:
       - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: post
-          path: users/new
+          path: users/create
           cors: *corsConfig
           authorizer: *authorizerConfig
 
-  get-customers:
-    handler: handlers/getCustomers.default
+  list-customers:
+    handler: handlers/customers/list.default
     layers:
       - { Ref: SharedLambdaLayer }
     events:
@@ -125,18 +125,18 @@ functions:
           authorizer: *authorizerConfig
 
   create-customer:
-    handler: handlers/createCustomer.default
+    handler: handlers/customers/create.default
     layers:
       - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: post
-          path: customers/new
+          path: customers/create
           cors: *corsConfig
           authorizer: *authorizerConfig
 
-  get-jobs:
-    handler: handlers/getJobs.default
+  list-jobs:
+    handler: handlers/jobs/list.default
     layers:
       - { Ref: SharedLambdaLayer }
     events:
@@ -147,13 +147,13 @@ functions:
           authorizer: *authorizerConfig
 
   create-job:
-    handler: handlers/createJob.default
+    handler: handlers/jobs/create.default
     layers:
       - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: post
-          path: jobs/new
+          path: jobs/create
           cors: *corsConfig
           authorizer: *authorizerConfig
 

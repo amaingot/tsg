@@ -1,40 +1,21 @@
-import uuid from "uuid/v4";
 import "source-map-support/register";
-import * as Responses from "./utils/responses";
-import dynamo from "./utils/dynamo";
-import withLogger, { Handler } from "./utils/withLogger";
-import { getUser } from "./utils/cognito";
+import * as Responses from "../utils/responses";
+import dynamo from "../utils/dynamo";
+import withLogger, { Handler } from "../utils/withLogger";
+import { getUser } from "../utils/cognito";
 
 const handler: Handler = logger => async event => {
-  const { email: userEmail } = event.requestContext.authorizer.claims;
-  const request = JSON.parse(event.body);
+  const { email } = event.requestContext.authorizer.claims;
 
-  logger.info("Creating a new job because of this event: ", event);
+  logger.info("Getting jobs because of this event: ", event);
 
-  const {
-    customerId,
-    name,
-    stringName,
-    racket,
-    tension,
-    gauge,
-    recievedAt,
-    finishedAt
-  } = request;
-
-  if (!customerId) {
-    logger.error("No customerId provided");
-    return Responses.badRequest();
-  }
-
-  if (!userEmail) {
-    logger.error("No user claim in event");
+  if (!email) {
     return Responses.forbidden();
   }
 
-  logger.info("Creating job for: " + userEmail);
+  logger.info("Getting jobs for: " + email);
 
-  const userAttributes = await getUser(userEmail);
+  const userAttributes = await getUser(email);
 
   logger.info("Current user attributes: ", userAttributes);
 
@@ -89,30 +70,23 @@ const handler: Handler = logger => async event => {
 
   logger.info(`Fetched client record: ${clientRecord}`);
 
-  const newJobId = uuid();
-
-  const newJob = await dynamo
-    .put({
+  const jobs = await dynamo
+    .scan({
       TableName: process.env.JOB_TABLE,
-      Item: {
-        id: newJobId,
-        clientId: clientRecord.Item.id,
-        customerId,
-        name,
-        stringName,
-        racket,
-        tension,
-        gauge,
-        recievedAt: recievedAt || new Date().toISOString(),
-        finishedAt,
-        updatedAt: new Date().toISOString(),
-        createdAt: new Date().toISOString()
-      }
+      Limit: 100,
+      FilterExpression: "clientId = :value0 AND finished = true",
+      ExpressionAttributeValues: {
+        ":value0": { type: "String", stringValue: clientRecord.Item.id }
+      },
+      ProjectionExpression:
+        "id, clientId, customerId, name, racket, stringName, tension, gauge, finished, recievedAt, finishedAt, updatedAt, createdAt"
     })
     .promise();
 
   return Responses.success({
-    data: { ...newJob.Attributes }
+    data: jobs.Items,
+    count: jobs.Count,
+    scannedCount: jobs.ScannedCount
   });
 };
 

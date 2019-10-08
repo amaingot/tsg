@@ -28,6 +28,7 @@
     "@types/aws-lambda": "^8.10.17",
     "@types/node": "^12.7.9",
     "@types/stripe": "^6.32.8",
+    "@types/uuid": "^3.4.5",
     "serverless": "^1.53.0",
     "serverless-dotenv-plugin": "^2.1.1",
     "serverless-dynamodb-local": "^0.2.38",

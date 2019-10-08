@@ -1,12 +1,12 @@
-import uuid from "uuid/v4";
+import * as uuid from "uuid/v4";
 import "source-map-support/register";
 import { SignUpRequest, UserRoles } from "tsg-shared";
 
-import * as Responses from "./utils/responses";
-import dynamo from "./utils/dynamo";
-import withLogger, { Handler } from "./utils/withLogger";
-import { signUpUser, getUser, UserRecord } from "./utils/cognito";
-import Stripe from "./utils/stripe";
+import * as Responses from "../utils/responses";
+import dynamo from "../utils/dynamo";
+import withLogger, { Handler } from "../utils/withLogger";
+import { signUpUser, getUser, UserRecord } from "../utils/cognito";
+import Stripe from "../utils/stripe";
 
 const handler: Handler = logger => async event => {
   const signUpRequest: Partial<SignUpRequest> = JSON.parse(event.body);

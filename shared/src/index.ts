@@ -27,13 +27,14 @@ export interface Job {
   id: string;
   clientId: string;
   customerId: string;
-  name: string;
-  stringName: string;
-  racket: string;
-  tension: string;
-  gauge: string;
+  name?: string;
+  stringName?: string;
+  racket?: string;
+  tension?: string;
+  gauge?: string;
+  finished: boolean;
   recievedAt: string;
-  finishedAt: string;
+  finishedAt?: string;
   updatedAt: string;
   createdAt: string;
 }

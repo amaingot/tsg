@@ -1,22 +1,41 @@
+import * as uuid from "uuid/v4";
 import "source-map-support/register";
-import * as Responses from "./utils/responses";
-import dynamo from "./utils/dynamo";
-import withLogger, { Handler } from "./utils/withLogger";
-import { getUser } from "./utils/cognito";
-import { UserRoles } from "tsg-shared";
+import { Job } from "tsg-shared";
+import * as Responses from "../utils/responses";
+import dynamo from "../utils/dynamo";
+import withLogger, { Handler } from "../utils/withLogger";
+import { getUser } from "../utils/cognito";
 
 const handler: Handler = logger => async event => {
-  const { email } = event.requestContext.authorizer.claims;
+  const { email: userEmail } = event.requestContext.authorizer.claims;
+  const request = JSON.parse(event.body);
 
-  logger.info("Getting users because of this event: ", event);
+  logger.info("Creating a new job because of this event: ", event);
 
-  if (!email) {
+  const {
+    customerId,
+    name,
+    stringName,
+    racket,
+    tension,
+    gauge,
+    recievedAt,
+    finishedAt
+  } = request;
+
+  if (!customerId || typeof customerId !== "string") {
+    logger.error("No customerId provided");
+    return Responses.badRequest();
+  }
+
+  if (!userEmail) {
+    logger.error("No user claim in event");
     return Responses.forbidden();
   }
 
-  logger.info("Getting users for: " + email);
+  logger.info("Creating job for: " + userEmail);
 
-  const userAttributes = await getUser(email);
+  const userAttributes = await getUser(userEmail);
 
   logger.info("Current user attributes: ", userAttributes);
 
@@ -49,19 +68,6 @@ const handler: Handler = logger => async event => {
     });
   }
 
-  const { userRole } = userRecord.Item;
-  if (
-    userRole !== UserRoles.AccountAdmin ||
-    userRole !== UserRoles.SuperAdmin
-  ) {
-    logger.error(
-      `The user record does sufficient permissions to create a user. User role: ${userRole}`
-    );
-    return Responses.forbidden({
-      message: "You do not have sufficient permissions to create a user."
-    });
-  }
-
   logger.info(`Fetched user record: ${userRecord}`);
 
   const clientRecord = await dynamo
@@ -84,24 +90,33 @@ const handler: Handler = logger => async event => {
 
   logger.info(`Fetched client record: ${clientRecord}`);
 
-  const users = await dynamo
-    .scan({
-      TableName: process.env.USER_TABLE,
-      Limit: 100,
-      FilterExpression: "#name0 = :value0",
-      ExpressionAttributeValues: {
-        ":value0": { type: "String", stringValue: clientRecord.Item.id }
-      },
-      ExpressionAttributeNames: { "#name0": "clientId" },
-      ProjectionExpression:
-        "id, clientId, email, firstName, lastName, cellPhone, userRole, updatedAt, createdAt"
+  const newJobId = uuid();
+
+  const newJobData: Job = {
+    id: newJobId,
+    clientId: clientRecord.Item.id as string,
+    customerId,
+    name,
+    stringName,
+    racket,
+    tension,
+    gauge,
+    finished: finishedAt !== undefined,
+    recievedAt: recievedAt || new Date().toISOString(),
+    finishedAt,
+    updatedAt: new Date().toISOString(),
+    createdAt: new Date().toISOString()
+  };
+
+  const newJob = await dynamo
+    .put({
+      TableName: process.env.JOB_TABLE,
+      Item: newJobData
     })
     .promise();
 
   return Responses.success({
-    data: users.Items,
-    count: users.Count,
-    scannedCount: users.ScannedCount
+    data: { ...newJob.Attributes }
   });
 };
 

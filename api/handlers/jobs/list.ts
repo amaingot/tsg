@@ -1,20 +1,19 @@
 import "source-map-support/register";
-import * as Responses from "./utils/responses";
-import dynamo from "./utils/dynamo";
-import withLogger, { Handler } from "./utils/withLogger";
-import { getUser } from "./utils/cognito";
+import * as Responses from "../utils/responses";
+import dynamo from "../utils/dynamo";
+import withLogger, { Handler } from "../utils/withLogger";
+import { getUser } from "../utils/cognito";
 
 const handler: Handler = logger => async event => {
   const { email } = event.requestContext.authorizer.claims;
 
-  logger.info("Getting customers because of this event: ", event);
+  logger.info("Getting jobs because of this event: ", event);
 
   if (!email) {
-    logger.error('No user claim in event');
     return Responses.forbidden();
   }
 
-  logger.info("Getting customers for: " + email);
+  logger.info("Getting jobs for: " + email);
 
   const userAttributes = await getUser(email);
 
@@ -71,9 +70,9 @@ const handler: Handler = logger => async event => {
 
   logger.info(`Fetched client record: ${clientRecord}`);
 
-  const customers = await dynamo
+  const jobs = await dynamo
     .scan({
-      TableName: process.env.CUSTOMER_TABLE,
+      TableName: process.env.JOB_TABLE,
       Limit: 100,
       FilterExpression: "#name0 = :value0",
       ExpressionAttributeValues: {
@@ -81,14 +80,14 @@ const handler: Handler = logger => async event => {
       },
       ExpressionAttributeNames: { "#name0": "clientId" },
       ProjectionExpression:
-        "id, clientId, memNumber, lastName, firstName, middleInitial, email, address, address2, city, zip, homePhone, cellPhone, workPhone, updatedAt, createdAt"
+        "id, clientId, customerId, name, racket, stringName, tension, gauge, finished, recievedAt, finishedAt, updatedAt, createdAt"
     })
     .promise();
 
   return Responses.success({
-    data: customers.Items,
-    count: customers.Count,
-    scannedCount: customers.ScannedCount
+    data: jobs.Items,
+    count: jobs.Count,
+    scannedCount: jobs.ScannedCount
   });
 };
 

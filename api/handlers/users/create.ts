@@ -1,9 +1,10 @@
-import uuid from "uuid/v4";
+import * as uuid from "uuid/v4";
 import "source-map-support/register";
-import * as Responses from "./utils/responses";
-import dynamo from "./utils/dynamo";
-import withLogger, { Handler } from "./utils/withLogger";
-import { getUser } from "./utils/cognito";
+import * as Responses from "../utils/responses";
+import dynamo from "../utils/dynamo";
+import withLogger, { Handler } from "../utils/withLogger";
+import { signUpUser, UserRecord, getUser } from "../utils/cognito";
+import { UserRoles, User } from "tsg-shared";
 
 const handler: Handler = logger => async event => {
   const { email: userEmail } = event.requestContext.authorizer.claims;
@@ -11,22 +12,9 @@ const handler: Handler = logger => async event => {
 
   logger.info("Creating a new customer because of this event: ", event);
 
-  const {
-    memNumber,
-    lastName,
-    firstName,
-    middleInitial,
-    email,
-    address,
-    address2,
-    city,
-    zip,
-    homePhone,
-    cellPhone,
-    workPhone
-  } = request;
+  const { firstName, lastName, email, cellPhone } = request;
 
-  if (!firstName || !lastName) {
+  if (!firstName || !lastName || !cellPhone || !email) {
     logger.error("No firstName and/or lastName provided");
     return Responses.badRequest();
   }
@@ -71,6 +59,19 @@ const handler: Handler = logger => async event => {
     });
   }
 
+  const { userRole } = userRecord.Item;
+  if (
+    userRole !== UserRoles.AccountAdmin ||
+    userRole !== UserRoles.SuperAdmin
+  ) {
+    logger.error(
+      `The user record does sufficient permissions to create a user. User role: ${userRole}`
+    );
+    return Responses.forbidden({
+      message: "You do not have sufficient permissions to create a user."
+    });
+  }
+
   logger.info(`Fetched user record: ${userRecord}`);
 
   const clientRecord = await dynamo
@@ -93,34 +94,53 @@ const handler: Handler = logger => async event => {
 
   logger.info(`Fetched client record: ${clientRecord}`);
 
-  const newCustomerId = uuid();
+  const tempPassword = uuid();
 
-  const newCustomer = await dynamo
+  try {
+    await signUpUser({
+      email,
+      password: tempPassword,
+      lastName,
+      firstName,
+      phoneNumber: cellPhone
+    });
+  } catch (e) {
+    logger.error("Error when signing up user", e);
+    return Responses.internalError(e);
+  }
+
+  let newCognitoUser: UserRecord;
+
+  try {
+    newCognitoUser = await getUser(email);
+    logger.info("Cognito user created: ", newCognitoUser);
+  } catch (e) {
+    logger.error("Error when getting newly signed up user", e);
+    return Responses.internalError(e);
+  }
+  const { id: cognitoUserId } = newCognitoUser;
+
+  const userData: User = {
+    id: cognitoUserId,
+    clientId: clientRecord.Item.id,
+    firstName,
+    lastName,
+    email,
+    cellPhone,
+    userRole: UserRoles.Employee,
+    updatedAt: new Date().toISOString(),
+    createdAt: new Date().toISOString()
+  };
+
+  const newUser = await dynamo
     .put({
       TableName: process.env.CUSTOMER_TABLE,
-      Item: {
-        id: newCustomerId,
-        clientId: clientRecord.Item.id,
-        memNumber,
-        lastName,
-        firstName,
-        middleInitial,
-        email,
-        address,
-        address2,
-        city,
-        zip,
-        homePhone,
-        cellPhone,
-        workPhone,
-        updatedAt: new Date().toISOString(),
-        createdAt: new Date().toISOString()
-      }
+      Item: userData
     })
     .promise();
 
   return Responses.success({
-    data: { ...newCustomer.Attributes }
+    data: { ...newUser.Attributes }
   });
 };
 
