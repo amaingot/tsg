@@ -80,7 +80,8 @@ const handler: Handler = logger => async event => {
       ExpressionAttributeValues: {
         ":currentClientId": clientRecord.Item.id
       },
-      ProjectionExpression: "#id, clientId, memNumber, lastName, firstName, middleInitial, email, address, address2, city, state, zip, homePhone, cellPhone, workPhone, lastUpdated, createdAt"
+      ProjectionExpression:
+        "#id, clientId, memNumber, lastName, firstName, middleInitial, email, address, address2, city, zip, homePhone, cellPhone, workPhone, lastUpdated, createdAt"
     })
     .promise();
 
