@@ -80,7 +80,7 @@ const handler: Handler = logger => async event => {
       },
       ExpressionAttributeNames: { "#name0": "clientId" },
       ProjectionExpression:
-        "#id, clientId, memNumber, lastName, firstName, middleInitial, email, address, address2, city, zip, homePhone, cellPhone, workPhone, lastUpdated, createdAt"
+        "id, clientId, memNumber, lastName, firstName, middleInitial, email, address, address2, city, zip, homePhone, cellPhone, workPhone, lastUpdated, createdAt"
     })
     .promise();
 
