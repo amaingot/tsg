@@ -9,6 +9,7 @@ Roughly the data follows this data model:
 ```
 type Customer {
   id: ID!
+  clientId: ID!
   memNumber: String
   lastName: String
   firstName: String

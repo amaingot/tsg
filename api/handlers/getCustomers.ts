@@ -31,16 +31,24 @@ const handler: Handler = logger => async event => {
     .promise();
 
   if (!userRecord) {
+    logger.error(
+      `The user does not have a user record. Cognito User: ${userAttributes}`
+    );
     return Responses.internalError({
       message: "The user does not have a user record"
     });
   }
 
   if (!userRecord.Item.clientId) {
+    logger.error(
+      `The user record does not have a client. User Record: ${userRecord}`
+    );
     return Responses.internalError({
       message: "The user does not have a client"
     });
   }
+
+  logger.info(`Fetched user record: ${userRecord}`);
 
   const clientRecord = await dynamo
     .get({
@@ -51,6 +59,17 @@ const handler: Handler = logger => async event => {
     })
     .promise();
 
+  if (!clientRecord) {
+    logger.error(
+      `The client record does not exist. User Record: ${userRecord}`
+    );
+    return Responses.internalError({
+      message: "The user does not have a user record"
+    });
+  }
+
+  logger.info(`Fetched client record: ${clientRecord}`);
+
   const customers = await dynamo
     .query({
       TableName: process.env.CUSTOMER_TABLE,
@@ -60,7 +79,8 @@ const handler: Handler = logger => async event => {
       },
       ExpressionAttributeValues: {
         ":currentClientId": clientRecord.Item.id
-      }
+      },
+      ProjectionExpression: "#id, clientId, memNumber, lastName, firstName, middleInitial, email, address, address2, city, state, zip, homePhone, cellPhone, workPhone, lastUpdated, createdAt"
     })
     .promise();
 
