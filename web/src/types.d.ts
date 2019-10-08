@@ -1,8 +1,7 @@
-import RollbarType from 'rollbar';
+import RollbarType from "rollbar";
 
 declare global {
   interface Window {
     Rollbar: RollbarType;
   }
 }
-

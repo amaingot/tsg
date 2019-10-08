@@ -1,15 +1,15 @@
-import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React from "react";
+import { Link as RouterLink } from "react-router-dom";
 
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
-import Container from '@material-ui/core/Container';
-import Box from '@material-ui/core/Box';
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import Link from "@material-ui/core/Link";
+import Container from "@material-ui/core/Container";
+import Box from "@material-ui/core/Box";
 
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from "@material-ui/core/styles";
 
-import Copyright from './Copyright';
+import Copyright from "./Copyright";
 
 const useStyles = makeStyles(theme => ({
   footer: {
@@ -17,30 +17,41 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(8),
     paddingTop: theme.spacing(3),
     paddingBottom: theme.spacing(3),
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up("sm")]: {
       paddingTop: theme.spacing(6),
-      paddingBottom: theme.spacing(6),
-    },
-  },
+      paddingBottom: theme.spacing(6)
+    }
+  }
 }));
 
 const footers = [
   {
-    title: 'Company',
-    description: ['Team', 'History', 'Contact us'],
+    title: "Company",
+    description: ["Team", "History", "Contact us"]
   },
   {
-    title: 'Features',
-    description: ['Cool stuff', 'Random feature', 'Team feature', 'Developer stuff', 'Another one'],
+    title: "Features",
+    description: [
+      "Cool stuff",
+      "Random feature",
+      "Team feature",
+      "Developer stuff",
+      "Another one"
+    ]
   },
   {
-    title: 'Resources',
-    description: ['Customer Support', 'Resource name', 'Another resource', 'Final resource'],
+    title: "Resources",
+    description: [
+      "Customer Support",
+      "Resource name",
+      "Another resource",
+      "Final resource"
+    ]
   },
   {
-    title: 'Legal',
-    description: ['Privacy policy', 'Terms of use'],
-  },
+    title: "Legal",
+    description: ["Privacy policy", "Terms of use"]
+  }
 ];
 
 const Footer: React.FC = () => {
@@ -57,7 +68,12 @@ const Footer: React.FC = () => {
             <ul>
               {footer.description.map(item => (
                 <li key={item}>
-                  <Link component={RouterLink} to="#" variant="subtitle1" color="textSecondary">
+                  <Link
+                    component={RouterLink}
+                    to="#"
+                    variant="subtitle1"
+                    color="textSecondary"
+                  >
                     {item}
                   </Link>
                 </li>

@@ -1,26 +1,26 @@
-import React from 'react';
+import React from "react";
 
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
 
-import AppNavBar from './AppNavBar';
-import AppNavDrawer from './AppNavDrawer';
-import Copyright from './Copyright';
+import AppNavBar from "./AppNavBar";
+import AppNavDrawer from "./AppNavDrawer";
+import Copyright from "./Copyright";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    display: 'flex',
+    display: "flex"
   },
   appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
-    height: '100vh',
-    overflow: 'auto',
+    height: "100vh",
+    overflow: "auto"
   },
   container: {
     paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
-  },
+    paddingBottom: theme.spacing(4)
+  }
 }));
 
 interface Props {
@@ -52,6 +52,6 @@ const AppLayout: React.FC<Props> = props => {
       </main>
     </div>
   );
-}
+};
 
 export default AppLayout;

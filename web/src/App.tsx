@@ -1,16 +1,16 @@
-import React from 'react';
+import React from "react";
 
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import CssBaseline from "@material-ui/core/CssBaseline";
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
-import PricingPage from './pages/PricingPage';
-import SignUpPage from './pages/SignUpPage';
-import SignInPage from './pages/SignInPage';
-import HomePage from './pages/HomePage';
-import FeaturesPage from './pages/FeaturesPage';
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import PricingPage from "./pages/PricingPage";
+import SignUpPage from "./pages/SignUpPage";
+import SignInPage from "./pages/SignInPage";
+import HomePage from "./pages/HomePage";
+import FeaturesPage from "./pages/FeaturesPage";
 
-import CustomerApp from './CustomerApp';
+import CustomerApp from "./CustomerApp";
 
 const App: React.FC = () => {
   return (
@@ -28,6 +28,6 @@ const App: React.FC = () => {
       </Switch>
     </BrowserRouter>
   );
-}
+};
 
 export default App;

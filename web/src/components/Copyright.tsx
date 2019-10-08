@@ -1,20 +1,20 @@
-import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React from "react";
+import { Link as RouterLink } from "react-router-dom";
 
-import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
+import Typography from "@material-ui/core/Typography";
+import Link from "@material-ui/core/Link";
 
 const Copyright: React.FC = () => {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
+      {"Copyright © "}
       <Link component={RouterLink} color="inherit" to="/">
         Tennis Shop Guru
-      </Link>{' '}
+      </Link>{" "}
       {new Date().getFullYear()}
-      {'.'}
+      {"."}
     </Typography>
   );
-}
+};
 
 export default Copyright;
