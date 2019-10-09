@@ -16,6 +16,4 @@ const client = new AWS.DynamoDB.DocumentClient({
   service: ddbClient
 });
 
-client['service'] = ddbClient;
-
 export default client;

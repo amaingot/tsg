@@ -1,4 +1,6 @@
 import "source-map-support/register";
+import * as AWS from "aws-sdk";
+
 import * as Responses from "../utils/responses";
 import dynamo from "../utils/dynamo";
 import withLogger, { Handler } from "../utils/withLogger";
@@ -23,6 +25,7 @@ const handler: Handler = logger => async event => {
 
   const userId = userAttributes.id;
 
+  console.log("Getting User");
   const userRecord = await dynamo
     .get({
       TableName: process.env.USER_TABLE,
@@ -31,6 +34,7 @@ const handler: Handler = logger => async event => {
       }
     })
     .promise();
+  console.log("Got User");
 
   if (!userRecord) {
     logger.error(
@@ -70,17 +74,17 @@ const handler: Handler = logger => async event => {
     });
   }
 
-  logger.info(`Fetched client record: ${clientRecord}`);
+  logger.info(
+    `Fetched client record: ${JSON.stringify(clientRecord, null, 2)}`
+  );
 
   const customers = await dynamo
     .scan({
       TableName: process.env.CUSTOMER_TABLE,
-      Limit: 100,
-      FilterExpression: "#name0 = :value0",
       ExpressionAttributeValues: {
-        ":value0": { type: "String", stringValue: clientRecord.Item.id }
+        ":value0": clientRecord.Item.id
       },
-      ExpressionAttributeNames: { "#name0": "clientId" }
+      FilterExpression: "clientId = :value0"
     })
     .promise();
 

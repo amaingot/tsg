@@ -74,11 +74,10 @@ const handler: Handler = logger => async event => {
     .scan({
       TableName: process.env.JOB_TABLE,
       Limit: 100,
-      FilterExpression: "#name0 = :value0",
+      FilterExpression: "clientId = :value0",
       ExpressionAttributeValues: {
-        ":value0": { type: "String", stringValue: clientRecord.Item.id }
-      },
-      ExpressionAttributeNames: { "#name0": "clientId" }
+        ":value0": clientRecord.Item.id
+      }
     })
     .promise();
 
