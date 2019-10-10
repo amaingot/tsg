@@ -1,0 +1,16 @@
+DependsOn: VPCGA
+Type: AWS::RDS::DBInstance
+Properties:
+  MasterUsername: ${self:provider.environment.DB_USER}
+  MasterUserPassword: ${self:provider.environment.DB_PW}
+  AllocatedStorage: 20
+  DBName: ${self:provider.environment.DB_NAME}
+  DBInstanceIdentifier: ${self:provider.environment.DB_NAME}instance
+  DBInstanceClass: db.t2.micro
+  VPCSecurityGroups:
+  - !GetAtt SecurityGroup.GroupId
+  DBSubnetGroupName:
+    Ref: SubnetGroup
+  Engine: postgres
+  EnablePerformanceInsights: true
+  PubliclyAccessible: true

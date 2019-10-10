@@ -3,12 +3,12 @@ import * as AWS from "aws-sdk";
 
 let options = {};
 
-if (process.env.IS_OFFLINE) {
-  options = {
-    region: "localhost",
-    endpoint: "http://localhost:8000"
-  };
-}
+// if (process.env.IS_OFFLINE) {
+//   options = {
+//     region: "localhost",
+//     endpoint: "http://localhost:8000"
+//   };
+// }
 
 const ddbClient = AWSXray.captureAWSClient(new AWS.DynamoDB(options));
 

@@ -26,10 +26,6 @@ provider:
   role: LambdaRole
   environment:
     AWS_XRAY_CONTEXT_MISSING: LOG_ERROR
-    CLIENT_TABLE: ${self:service.app}-ClientTable-${self:provider.stage}
-    USER_TABLE: ${self:service.app}-UserTable-${self:provider.stage}
-    CUSTOMER_TABLE: ${self:service.app}-CustomerTable-${self:provider.stage}
-    JOB_TABLE: ${self:service.app}-JobTable-${self:provider.stage}
     NODE_PATH: "./:/opt/node_modules"
     ENV: ${self:provider.stage}
     LAMBDA_ROLLBAR_TOKEN: ${env:LAMBDA_ROLLBAR_TOKEN}
@@ -37,6 +33,10 @@ provider:
     USER_POOL_ID: { Ref: UserPool }
     USER_POOL_CLIENT_ID: { Ref: UserPoolClientServer }
     STRIPE_SECRET_KEY: ${env:STRIPE_SECRET_KEY}
+    DB_USER: ${self:service.app}${opt:stage}user
+    DB_PW: 1KdOl7CJ&#Lv1
+    DB_NAME: ${self:service.app}${opt:stage}db
+    VPC_CIDR: 10
 
 package:
   individually: true
@@ -220,8 +220,18 @@ resources:
     UserPoolClientServer: ${file(./resources/UserPoolClientServer.yml)}
     ApiGatewayAuthorizer: ${file(./resources/ApiGatewayAuthorizer.yml)}
     GatewayResponseDefault4XX: ${file(./resources/GatewayResponseDefault4XX.yml)}
-    ClientTable: ${file(./resources/ClientTable.yml)}
-    UserTable: ${file(./resources/UserTable.yml)}
-    CustomerTable: ${file(./resources/CustomerTable.yml)}
-    JobTable: ${file(./resources/JobTable.yml)}
     LambdaRole: ${file(./resources/LambdaRole.yml)}
+    InternetGateway: ${file(./resources/InternetGateway.yml)}
+    VPC: ${file(./resources/VPC.yml)}
+    VPCGA: ${file(./resources/VPCGA.yml)}
+    SubnetA: ${file(./resources/SubnetA.yml)}
+    SubnetB: ${file(./resources/SubnetB.yml)}
+    SubnetC: ${file(./resources/SubnetC.yml)}
+    SubnetGroup: ${file(./resources/SubnetGroup.yml)}
+    SecurityGroup: ${file(./resources/SecurityGroup.yml)}
+    RouteTablePublic: ${file(./resources/RouteTablePublic.yml)}
+    RoutePublic: ${file(./resources/RoutePublic.yml)}
+    RouteTableAssociationSubnetA: ${file(./resources/RouteTableAssociationSubnetA.yml)}
+    RouteTableAssociationSubnetB: ${file(./resources/RouteTableAssociationSubnetB.yml)}
+    RouteTableAssociationSubnetC: ${file(./resources/RouteTableAssociationSubnetC.yml)}
+    PostgreSqlRDSInstance: ${file(./resources/PostgreSqlRDSInstance.yml)}
