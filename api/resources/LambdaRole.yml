@@ -13,6 +13,24 @@ Properties:
             - lambda.amazonaws.com
         Action: sts:AssumeRole
   Policies:
+    - PolicyName: TSG-DynamoDBWriteAccess-${self:provider.stage}
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:Query
+              - dynamodb:Scan
+              - dynamodb:GetItem
+              - dynamodb:PutItem
+              - dynamodb:UpdateItem
+              - dynamodb:DeleteItem
+              - dynamodb:BatchWriteItem
+            Resource:
+              - Fn::GetAtt: [ClientTable, Arn]
+              - Fn::GetAtt: [CustomerTable, Arn]
+              - Fn::GetAtt: [JobTable, Arn]
+              - Fn::GetAtt: [UserTable, Arn]
     - PolicyName: TSG-CognitoUserPoolAdminAccess-${self:provider.stage}
       PolicyDocument:
         Version: "2012-10-17"

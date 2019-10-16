@@ -1,4 +1,5 @@
 import "source-map-support/register";
+import * as AWS from "aws-sdk";
 
 import * as Responses from "../utils/responses";
 import dynamo from "../utils/dynamo";
@@ -24,12 +25,7 @@ const handler: Handler = logger => async event => {
 
   const userId = userAttributes.id;
 
-  console.log("Getting User", {
-    TableName: process.env.USER_TABLE,
-    Key: {
-      id: userId
-    }
-  });
+  console.log("Getting User");
   const userRecord = await dynamo
     .get({
       TableName: process.env.USER_TABLE,

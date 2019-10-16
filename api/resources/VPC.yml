@@ -1,9 +1,0 @@
-Type: AWS::EC2::VPC
-Properties:
-  CidrBlock: ${self:provider.environment.VPC_CIDR}.0.0.0/16
-  EnableDnsSupport: true
-  EnableDnsHostnames: true
-  InstanceTenancy: default
-  Tags:
-    - Key: "Name"
-      Value: "${self:service.app}-VPC"
