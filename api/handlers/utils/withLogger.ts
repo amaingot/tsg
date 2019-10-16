@@ -62,7 +62,7 @@ const withLogger: LoggerEnhancer = (handler: Handler) => async (
       })
     ]
   });
-  AWSXRay.setLogger(Winston);
+  AWSXRay.setLogger(logger);
 
   logger.info("Received event:", event);
 
