@@ -48,6 +48,12 @@ const SignUpConfirmPage: React.FC<Props> = props => {
   const classes = useStyles();
   const { history, email } = props;
 
+  React.useEffect(() => {
+    if (!email) {
+      history.push("/login");
+    }
+  }, [history, email]);
+
   const [code, setCode] = React.useState("");
 
   const [loading, setLoading] = React.useState(false);

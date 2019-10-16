@@ -163,7 +163,7 @@ functions:
     events:
       - http:
           method: get
-          path: customers/{id}/update
+          path: customers/{id}/detail
           cors: *corsConfig
           authorizer: *authorizerConfig
           request:

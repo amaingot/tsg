@@ -28,7 +28,7 @@ const CustomersPage: React.FC<RouteComponentProps<{ id: string }>> = props => {
   React.useEffect(() => {
     axios({
       method: "GET",
-      url: `/customers/${id}/detail`
+      url: `/customers/${id}`
     });
   }, [id]);
 

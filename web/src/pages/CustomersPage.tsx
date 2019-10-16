@@ -36,8 +36,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const CustomersPage: React.FC<RouteComponentProps> = () => {
+const CustomersPage: React.FC<RouteComponentProps> = props => {
   const classes = useStyles();
+  const { history } = props;
   const [customers, setCustomers] = React.useState<Array<Customer>>();
 
   React.useEffect(() => {
@@ -78,7 +79,10 @@ const CustomersPage: React.FC<RouteComponentProps> = () => {
               <TableBody>
                 {customers &&
                   customers.map(c => (
-                    <TableRow key={c.id}>
+                    <TableRow
+                      key={c.id}
+                      onClick={() => history.push(`/app/customers/${c.id}`)}
+                    >
                       <TableCell component="th" scope="row">
                         {c.firstName} {c.lastName}
                       </TableCell>

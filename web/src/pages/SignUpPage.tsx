@@ -95,7 +95,7 @@ const SignUpPage: React.FC<RouteComponentProps> = props => {
         setError(response.data["message"] || "Oops! There is something wrong!");
         window.Rollbar.error(response);
       } else {
-        history.push("/signup/confirm", { email });
+        history.push("/sign-up/confirm", { email });
       }
     }
 

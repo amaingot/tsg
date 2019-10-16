@@ -46,9 +46,11 @@ export const phoneNumberIsValid = (num: string): boolean => {
 };
 
 export const parsePhoneNum = (p: string): string => {
-  const digits = p.match(/[0-9]/);
+  const digits = p.match(/\(([0-9]{3})\) ([0-9]{3})-([0-9]{4})/);
 
-  return `+1${digits}`;
+  if (!digits) return '';
+
+  return `+1${digits[1]}${digits[2]}${digits[3]}`;
 };
 
 export default PhoneTextMask;
