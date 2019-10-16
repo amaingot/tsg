@@ -1,6 +1,6 @@
 Type: AWS::IAM::Role
 Properties:
-  RoleName: TSG-LambdaRole-${self:provider.stage}
+  RoleName: ${self:service.app}-LambdaRole-${self:provider.stage}
   ManagedPolicyArns:
     - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
     - "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
@@ -13,7 +13,7 @@ Properties:
             - lambda.amazonaws.com
         Action: sts:AssumeRole
   Policies:
-    - PolicyName: TSG-DynamoDBWriteAccess-${self:provider.stage}
+    - PolicyName: ${self:service.app}-DynamoDBWriteAccess-${self:provider.stage}
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -27,11 +27,11 @@ Properties:
               - dynamodb:DeleteItem
               - dynamodb:BatchWriteItem
             Resource:
-              - Fn::GetAtt: [ClientTable, Arn]
-              - Fn::GetAtt: [CustomerTable, Arn]
-              - Fn::GetAtt: [JobTable, Arn]
-              - Fn::GetAtt: [UserTable, Arn]
-    - PolicyName: TSG-CognitoUserPoolAdminAccess-${self:provider.stage}
+              - Fn::GetAtt: [DynamoDbClientTable, Arn]
+              - Fn::GetAtt: [DynamoDbCustomerTable, Arn]
+              - Fn::GetAtt: [DynamoDbJobTable, Arn]
+              - Fn::GetAtt: [DynamoDbUserTable, Arn]
+    - PolicyName: ${self:service.app}-CognitoUserPoolAdminAccess-${self:provider.stage}
       PolicyDocument:
         Version: "2012-10-17"
         Statement:

@@ -4,8 +4,6 @@ Properties:
   KeySchema:
     - AttributeName: id
       KeyType: HASH
-    - AttributeName: createdAt
-      KeyType: RANGE
   AttributeDefinitions:
     - AttributeName: id
       AttributeType: S
@@ -13,24 +11,26 @@ Properties:
       AttributeType: S
     - AttributeName: customerId
       AttributeType: S
-    - AttributeName: createdAt
-      AttributeType: S
-    - AttributeName: recievedAt
-      AttributeType: S
+    - AttributeName: finished
+      AttributeType: B
   GlobalSecondaryIndexes:
     - IndexName: ClientJobs
       KeySchema:
         - AttributeName: clientId
           KeyType: HASH
-        - AttributeName: recievedAt
-          KeyType: RANGE
       Projection:
         ProjectionType: ALL
     - IndexName: CustomerJobs
       KeySchema:
         - AttributeName: customerId
           KeyType: HASH
-        - AttributeName: recievedAt
+      Projection:
+        ProjectionType: ALL
+    - IndexName: CustomerJobsStatus
+      KeySchema:
+        - AttributeName: customerId
+          KeyType: HASH
+        - AttributeName: finished
           KeyType: RANGE
       Projection:
         ProjectionType: ALL

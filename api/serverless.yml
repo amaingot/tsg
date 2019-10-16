@@ -220,8 +220,8 @@ resources:
     UserPoolClientServer: ${file(./resources/UserPoolClientServer.yml)}
     ApiGatewayAuthorizer: ${file(./resources/ApiGatewayAuthorizer.yml)}
     GatewayResponseDefault4XX: ${file(./resources/GatewayResponseDefault4XX.yml)}
-    ClientTable: ${file(./resources/ClientTable.yml)}
-    UserTable: ${file(./resources/UserTable.yml)}
-    CustomerTable: ${file(./resources/CustomerTable.yml)}
-    JobTable: ${file(./resources/JobTable.yml)}
+    DynamoDbClientTable: ${file(./resources/DynamoDbClientTable.yml)}
+    DynamoDbUserTable: ${file(./resources/DynamoDbUserTable.yml)}
+    DynamoDbCustomerTable: ${file(./resources/DynamoDbCustomerTable.yml)}
+    DynamoDbJobTable: ${file(./resources/DynamoDbJobTable.yml)}
     LambdaRole: ${file(./resources/LambdaRole.yml)}

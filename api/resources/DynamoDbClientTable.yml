@@ -4,14 +4,10 @@ Properties:
   KeySchema:
     - AttributeName: id
       KeyType: HASH
-    - AttributeName: createdAt
-      KeyType: RANGE
   AttributeDefinitions:
     - AttributeName: id
       AttributeType: S
     - AttributeName: stripeCustomerId
-      AttributeType: S
-    - AttributeName: createdAt
       AttributeType: S
   GlobalSecondaryIndexes:
     - IndexName: StripeCustomerId

@@ -4,22 +4,16 @@ Properties:
   KeySchema:
     - AttributeName: id
       KeyType: HASH
-    - AttributeName: createdAt
-      KeyType: RANGE
   AttributeDefinitions:
     - AttributeName: id
       AttributeType: S
     - AttributeName: clientId
-      AttributeType: S
-    - AttributeName: createdAt
       AttributeType: S
   GlobalSecondaryIndexes:
     - IndexName: CustomerClients
       KeySchema:
         - AttributeName: clientId
           KeyType: HASH
-        - AttributeName: createdAt
-          KeyType: RANGE
       Projection:
         ProjectionType: ALL
   BillingMode: PAY_PER_REQUEST
