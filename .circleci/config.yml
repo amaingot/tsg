@@ -96,7 +96,7 @@ jobs:
           command: |
             curl https://api.rollbar.com/api/1/deploy/ \
               -F access_token=$ROLLBAR_WEB_DEPLOY_TOKEN \
-              -F environment=$REACT_APP_ENV \
+              -F environment=prod \
               -F revision=$CIRCLE_SHA1 \
               -F local_username=$CIRCLE_USERNAME
 
