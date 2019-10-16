@@ -6,6 +6,7 @@ plugins:
   - serverless-dotenv-plugin
   - serverless-webpack
   - serverless-offline
+  - serverless-stack-output
 
 provider:
   name: aws
@@ -43,6 +44,8 @@ package:
   individually: true
 
 custom:
+  webpack:
+    keepOutputDirectory: true
   serverless-offline:
     port: 3001
   corsConfig: &corsConfig
@@ -52,6 +55,8 @@ custom:
     type: COGNITO_USER_POOLS
     authorizerId:
       Ref: ApiGatewayAuthorizer
+  output:
+    file: ../env.json
 
 layers:
   shared:
@@ -226,3 +231,14 @@ resources:
     DynamoDbCustomerTable: ${file(./resources/DynamoDbCustomerTable.yml)}
     DynamoDbJobTable: ${file(./resources/DynamoDbJobTable.yml)}
     LambdaRole: ${file(./resources/LambdaRole.yml)}
+
+  Outputs:
+    UserPoolClientId:
+      Value:
+        Ref: UserPoolClient
+    UserPoolId:
+      Value:
+        Ref: UserPool
+    Region:
+      Value:
+        Ref: 'AWS::Region'

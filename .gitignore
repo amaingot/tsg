@@ -21,6 +21,8 @@ lib
 .env.development.local
 .env.test.local
 .env.production.local
+env.json
+env.yaml
 
 # Logs
 npm-debug.log*

@@ -56,11 +56,35 @@ jobs:
               -F revision=$CIRCLE_SHA1 \
               -F local_username=$CIRCLE_USERNAME
 
+      # - run:
+      #     name: Move sourcemaps to their own directory
+      #     command: mkdir api-sm && mv api/.webpack/**/handlers/**/*.map api-sm/
+
+      # - run:
+      #     name: Upload Rollbar sourcemaps
+      #     command: |
+      #       cd api-sm
+      #       find **.js.map | while read file
+      #       do
+      #         curl https://api.rollbar.com/api/1/sourcemap/ \
+      #           -F access_token=$ROLLBAR_API_DEPLOY_TOKEN \
+      #           -F version=$CIRCLE_SHA1 \
+      #           -F source_map=@"${file}"
+      #       done
+
+      - run:
+          name: Set up web env variables
+          command: |
+            export REACT_APP_VERSION=${CIRCLE_SHA1}
+            export REACT_APP_COGNITO_REGION=`jq -r '.Region' ./env.json`
+            export REACT_APP_COGNITO_USER_POOL_ID=`jq -r '.UserPoolId' ./env.json`
+            export REACT_APP_COGNITO_USER_POOL_CLIENT_ID=`jq -r '.UserPoolClientId' ./env.json`
+            export REACT_APP_API_HOST=`jq -r '.ServiceEndpoint' ./env.json`
+            export REACT_APP_ENV=prod
+
       - run:
           name: Build web bundle and all assets
-          command: REACT_APP_VERSION=${CIRCLE_SHA1} npm run build-web
-          environment:
-            REACT_APP_ENV: prod
+          command: npm run build-web
 
       - run:
           name: Move sourcemaps to their own directory
@@ -75,7 +99,7 @@ jobs:
           command: |
             curl https://api.rollbar.com/api/1/deploy/ \
               -F access_token=$ROLLBAR_WEB_DEPLOY_TOKEN \
-              -F environment=prod \
+              -F environment=$REACT_APP_ENV \
               -F revision=$CIRCLE_SHA1 \
               -F local_username=$CIRCLE_USERNAME
 

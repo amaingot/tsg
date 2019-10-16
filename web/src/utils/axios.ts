@@ -1,9 +1,7 @@
 import axios from "axios";
 import Auth from "@aws-amplify/auth";
 
-const apiHost = process.env.REACT_APP_API_HOST || "";
-const protocol = apiHost.includes("localhost") ? "http" : "https";
-export const ApiBaseURL = `${protocol}://${apiHost}/`;
+export const ApiBaseURL = `${process.env.REACT_APP_API_HOST}/`;
 
 const axiosInstance = axios.create({
   baseURL: ApiBaseURL
