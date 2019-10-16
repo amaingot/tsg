@@ -16,7 +16,7 @@ const rollbarConfig = {
   enabled: process.env.ENV !== "dev",
   captureUncaught: true,
   captureUnhandledRejections: true,
-  logLevel: "warning",
+  logLevel: process.env.LOG_LEVEL,
   payload: {
     environment: process.env.ENV,
     client: {
@@ -54,7 +54,7 @@ const withLogger: LoggerEnhancer = (handler: Handler) => async (
 
   const logger = Winston.createLogger({
     format: Winston.format.json(),
-    level: "debug",
+    level: process.env.LOG_LEVEL,
     transports: [
       new RollbarTransport({ rollbarConfig, level: "warning" }),
       new Winston.transports.Console({
