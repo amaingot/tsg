@@ -3,7 +3,7 @@ import * as AWS from "aws-sdk";
 
 let options = {};
 
-if (process.env.IS_OFFLINE) {
+if (process.env.IS_OFFLINE && process.env.LOCAL_DYNAMO) {
   options = {
     region: "localhost",
     endpoint: "http://localhost:8000"
