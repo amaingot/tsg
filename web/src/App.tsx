@@ -5,6 +5,7 @@ import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import PricingPage from "./pages/PricingPage";
+import AdvancedSignUpPage from "./pages/AdvancedSignUpPage";
 import SignUpPage from "./pages/SignUpPage";
 import SignUpConfirmPage from "./pages/SignUpConfirmPage";
 import SignInPage from "./pages/SignInPage";
@@ -26,6 +27,7 @@ const App: React.FC = () => {
         <Route path="/forgot-password" exact component={ForgotPasswordPage} />
         <Route path="/sign-up/confirm" exact component={SignUpConfirmPage} />
         <Route path="/sign-up" exact component={SignUpPage} />
+        <Route path="/sign-up-plus" exact component={AdvancedSignUpPage} />
         <Redirect from="/sign-in" exact to="/login" />
         <Route path="/app" component={CustomerApp} />
         <Route component={ErrorPage} />
