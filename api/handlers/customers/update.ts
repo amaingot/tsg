@@ -2,18 +2,12 @@ import "source-map-support/register";
 import * as Responses from "../utils/responses";
 import dynamo from "../utils/dynamo";
 import withLogger, { Handler } from "../utils/withLogger";
-import { getUser } from "../utils/cognito";
+import getUserClient from "../utils/getUserClient";
 
 const handler: Handler = logger => async event => {
-  const { email: userEmail } = event.requestContext.authorizer.claims;
   const request = JSON.parse(event.body);
 
   logger.info("Updating customer because of this event: ", event);
-
-  if (!userEmail) {
-    logger.error("No user claim in event");
-    return Responses.forbidden();
-  }
 
   if (!event.pathParameters || !event.pathParameters.id) {
     logger.error("No record ID supplied in path");
@@ -37,64 +31,23 @@ const handler: Handler = logger => async event => {
     workPhone
   } = request;
 
-  logger.info("Updating customer for: " + userEmail);
+  const { client } = await getUserClient(event, logger);
 
-  const userAttributes = await getUser(userEmail);
-
-  logger.info("Current user attributes: ", userAttributes);
-
-  const userId = userAttributes.id;
-
-  const userRecord = await dynamo
+  const customer = await dynamo
     .get({
-      TableName: process.env.USER_TABLE,
+      TableName: process.env.CUSTOMER_TABLE,
       Key: {
-        id: userId
+        id: recordId
       }
     })
     .promise();
 
-  if (!userRecord) {
-    logger.error(
-      `The user does not have a user record. Cognito User: ${userAttributes}`
-    );
-    return Responses.internalError({
-      message: "The user does not have a user record"
-    });
+  if (customer.Item.clientId !== client.id) {
+    logger.info("User is updating something they do not have access to");
+    return Responses.forbidden();
   }
 
-  if (!userRecord.Item.clientId) {
-    logger.error(
-      `The user record does not have a client. User Record: ${userRecord}`
-    );
-    return Responses.internalError({
-      message: "The user does not have a client"
-    });
-  }
-
-  logger.info(`Fetched user record: ${userRecord}`);
-
-  const clientRecord = await dynamo
-    .get({
-      TableName: process.env.CLIENT_TABLE,
-      Key: {
-        id: userRecord.Item.clientId
-      }
-    })
-    .promise();
-
-  if (!clientRecord) {
-    logger.error(
-      `The client record does not exist. User Record: ${userRecord}`
-    );
-    return Responses.internalError({
-      message: "The user does not have a user record"
-    });
-  }
-
-  logger.info(`Fetched client record: ${clientRecord}`);
-
-  const updatedRecord = await dynamo
+  const updatedCustomer = await dynamo
     .update({
       TableName: process.env.CUSTOMER_TABLE,
       Key: {
@@ -120,7 +73,7 @@ const handler: Handler = logger => async event => {
     .promise();
 
   return Responses.success({
-    data: updatedRecord.Attributes
+    data: updatedCustomer.Attributes
   });
 };
 
