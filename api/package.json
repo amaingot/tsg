@@ -9,7 +9,7 @@
     "deploy:prod": "serverless deploy -v --stage prod",
     "deploy:dev": "serverless deploy -v --stage dev",
     "package": "serverless package -v",
-    "fresh": "rm -rf node_modules .serverless"
+    "fresh": "rm -rf node_modules .serverless .webpack"
   },
   "dependencies": {
     "amazon-cognito-identity-js": "^3.0.15",
@@ -17,7 +17,6 @@
     "aws-xray-sdk-core": "^2.3.6",
     "node-fetch": "^2.6.0",
     "rollbar": "^2.13.0",
-    "serverless-stack-output": "^0.2.3",
     "source-map-support": "^0.5.13",
     "stripe": "^7.9.1",
     "tsg-shared": "^1.0.0",
@@ -31,6 +30,7 @@
     "@types/stripe": "^6.32.8",
     "@types/uuid": "^3.4.5",
     "serverless": "^1.53.0",
+    "serverless-stack-output": "^0.2.3",
     "serverless-dotenv-plugin": "^2.1.1",
     "serverless-dynamodb-local": "^0.2.38",
     "serverless-offline": "^5.11.0",
