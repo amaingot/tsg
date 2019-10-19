@@ -8,7 +8,7 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "fresh": "rm -rf node_modules && lerna run fresh",
-    "start": "lerna run start --parallel",
+    "start": "REACT_APP_API_HOST=http://localhost:3001 lerna run start --parallel",
     "deploy-api": "lerna run --scope tsg-api deploy:prod --stream",
     "test-web": "lerna run --scope tsg-web test --stream",
     "build-web": "lerna run --scope tsg-web build --stream",
