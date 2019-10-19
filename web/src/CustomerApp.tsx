@@ -17,50 +17,49 @@ import JobsPage from "./pages/JobsPage";
 import ErrorPage from "./pages/ErrorPage";
 
 const App: React.FC<RouteComponentProps> = props => {
-  const { location, history } = props;
+  const { history, location } = props;
 
   const [user, setUser] = React.useState<CognitoUser>();
   const [loading, setLoading] = React.useState(true);
 
-  React.useEffect(() => {
+  const validateUser = React.useCallback(async () => {
     setLoading(true);
-    Auth.currentAuthenticatedUser()
-      .then(user => {
-        setUser(user);
-        setLoading(false);
-        if (user instanceof CognitoUser) {
-          user.getUserData(
-            (error, userData) =>
-              !error &&
-              !!userData &&
-              window.Rollbar.configure({
-                payload: {
-                  person: {
-                    id: userData.Username,
-                    username: (
-                      userData.UserAttributes.find(a => a.Name === "email") ||
-                      {}
-                    ).Value,
-                    email: (
-                      userData.UserAttributes.find(a => a.Name === "email") ||
-                      {}
-                    ).Value
-                  }
-                }
-              })
-          );
-        }
-      })
-      .catch(e => {
-        window.Rollbar.error(
-          "Unknown auth error when validating if a customer is logged in",
-          e
-        );
-        history.push("/");
-      });
-  }, [location, history]);
+    try {
+      const currentUser: CognitoUser = await Auth.currentAuthenticatedUser();
+      setUser(currentUser);
+      setLoading(false);
+      currentUser.getUserData(
+        (error, userData) =>
+          !error &&
+          !!userData &&
+          window.Rollbar.configure({
+            payload: {
+              person: {
+                id: userData.Username,
+                username: (
+                  userData.UserAttributes.find(a => a.Name === "email") || {}
+                ).Value,
+                email: (
+                  userData.UserAttributes.find(a => a.Name === "email") || {}
+                ).Value
+              }
+            }
+          })
+      );
+    } catch (e) {
+      window.Rollbar.info(
+        "A user tried to access private pages without being logged in",
+        e
+      );
+      history.push("/login");
+    }
+  }, [history]);
 
-  if (!user && loading) {
+  React.useEffect(() => {
+    validateUser();
+  }, [validateUser, location]);
+
+  if (!user || loading) {
     return <CircularProgress />;
   }
 
