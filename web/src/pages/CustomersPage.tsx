@@ -2,6 +2,7 @@ import React from "react";
 import { RouteComponentProps } from "react-router";
 import { NavLink } from "react-router-dom";
 import { ListCustomersResponse, Customer } from "tsg-shared";
+import moment from "moment";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -18,15 +19,8 @@ import TableRow from "@material-ui/core/TableRow";
 import axios from "../utils/axios";
 
 const useStyles = makeStyles(theme => ({
-  paper: {
-    padding: theme.spacing(2),
-    display: "flex",
-    overflow: "auto",
-    flexDirection: "column"
-  },
-  fixedHeight: {
-    height: 240
-  },
+
+
   addButton: {
     position: "absolute",
     right: 0
@@ -65,7 +59,7 @@ const CustomersPage: React.FC<RouteComponentProps> = props => {
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Paper className={classes.paper}>
+          <Paper>
             <Table>
               <TableHead>
                 <TableRow>
@@ -82,6 +76,7 @@ const CustomersPage: React.FC<RouteComponentProps> = props => {
                     <TableRow
                       key={c.id}
                       onClick={() => history.push(`/app/customers/${c.id}`)}
+                      hover
                     >
                       <TableCell component="th" scope="row">
                         {c.firstName} {c.lastName}
@@ -89,7 +84,7 @@ const CustomersPage: React.FC<RouteComponentProps> = props => {
                       <TableCell>{c.cellPhone}</TableCell>
                       <TableCell>{c.homePhone}</TableCell>
                       <TableCell>{c.workPhone}</TableCell>
-                      <TableCell>{c.updatedAt}</TableCell>
+                      <TableCell>{moment(c.updatedAt).format('MMM d, YY')}</TableCell>
                     </TableRow>
                   ))}
               </TableBody>
