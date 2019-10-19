@@ -9,10 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import Fab from "@material-ui/core/Fab";
 import SaveIcon from "@material-ui/icons/Save";
 
-import {
-  PhoneMaskInitialValue,
-  phoneNumberIsValid
-} from "../components/PhoneTextMask";
+import { phoneNumberIsValid } from "../components/PhoneTextMask";
 import axios from "../utils/axios";
 import TextField from "../components/TextField";
 
@@ -48,9 +45,9 @@ const CreateCustomerPage: React.FC<RouteComponentProps> = props => {
   const [address2, setAddress2] = React.useState("");
   const [city, setCity] = React.useState("");
   const [zip, setZip] = React.useState("");
-  const [homePhone, setHomePhone] = React.useState(PhoneMaskInitialValue);
-  const [cellPhone, setCellPhone] = React.useState(PhoneMaskInitialValue);
-  const [workPhone, setWorkPhone] = React.useState(PhoneMaskInitialValue);
+  const [homePhone, setHomePhone] = React.useState("");
+  const [cellPhone, setCellPhone] = React.useState("");
+  const [workPhone, setWorkPhone] = React.useState("");
 
   const [error, setError] = React.useState<string>();
   const [loading, setLoading] = React.useState(false);
@@ -79,7 +76,8 @@ const CreateCustomerPage: React.FC<RouteComponentProps> = props => {
         setLoading(false);
         return;
       }
-    } else if (cellPhone.indexOf(" ") !== 1) {
+    }
+    if (cellPhone.indexOf(" ") !== 1) {
       if (phoneNumberIsValid(cellPhone)) {
         newCust.cellPhone = cellPhone;
       } else {
@@ -87,7 +85,8 @@ const CreateCustomerPage: React.FC<RouteComponentProps> = props => {
         setLoading(false);
         return;
       }
-    } else if (workPhone.indexOf(" ") !== 1) {
+    }
+    if (workPhone.indexOf(" ") !== 1) {
       if (phoneNumberIsValid(workPhone)) {
         newCust.workPhone = workPhone;
       } else {
