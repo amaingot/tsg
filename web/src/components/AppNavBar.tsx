@@ -68,6 +68,11 @@ const AppNavBar: React.FC<Props> = props => {
 
   const handleLogout = () => {
     setAnchorEl(null);
+    window.Rollbar.configure({
+      payload: {
+        person: null
+      }
+    });
     Auth.signOut();
   };
 
