@@ -4,7 +4,13 @@ import MUITextField, { TextFieldProps } from "@material-ui/core/TextField";
 import PhoneTextMask, { phoneNumberIsValid } from "../components/PhoneTextMask";
 import emailIsValid from "../utils/emailIsValid";
 
-const TextField: React.FC<TextFieldProps> = props => {
+interface Props {
+  hide?: boolean;
+}
+
+type CombinedProps = Props & TextFieldProps;
+
+const TextField: React.FC<CombinedProps> = props => {
   const {
     id,
     name = props.id,
@@ -14,8 +20,13 @@ const TextField: React.FC<TextFieldProps> = props => {
     InputProps = {},
     value = "",
     error = false,
+    hide = false,
     ...others
   } = props;
+
+  if (hide === true) {
+    return <></>;
+  }
 
   const isPhone = props.type === "tel";
   const isEmail = props.type === "email";
