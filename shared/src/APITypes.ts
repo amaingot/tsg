@@ -26,6 +26,13 @@ export interface CreateCustomerResponse {
   data: EntityTypes.Customer;
 }
 
+export interface CustomerDetailResponse {
+  data: {
+    customer: EntityTypes.Customer;
+    jobs: Array<EntityTypes.Job>;
+  };
+}
+
 export interface ListJobsResponse {
   data: Array<EntityTypes.Job>;
   count: number;
