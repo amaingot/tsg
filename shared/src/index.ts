@@ -16,5 +16,6 @@ export {
   CreateCustomerRequest,
   CreateCustomerResponse,
   ListCustomersResponse,
-  ListJobsResponse
+  ListJobsResponse,
+  CustomerDetailResponse
 } from "./APITypes";
