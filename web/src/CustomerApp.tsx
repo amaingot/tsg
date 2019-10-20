@@ -15,6 +15,7 @@ import CustomersPage from "./pages/CustomersPage";
 import EmployeesPage from "./pages/EmployeesPage";
 import JobsPage from "./pages/JobsPage";
 import ErrorPage from "./pages/ErrorPage";
+import SupportPage from "./pages/SupportPage";
 
 const App: React.FC<RouteComponentProps> = props => {
   const { history, location } = props;
@@ -82,6 +83,7 @@ const App: React.FC<RouteComponentProps> = props => {
         <Route path="/app/customers" exact component={CustomersPage} />
         <Route path="/app/employees" exact component={EmployeesPage} />
         <Route path="/app/jobs" exact component={JobsPage} />
+        <Route path="/app/support" exact component={SupportPage} />
         <Redirect from="/app" exact to="/app/dashboard" />
         <Route component={ErrorPage} />
       </Switch>

@@ -111,9 +111,10 @@ const HomeNavBar: React.FC = () => {
             Pricing
           </Link>
           <Link
+            component={RouterLink}
             variant="button"
             color="textPrimary"
-            href="#"
+            to="/support"
             className={classes.link}
           >
             Support
@@ -127,8 +128,19 @@ const HomeNavBar: React.FC = () => {
           className={classes.link}
           disabled={loading}
         >
-          {!user ? "Login" : "TSG App"}
+          {!user ? "Login" : "Go To App"}
         </Button>
+        {!user && (
+          <Button
+            component={RouterLink}
+            to="/signup"
+            color="primary"
+            variant="contained"
+            className={classes.link}
+          >
+            Sign Up
+          </Button>
+        )}
       </Toolbar>
     </AppBar>
   );
