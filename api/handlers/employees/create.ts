@@ -4,11 +4,11 @@ import * as Responses from "../utils/responses";
 import dynamo from "../utils/dynamo";
 import withLogger, { Handler } from "../utils/withLogger";
 import { signUpUser, UserRecord, getUser } from "../utils/cognito";
-import { UserRoles, User } from "tsg-shared";
+import { UserRoles, Employee, NewEmployee } from "tsg-shared";
 
 const handler: Handler = logger => async event => {
   const { email: userEmail } = event.requestContext.authorizer.claims;
-  const request = JSON.parse(event.body);
+  const request = JSON.parse(event.body) as NewEmployee;
 
   logger.info("Creating a new customer because of this event: ", event);
 
@@ -120,7 +120,7 @@ const handler: Handler = logger => async event => {
   }
   const { id: cognitoUserId } = newCognitoUser;
 
-  const userData: User = {
+  const userData: Employee = {
     id: cognitoUserId,
     clientId: clientRecord.Item.id,
     firstName,
