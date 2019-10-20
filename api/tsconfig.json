@@ -7,7 +7,8 @@
     "sourceMap": true,
     "target": "es2017",
     "outDir": "lib",
-    "allowJs": true
+    "allowJs": true,
+    "resolveJsonModule": true
   },
   "exclude": ["node_modules"],
   "include": ["handlers"]

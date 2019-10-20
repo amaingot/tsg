@@ -10,7 +10,8 @@
     "deploy:dev": "serverless deploy -v --stage dev",
     "package": "serverless package -v",
     "debug": "SLS_DEBUG=* node --inspect ./node_modules/.bin/serverless offline",
-    "fresh": "rm -rf node_modules .serverless .webpack"
+    "fresh": "rm -rf node_modules .serverless .webpack",
+    "seed": "ts-node ./seed/loadCentreCourtData.ts"
   },
   "dependencies": {
     "amazon-cognito-identity-js": "^3.0.15",
@@ -28,9 +29,11 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.17",
+    "@types/google-libphonenumber": "^7.4.17",
     "@types/node": "^12.7.9",
     "@types/stripe": "^6.32.8",
     "@types/uuid": "^3.4.5",
+    "google-libphonenumber": "^3.2.6",
     "serverless": "^1.53.0",
     "serverless-dotenv-plugin": "^2.1.1",
     "serverless-dynamodb-local": "^0.2.38",
@@ -38,6 +41,7 @@
     "serverless-stack-output": "^0.2.3",
     "serverless-webpack": "^5.2.0",
     "ts-loader": "^5.3.3",
+    "ts-node": "^8.4.1",
     "typescript": "^3.6.3",
     "webpack": "^4.29.0",
     "webpack-node-externals": "^1.7.2"
