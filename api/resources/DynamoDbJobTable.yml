@@ -11,8 +11,6 @@ Properties:
       AttributeType: S
     - AttributeName: customerId
       AttributeType: S
-    - AttributeName: finished
-      AttributeType: B
   GlobalSecondaryIndexes:
     - IndexName: ClientJobs
       KeySchema:
@@ -24,14 +22,6 @@ Properties:
       KeySchema:
         - AttributeName: customerId
           KeyType: HASH
-      Projection:
-        ProjectionType: ALL
-    - IndexName: CustomerJobsStatus
-      KeySchema:
-        - AttributeName: customerId
-          KeyType: HASH
-        - AttributeName: finished
-          KeyType: RANGE
       Projection:
         ProjectionType: ALL
   BillingMode: PAY_PER_REQUEST
