@@ -15,6 +15,9 @@ const PhoneTextMask: React.FC<Props> = props => {
         inputRef(ref ? ref.inputElement : null);
       }}
       mask={[
+        "+",
+        "1",
+        " ",
         "(",
         /[1-9]/,
         /\d/,
@@ -48,7 +51,7 @@ export const phoneNumberIsValid = (num: string): boolean => {
 export const parsePhoneNum = (p: string): string => {
   const digits = p.match(/\(([0-9]{3})\) ([0-9]{3})-([0-9]{4})/);
 
-  if (!digits) return '';
+  if (!digits) return "";
 
   return `+1${digits[1]}${digits[2]}${digits[3]}`;
 };
