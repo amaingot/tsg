@@ -55,7 +55,7 @@ const handler: Handler = logger => async event => {
     return Responses.forbidden();
   }
 
-  const updatedCustomer = {
+  const updatedCustomer: Customer = {
     id: recordId,
     memNumber,
     lastName,

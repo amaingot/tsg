@@ -2,18 +2,12 @@ import "source-map-support/register";
 import * as Responses from "../utils/responses";
 import dynamo from "../utils/dynamo";
 import withLogger, { Handler } from "../utils/withLogger";
-import { getUser } from "../utils/cognito";
+import getUserClient from "../utils/getUserClient";
+import { UpdateJobRequest, Job, UpdateJobResponse } from "tsg-shared";
+import dynamoUpdateExp from "../utils/dynamoUpdateExp";
 
 const handler: Handler = logger => async event => {
-  const { email: userEmail } = event.requestContext.authorizer.claims;
-  const request = JSON.parse(event.body);
-
-  logger.info("Updating job because of this event: ", event);
-
-  if (!userEmail) {
-    logger.error("No user claim in event");
-    return Responses.forbidden();
-  }
+  const request = JSON.parse(event.body) as UpdateJobRequest;
 
   if (!event.pathParameters || !event.pathParameters.id) {
     logger.error("No record ID supplied in path");
@@ -23,71 +17,57 @@ const handler: Handler = logger => async event => {
   const recordId = event.pathParameters.id;
 
   const {
+    customerId,
     name,
     stringName,
     racket,
     tension,
     gauge,
     recievedAt,
-    finishedAt
-  } = request;
+    finishedAt,
+    finished
+  } = request.data;
 
-  logger.info("Updating job for: " + userEmail);
+  if (!customerId || typeof customerId !== "string") {
+    logger.error("No customer id was provided");
+    return Responses.badRequest("No customer id was provided");
+  }
 
-  const userAttributes = await getUser(userEmail);
+  const { client } = await getUserClient(event, logger);
 
-  logger.info("Current user attributes: ", userAttributes);
-
-  const userId = userAttributes.id;
-
-  const userRecord = await dynamo
+  const oldJobRecord = await dynamo
     .get({
-      TableName: process.env.USER_TABLE,
+      TableName: process.env.JOB_TABLE,
       Key: {
-        id: userId
+        id: recordId
       }
     })
     .promise();
 
-  if (!userRecord) {
-    logger.error(
-      `The user does not have a user record. Cognito User: ${userAttributes}`
-    );
-    return Responses.internalError({
-      message: "The user does not have a user record"
-    });
+  const oldJob = oldJobRecord.Item as Job;
+
+  if (oldJob.clientId !== client.id) {
+    logger.info("User is updating something they do not have access to");
+    return Responses.forbidden();
   }
 
-  if (!userRecord.Item.clientId) {
-    logger.error(
-      `The user record does not have a client. User Record: ${userRecord}`
-    );
-    return Responses.internalError({
-      message: "The user does not have a client"
-    });
-  }
+  const updatedJob: Job = {
+    id: recordId,
+    clientId: client.id,
+    customerId,
+    name,
+    stringName,
+    racket,
+    tension,
+    gauge,
+    recievedAt,
+    finishedAt,
+    finished,
+    updatedAt: new Date().toISOString(),
+    createdAt: oldJob.createdAt
+  };
 
-  logger.info(`Fetched user record: ${userRecord}`);
-
-  const clientRecord = await dynamo
-    .get({
-      TableName: process.env.CLIENT_TABLE,
-      Key: {
-        id: userRecord.Item.clientId
-      }
-    })
-    .promise();
-
-  if (!clientRecord) {
-    logger.error(
-      `The client record does not exist. User Record: ${userRecord}`
-    );
-    return Responses.internalError({
-      message: "The user does not have a user record"
-    });
-  }
-
-  logger.info(`Fetched client record: ${clientRecord}`);
+  const updateExpression = dynamoUpdateExp(oldJob, updatedJob);
 
   const updatedRecord = await dynamo
     .update({
@@ -95,23 +75,15 @@ const handler: Handler = logger => async event => {
       Key: {
         id: recordId
       },
-      UpdateExpression:
-        "set name=:name, stringName=:stringName, racket=:racket, tension=:tension, gauge=:gauge, recievedAt=:recievedAt, finishedAt=:finishedAt",
-      ExpressionAttributeValues: {
-        ":name": name,
-        ":stringName": stringName,
-        ":racket": racket,
-        ":tension": tension,
-        ":gauge": gauge,
-        ":recievedAt": recievedAt,
-        ":finishedAt": finishedAt
-      }
+      ...updateExpression
     })
     .promise();
 
-  return Responses.success({
-    data: updatedRecord.Attributes
-  });
+  const response: UpdateJobResponse = {
+    data: updatedRecord.Attributes as Job
+  };
+
+  return Responses.success(response);
 };
 
 export default withLogger(handler);
