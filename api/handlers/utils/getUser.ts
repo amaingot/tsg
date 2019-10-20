@@ -1,7 +1,7 @@
-import { User } from "tsg-shared";
+import { Employee } from "tsg-shared";
 import dynamo from "../utils/dynamo";
 
-const getUser = async (userId: string): Promise<User> => {
+const getUser = async (userId: string): Promise<Employee> => {
   const userRecord = await dynamo
     .get({
       TableName: process.env.USER_TABLE,
@@ -11,7 +11,7 @@ const getUser = async (userId: string): Promise<User> => {
     })
     .promise();
 
-  const user = userRecord.Item as User;
+  const user = userRecord.Item as Employee;
   return user;
 };
 export default getUser;

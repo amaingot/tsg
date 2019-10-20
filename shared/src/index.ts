@@ -4,7 +4,8 @@ export {
   Job,
   NewCustomer,
   Customer,
-  User
+  Employee,
+  NewEmployee
 } from "./EntityTypes";
 
 export { UserRoles } from "./Constants";
@@ -13,9 +14,19 @@ export {
   SignUpRequest,
   CreateJobRequest,
   CreateJobResponse,
-  CreateCustomerRequest,
-  CreateCustomerResponse,
-  ListCustomersResponse,
+  UpdateJobRequest,
+  UpdateJobResponse,
+  GetJobResponse,
   ListJobsResponse,
-  CustomerDetailResponse
+  CreateCustomerRequest,
+  UpdateCustomerRequest,
+  UpdateCustomerResponse,
+  CreateCustomerResponse,
+  GetCustomerResponse,
+  ListCustomersResponse,
+  CreateEmployeeRequest,
+  UpdateEmployeeRequest,
+  CreateEmployeeResponse,
+  GetEmployeeResponse,
+  ListEmployeesResponse
 } from "./APITypes";

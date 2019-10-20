@@ -1,11 +1,11 @@
-import { User, Client } from "tsg-shared";
+import { Employee, Client } from "tsg-shared";
 import getClient from "./getClient";
 import getUser from "./getUser";
 import * as winston from "winston";
 import { APIGatewayEvent } from "aws-lambda";
 
 interface Result {
-  user: User;
+  user: Employee;
   client: Client;
 }
 
@@ -19,9 +19,9 @@ const getUserClient = async (
 
   if (!userId) {
     logger.error("No user claim in event");
-    throw new Error('No user');
+    throw new Error("No user");
   }
-  let user: User;
+  let user: Employee;
   let client: Client;
   try {
     user = await getUser(userId);

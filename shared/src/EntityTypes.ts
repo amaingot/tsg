@@ -50,14 +50,18 @@ export interface Customer extends NewCustomer {
   createdAt: string;
 }
 
-export interface User {
-  id: string;
+export interface NewEmployee {
+
   clientId: string;
   firstName: string;
   lastName: string;
   email: string;
   cellPhone: string;
   userRole: UserRoles;
+}
+
+export interface Employee extends NewEmployee {
+  id: string;
   updatedAt: string;
   createdAt: string;
 }

@@ -3,6 +3,7 @@ import * as Responses from "../utils/responses";
 import dynamo from "../utils/dynamo";
 import withLogger, { Handler } from "../utils/withLogger";
 import getUserClient from "../utils/getUserClient";
+import { GetCustomerResponse, Customer, Job } from "tsg-shared";
 
 const handler: Handler = logger => async event => {
   const recordId = event.pathParameters.id;
@@ -38,9 +39,14 @@ const handler: Handler = logger => async event => {
     })
     .promise();
 
-  return Responses.success({
-    data: { customer: customer.Item, jobs: customerJobs.Items }
-  });
+  const response: GetCustomerResponse = {
+    data: {
+      customer: customer.Item as Customer,
+      jobs: customerJobs.Items as Array<Job>
+    }
+  };
+
+  return Responses.success(response);
 };
 
 export default withLogger(handler);

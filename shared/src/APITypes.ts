@@ -1,5 +1,18 @@
 import * as EntityTypes from "./EntityTypes";
 
+type Request<T> = {
+  data: T;
+};
+type SingleResponse<T> = {
+  data: T;
+  error?: string;
+};
+type ListResponse<T> = {
+  data: Array<T>;
+  error?: string;
+  count: number;
+};
+
 export interface SignUpRequest {
   email: string;
   password: string;
@@ -10,37 +23,28 @@ export interface SignUpRequest {
   workPhone: string;
 }
 
-export interface CreateJobRequest {
-  data: EntityTypes.NewJob;
-}
+// Jobs
+export type CreateJobRequest = Request<EntityTypes.NewJob>;
+export type CreateJobResponse = SingleResponse<EntityTypes.Job>;
+export type UpdateJobRequest = Request<EntityTypes.NewJob>;
+export type UpdateJobResponse = SingleResponse<EntityTypes.Job>;
+export type GetJobResponse = SingleResponse<EntityTypes.Job>;
+export type ListJobsResponse = ListResponse<EntityTypes.Job>;
 
-export interface CreateJobResponse {
-  data: EntityTypes.Job;
-}
+// Customers
+export type CreateCustomerRequest = Request<EntityTypes.NewCustomer>;
+export type CreateCustomerResponse = SingleResponse<EntityTypes.Customer>;
+export type UpdateCustomerRequest = Request<EntityTypes.NewCustomer>;
+export type UpdateCustomerResponse = SingleResponse<EntityTypes.Customer>;
+export type GetCustomerResponse = SingleResponse<{
+  customer: EntityTypes.Customer;
+  jobs: Array<EntityTypes.Job>;
+}>;
+export type ListCustomersResponse = ListResponse<EntityTypes.Customer>;
 
-export interface CreateCustomerRequest {
-  data: EntityTypes.NewCustomer;
-}
-
-export interface CreateCustomerResponse {
-  data: EntityTypes.Customer;
-}
-
-export interface CustomerDetailResponse {
-  data: {
-    customer: EntityTypes.Customer;
-    jobs: Array<EntityTypes.Job>;
-  };
-}
-
-export interface ListJobsResponse {
-  data: Array<EntityTypes.Job>;
-  count: number;
-  scannedCount: number;
-}
-
-export interface ListCustomersResponse {
-  data: Array<EntityTypes.Customer>;
-  count: number;
-  scannedCount: number;
-}
+// Customers
+export type CreateEmployeeRequest = Request<EntityTypes.NewEmployee>;
+export type UpdateEmployeeRequest = Request<EntityTypes.NewEmployee>;
+export type CreateEmployeeResponse = SingleResponse<EntityTypes.Employee>;
+export type GetEmployeeResponse = SingleResponse<EntityTypes.Employee>;
+export type ListEmployeesResponse = ListResponse<EntityTypes.Employee>;

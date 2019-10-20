@@ -1,6 +1,12 @@
 import React from "react";
 import { RouteComponentProps } from "react-router";
-import { Customer, CustomerDetailResponse, NewCustomer, Job } from "tsg-shared";
+import {
+  Customer,
+  GetCustomerResponse,
+  Job,
+  UpdateCustomerRequest,
+  UpdateCustomerResponse
+} from "tsg-shared";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -65,7 +71,7 @@ const CustomerDetailPage: React.FC<
 
   React.useEffect(() => {
     setLoading(true);
-    axios.get<CustomerDetailResponse>(`/customers/${id}/detail`).then(resp => {
+    axios.get<GetCustomerResponse>(`/customers/${id}/detail`).then(resp => {
       if (resp.status === 200) {
         const { data } = resp.data;
         setCustomer(data.customer);
@@ -94,22 +100,23 @@ const CustomerDetailPage: React.FC<
       return;
     }
 
-    const updatedCustomer: NewCustomer = {
-      ...customer,
-      memNumber: memNumber || customer.memNumber,
-      lastName: lastName || customer.lastName,
-      firstName: firstName || customer.firstName,
-      middleInitial: middleInitial || customer.middleInitial,
-      email: email || customer.email,
-      address: address || customer.address,
-      address2: address2 || customer.address2,
-      city: city || customer.city,
-      zip: zip || customer.zip
+    const request: UpdateCustomerRequest = {
+      data: customer
     };
+
+    if (memNumber !== undefined) request.data.memNumber = memNumber;
+    if (lastName !== undefined) request.data.lastName = lastName;
+    if (firstName !== undefined) request.data.firstName = firstName;
+    if (middleInitial !== undefined) request.data.middleInitial = middleInitial;
+    if (email !== undefined) request.data.email = email;
+    if (address !== undefined) request.data.address = address;
+    if (address2 !== undefined) request.data.address2 = address2;
+    if (city !== undefined) request.data.city = city;
+    if (zip !== undefined) request.data.zip = zip;
 
     if (homePhone && homePhone.indexOf(" ") !== 1) {
       if (phoneNumberIsValid(homePhone)) {
-        updatedCustomer.homePhone = homePhone;
+        request.data.homePhone = homePhone;
       } else {
         setError("The home phone is not formatted correctly");
         setLoading(false);
@@ -118,7 +125,7 @@ const CustomerDetailPage: React.FC<
     }
     if (cellPhone && cellPhone.indexOf(" ") !== 1) {
       if (phoneNumberIsValid(cellPhone)) {
-        updatedCustomer.cellPhone = cellPhone;
+        request.data.cellPhone = cellPhone;
       } else {
         setError("The cell phone is not formatted correctly");
         setLoading(false);
@@ -127,7 +134,7 @@ const CustomerDetailPage: React.FC<
     }
     if (workPhone && workPhone.indexOf(" ") !== 1) {
       if (phoneNumberIsValid(workPhone)) {
-        updatedCustomer.workPhone = workPhone;
+        request.data.workPhone = workPhone;
       } else {
         setError("The work phone is not formatted correctly");
         setLoading(false);
@@ -135,9 +142,10 @@ const CustomerDetailPage: React.FC<
       }
     }
 
-    const response = await axios.post(`/customers/${id}/update`, {
-      data: { updatedCustomer }
-    });
+    const response = await axios.post<UpdateCustomerResponse>(
+      `/customers/${id}/update`,
+      request
+    );
 
     if (response.status === 200) {
       history.push("/app/customers");

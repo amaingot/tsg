@@ -21,8 +21,7 @@ const handler: Handler = logger => async event => {
 
   const response: ListCustomersResponse = {
     data: customers.Items as Array<Customer>,
-    count: customers.Count,
-    scannedCount: customers.ScannedCount
+    count: customers.Count
   };
 
   return Responses.success(response);
