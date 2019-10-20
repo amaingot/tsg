@@ -28,5 +28,6 @@ export {
   UpdateEmployeeRequest,
   CreateEmployeeResponse,
   GetEmployeeResponse,
-  ListEmployeesResponse
+  ListEmployeesResponse,
+  GetMeResponse
 } from "./APITypes";

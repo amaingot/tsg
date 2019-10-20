@@ -15,6 +15,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 
 import Copyright from "../components/Copyright";
+import { useUserData } from "../contexts/UserDataContext";
 
 const useStyles = makeStyles(theme => ({
   "@global": {
@@ -41,11 +42,10 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-type GenericCallback = () => void;
-
 const SignInPage: React.FC<RouteComponentProps> = props => {
   const { history } = props;
   const classes = useStyles();
+  const userData = useUserData();
 
   const [challenge, setChallenge] = React.useState<string>();
   const [error, setError] = React.useState<string>();
@@ -57,7 +57,7 @@ const SignInPage: React.FC<RouteComponentProps> = props => {
   const [newPassword, setNewPassword] = React.useState("");
   const [passwordAgain, setPassAgain] = React.useState("");
 
-  const handleLoginSuccess = (user: any) => {
+  const handleLoginSuccess = async (user: any) => {
     if (user instanceof CognitoUser) {
       user.getUserData(
         (error, userData) =>
@@ -78,6 +78,7 @@ const SignInPage: React.FC<RouteComponentProps> = props => {
           })
       );
     }
+    await userData.reload();
     history.push("/app");
   };
 

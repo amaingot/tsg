@@ -97,6 +97,17 @@ functions:
           path: signup/confirm
           cors: *corsConfig
 
+  client-me:
+    handler: handlers/clients/me.default
+    layers:
+      - { Ref: SharedLambdaLayer }
+    events:
+      - http:
+          method: get
+          path: clients/me
+          cors: *corsConfig
+          authorizer: *authorizerConfig
+
   employee-list:
     handler: handlers/employees/list.default
     layers:
@@ -241,4 +252,4 @@ resources:
         Ref: UserPool
     Region:
       Value:
-        Ref: 'AWS::Region'
+        Ref: "AWS::Region"

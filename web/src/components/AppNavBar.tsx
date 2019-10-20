@@ -15,6 +15,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import AccountIcon from "@material-ui/icons/AccountCircle";
 import Auth from "@aws-amplify/auth";
+import { useUserData } from "../contexts/UserDataContext";
 
 const drawerWidth = 240;
 
@@ -54,6 +55,7 @@ interface Props {
 }
 
 const AppNavBar: React.FC<Props> = props => {
+  const userData = useUserData();
   const classes = useStyles();
   const { handleDrawerOpen, drawerOpen } = props;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -66,14 +68,15 @@ const AppNavBar: React.FC<Props> = props => {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setAnchorEl(null);
     window.Rollbar.configure({
       payload: {
         person: null
       }
     });
-    Auth.signOut();
+    await Auth.signOut();
+    await userData.reload();
   };
 
   return (

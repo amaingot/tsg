@@ -17,6 +17,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 
 import axios from "../utils/axios";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const useStyles = makeStyles(theme => ({
   addButton: {
@@ -58,37 +59,41 @@ const CustomersPage: React.FC<RouteComponentProps> = props => {
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Paper>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Cell Phone</TableCell>
-                  <TableCell>Home phone</TableCell>
-                  <TableCell>Work Phone</TableCell>
-                  <TableCell>Last Updated</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {customers &&
-                  customers.map(c => (
-                    <TableRow
-                      key={c.id}
-                      onClick={() => history.push(`/app/customers/${c.id}`)}
-                      hover
-                    >
-                      <TableCell component="th" scope="row">
-                        {c.firstName} {c.lastName}
-                      </TableCell>
-                      <TableCell>{c.cellPhone}</TableCell>
-                      <TableCell>{c.homePhone}</TableCell>
-                      <TableCell>{c.workPhone}</TableCell>
-                      <TableCell>
-                        {moment(c.updatedAt).format("MMM d, YY")}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
+            {!customers ? (
+              <LoadingSpinner />
+            ) : (
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Cell Phone</TableCell>
+                    <TableCell>Home phone</TableCell>
+                    <TableCell>Work Phone</TableCell>
+                    <TableCell>Last Updated</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {customers &&
+                    customers.map(c => (
+                      <TableRow
+                        key={c.id}
+                        onClick={() => history.push(`/app/customers/${c.id}`)}
+                        hover
+                      >
+                        <TableCell component="th" scope="row">
+                          {c.firstName} {c.lastName}
+                        </TableCell>
+                        <TableCell>{c.cellPhone}</TableCell>
+                        <TableCell>{c.homePhone}</TableCell>
+                        <TableCell>{c.workPhone}</TableCell>
+                        <TableCell>
+                          {moment(c.updatedAt).format("MMM d, YY")}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            )}
           </Paper>
         </Grid>
       </Grid>

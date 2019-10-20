@@ -15,26 +15,29 @@ import FeaturesPage from "./pages/FeaturesPage";
 import CustomerApp from "./CustomerApp";
 import ErrorPage from "./pages/ErrorPage";
 import SupportPage from "./pages/SupportPage";
+import { UserDataContextProvider } from "./contexts/UserDataContext";
 
 const App: React.FC = () => {
   return (
-    <BrowserRouter>
-      <CssBaseline />
-      <Switch>
-        <Route path="/" exact component={HomePage} />
-        <Route path="/features" exact component={FeaturesPage} />
-        <Route path="/pricing" exact component={PricingPage} />
-        <Route path="/login" exact component={SignInPage} />
-        <Route path="/forgot-password" exact component={ForgotPasswordPage} />
-        <Route path="/sign-up/confirm" exact component={SignUpConfirmPage} />
-        <Route path="/sign-up" exact component={SignUpPage} />
-        <Route path="/sign-up-plus" exact component={AdvancedSignUpPage} />
-        <Route path="/support" exact component={SupportPage} />
-        <Redirect from="/sign-in" exact to="/login" />
-        <Route path="/app" component={CustomerApp} />
-        <Route component={ErrorPage} />
-      </Switch>
-    </BrowserRouter>
+    <UserDataContextProvider>
+      <BrowserRouter>
+        <CssBaseline />
+        <Switch>
+          <Route path="/" exact component={HomePage} />
+          <Route path="/features" exact component={FeaturesPage} />
+          <Route path="/pricing" exact component={PricingPage} />
+          <Route path="/login" exact component={SignInPage} />
+          <Route path="/forgot-password" exact component={ForgotPasswordPage} />
+          <Route path="/sign-up/confirm" exact component={SignUpConfirmPage} />
+          <Route path="/sign-up" exact component={SignUpPage} />
+          <Route path="/sign-up-plus" exact component={AdvancedSignUpPage} />
+          <Route path="/support" exact component={SupportPage} />
+          <Redirect from="/sign-in" exact to="/login" />
+          <Route path="/app" component={CustomerApp} />
+          <Route component={ErrorPage} />
+        </Switch>
+      </BrowserRouter>
+    </UserDataContextProvider>
   );
 };
 

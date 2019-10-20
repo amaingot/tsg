@@ -48,3 +48,11 @@ export type UpdateEmployeeRequest = Request<EntityTypes.NewEmployee>;
 export type CreateEmployeeResponse = SingleResponse<EntityTypes.Employee>;
 export type GetEmployeeResponse = SingleResponse<EntityTypes.Employee>;
 export type ListEmployeesResponse = ListResponse<EntityTypes.Employee>;
+
+// Clients
+export interface GetMeResponse {
+  data: {
+    client: EntityTypes.Client;
+    user: EntityTypes.Employee;
+  };
+}

@@ -1,11 +1,7 @@
 import React from "react";
 import { RouteComponentProps } from "react-router";
 import { Switch, Route, Redirect } from "react-router-dom";
-import Auth, { CognitoUser } from "@aws-amplify/auth";
 
-import CircularProgress from "@material-ui/core/CircularProgress";
-
-import AppLayout from "./components/AppLayout";
 import DashboardPage from "./pages/DashboardPage";
 import ManageAccountPage from "./pages/ManageAccountPage";
 import ManageUserProfile from "./pages/ManageUserProfile";
@@ -17,51 +13,19 @@ import JobsPage from "./pages/JobsPage";
 import ErrorPage from "./pages/ErrorPage";
 import SupportPage from "./pages/SupportPage";
 
-const App: React.FC<RouteComponentProps> = props => {
-  const { history, location } = props;
+import { useUserData } from "./contexts/UserDataContext";
+import AppLayout from "./components/AppLayout";
+import LoadingSpinner from "./components/LoadingSpinner";
 
-  const [user, setUser] = React.useState<CognitoUser>();
-  const [loading, setLoading] = React.useState(true);
-
-  const validateUser = React.useCallback(async () => {
-    setLoading(true);
-    try {
-      const currentUser: CognitoUser = await Auth.currentAuthenticatedUser();
-      setUser(currentUser);
-      setLoading(false);
-      currentUser.getUserData(
-        (error, userData) =>
-          !error &&
-          !!userData &&
-          window.Rollbar.configure({
-            payload: {
-              person: {
-                id: userData.Username,
-                username: (
-                  userData.UserAttributes.find(a => a.Name === "email") || {}
-                ).Value,
-                email: (
-                  userData.UserAttributes.find(a => a.Name === "email") || {}
-                ).Value
-              }
-            }
-          })
-      );
-    } catch (e) {
-      window.Rollbar.info(
-        "A user tried to access private pages without being logged in",
-        e
-      );
-      history.push("/login");
-    }
-  }, [history]);
+const App: React.FC<RouteComponentProps> = () => {
+  const userData = useUserData();
 
   React.useEffect(() => {
-    validateUser();
-  }, [validateUser, location]);
+    userData.reload();
+  }, []);
 
-  if (!user || loading) {
-    return <CircularProgress />;
+  if (!userData.user || userData.loading) {
+    return <LoadingSpinner fullPage />;
   }
 
   return (
