@@ -45,6 +45,9 @@ const useStyles = makeStyles(theme => ({
   },
   title: {
     position: "relative"
+  },
+  jobsCartTitle: {
+    padding: theme.spacing(2)
   }
 }));
 
@@ -365,6 +368,14 @@ const CustomerDetailPage: React.FC<
         </Grid>
         <Grid item xs={12}>
           <Paper>
+            <Typography
+              gutterBottom
+              variant="h6"
+              className={classes.jobsCartTitle}
+            >
+              Past Jobs
+            </Typography>
+
             <Table>
               <TableHead>
                 <TableRow>
