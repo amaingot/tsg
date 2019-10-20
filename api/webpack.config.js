@@ -2,17 +2,6 @@ const path = require("path");
 const slsw = require("serverless-webpack");
 const nodeExternals = require("webpack-node-externals");
 
-// const layerPackageJson = require("./layer/package.json");
-// const layerExternals = Object.keys(layerPackageJson.dependencies).reduce(
-//   (result, currentDep) => {
-//     return {
-//       ...result,
-//       [currentDep]: currentDep
-//     };
-//   },
-//   {}
-// );
-
 module.exports = {
   mode: slsw.lib.webpack.isLocal ? "development" : "production",
   entry: slsw.lib.entries,
