@@ -7,6 +7,7 @@ import {
   UpdateCustomerRequest,
   UpdateCustomerResponse
 } from "tsg-shared";
+import moment from "moment";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -16,6 +17,11 @@ import Fab from "@material-ui/core/Fab";
 import SaveIcon from "@material-ui/icons/Save";
 import EditIcon from "@material-ui/icons/Edit";
 import CancelIcon from "@material-ui/icons/Close";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
 
 import { phoneNumberIsValid } from "../components/PhoneTextMask";
 import axios from "../utils/axios";
@@ -355,6 +361,39 @@ const CustomerDetailPage: React.FC<
               }}
               hide={loading || (!customer.zip && !editMode)}
             />
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Racket</TableCell>
+                  <TableCell>String</TableCell>
+                  <TableCell>Tension</TableCell>
+                  <TableCell>Guage</TableCell>
+                  <TableCell>Strung On</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {jobs &&
+                  jobs.map(j => (
+                    <TableRow key={j.id} hover>
+                      <TableCell component="th" scope="row">
+                        {j.name}
+                      </TableCell>
+                      <TableCell>{j.stringName}</TableCell>
+                      <TableCell>{j.racket}</TableCell>
+                      <TableCell>{j.tension}</TableCell>
+                      <TableCell>{j.gauge}</TableCell>
+                      <TableCell>
+                        {moment(j.finishedAt).format("MMM d, YY")}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
           </Paper>
         </Grid>
       </Grid>
