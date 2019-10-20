@@ -19,8 +19,6 @@ import TableRow from "@material-ui/core/TableRow";
 import axios from "../utils/axios";
 
 const useStyles = makeStyles(theme => ({
-
-
   addButton: {
     position: "absolute",
     right: 0
@@ -84,7 +82,9 @@ const CustomersPage: React.FC<RouteComponentProps> = props => {
                       <TableCell>{c.cellPhone}</TableCell>
                       <TableCell>{c.homePhone}</TableCell>
                       <TableCell>{c.workPhone}</TableCell>
-                      <TableCell>{moment(c.updatedAt).format('MMM d, YY')}</TableCell>
+                      <TableCell>
+                        {moment(c.updatedAt).format("MMM d, YY")}
+                      </TableCell>
                     </TableRow>
                   ))}
               </TableBody>
