@@ -5,17 +5,6 @@ import withLogger, { Handler } from "../utils/withLogger";
 import dynamoUpdateExp from "../utils/dynamoUpdateExp";
 import qs from "qs";
 
-/*
-SmsSid: SMda94909b8eb34cd98f6897c47aa8f685
-SmsStatus: sent
-MessageStatus: sent
-To: +13618159979
-MessageSid: SMda94909b8eb34cd98f6897c47aa8f685
-AccountSid: AC1af84e94bd4a4e832ef0a33287a32b81
-From: +16503000096
-ApiVersion: 2010-04-01
-*/
-
 interface SMSStatusRequest {
   SmsSid: string;
   SmsStatus: string;

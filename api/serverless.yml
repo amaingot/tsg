@@ -314,6 +314,16 @@ functions:
           path: sms/status
           cors: *corsConfig
 
+  sms-incoming:
+    handler: handlers/sms/incoming.default
+    layers:
+      - { Ref: SharedLambdaLayer }
+    events:
+      - http:
+          method: post
+          path: sms/incoming
+          cors: *corsConfig
+
 resources:
   Resources:
     UserPool: ${file(./resources/UserPool.yml)}
