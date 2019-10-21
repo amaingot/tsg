@@ -22,7 +22,7 @@ const App: React.FC<RouteComponentProps> = () => {
 
   React.useEffect(() => {
     userData.reload();
-  }, []);
+  }, [userData]);
 
   if (!userData.user || userData.loading) {
     return <LoadingSpinner fullPage />;
