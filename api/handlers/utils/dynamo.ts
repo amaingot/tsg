@@ -1,5 +1,6 @@
 import AWSXray from "aws-xray-sdk-core";
-import * as AWS from "aws-sdk";
+import * as AWS_SDK from "aws-sdk";
+const AWS = AWSXray.captureAWS(AWS_SDK);
 
 let options = {};
 
