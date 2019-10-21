@@ -15,11 +15,11 @@ import FeaturesPage from "./pages/FeaturesPage";
 import CustomerApp from "./CustomerApp";
 import ErrorPage from "./pages/ErrorPage";
 import SupportPage from "./pages/SupportPage";
-import { UserDataContextProvider } from "./contexts/UserDataContext";
+import AllContextProviders from "./contexts";
 
 const App: React.FC = () => {
   return (
-    <UserDataContextProvider>
+    <AllContextProviders>
       <BrowserRouter>
         <CssBaseline />
         <Switch>
@@ -37,7 +37,7 @@ const App: React.FC = () => {
           <Route component={ErrorPage} />
         </Switch>
       </BrowserRouter>
-    </UserDataContextProvider>
+    </AllContextProviders>
   );
 };
 
