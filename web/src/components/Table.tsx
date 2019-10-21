@@ -1,6 +1,9 @@
 import React, { forwardRef } from "react";
 
-import MaterialTable, { MaterialTableProps } from "material-table";
+import MaterialTable, {
+  MaterialTableProps,
+  Column as TableColumn
+} from "material-table";
 
 import AddBox from "@material-ui/icons/AddBox";
 import ArrowUpward from "@material-ui/icons/ArrowUpward";
@@ -89,5 +92,7 @@ function Table<RowData extends object>(props: MaterialTableProps<RowData>) {
     />
   );
 }
+
+export type Column<RowData extends object> = TableColumn<RowData>;
 
 export default Table;
