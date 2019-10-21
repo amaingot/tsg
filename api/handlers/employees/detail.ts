@@ -3,9 +3,16 @@ import * as Responses from "../utils/responses";
 import dynamo from "../utils/dynamo";
 import withLogger, { Handler } from "../utils/withLogger";
 import getUserClient from "../utils/getUserClient";
-import { UserRoles, ListEmployeesResponse, Employee } from "tsg-shared";
+import { Employee, UserRoles, GetEmployeeResponse } from "tsg-shared";
 
 const handler: Handler = logger => async event => {
+  const recordId = event.pathParameters.id;
+
+  if (!event.pathParameters || !event.pathParameters.id) {
+    logger.error("No record ID supplied in path");
+    return Responses.badRequest();
+  }
+
   const { client, user } = await getUserClient(event, logger);
 
   const { userRole } = user;
@@ -21,20 +28,24 @@ const handler: Handler = logger => async event => {
     });
   }
 
-  const users = await dynamo
-    .query({
+  const userRecord = await dynamo
+    .get({
       TableName: process.env.USER_TABLE,
-      IndexName: "ClientUser",
-      KeyConditionExpression: "clientId = :clientId",
-      ExpressionAttributeValues: {
-        ":clientId": client.id
+      Key: {
+        id: recordId
       }
     })
     .promise();
 
-  const response: ListEmployeesResponse = {
-    data: users.Items as Array<Employee>,
-    count: users.Count
+  const employee = userRecord.Item as Employee;
+
+  if (employee.clientId !== client.id) {
+    logger.info("User is accessing something they do not have access to");
+    return Responses.forbidden();
+  }
+
+  const response: GetEmployeeResponse = {
+    data: employee
   };
 
   return Responses.success(response);

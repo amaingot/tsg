@@ -31,6 +31,7 @@ provider:
     USER_TABLE: ${self:service.app}-UserTable-${self:provider.stage}
     CUSTOMER_TABLE: ${self:service.app}-CustomerTable-${self:provider.stage}
     JOB_TABLE: ${self:service.app}-JobTable-${self:provider.stage}
+    MESSAGE_TABLE: ${self:service.app}-MessageTable-${self:provider.stage}
     NODE_PATH: "./:/opt/node_modules"
     ENV: ${self:provider.stage}
     LAMBDA_ROLLBAR_TOKEN: ${env:LAMBDA_ROLLBAR_TOKEN}
@@ -129,6 +130,36 @@ functions:
           path: employees/create
           cors: *corsConfig
           authorizer: *authorizerConfig
+
+  employee-update:
+    handler: handlers/employees/update.default
+    layers:
+      - { Ref: SharedLambdaLayer }
+    events:
+      - http:
+          method: post
+          path: employees/{id}/update
+          cors: *corsConfig
+          authorizer: *authorizerConfig
+          request:
+            parameters:
+              paths:
+                id: true
+
+  employee-detail:
+    handler: handlers/employees/detail.default
+    layers:
+      - { Ref: SharedLambdaLayer }
+    events:
+      - http:
+          method: get
+          path: employees/{id}/detail
+          cors: *corsConfig
+          authorizer: *authorizerConfig
+          request:
+            parameters:
+              paths:
+                id: true
 
   customer-list:
     handler: handlers/customers/list.default
@@ -282,6 +313,7 @@ resources:
     DynamoDbUserTable: ${file(./resources/DynamoDbUserTable.yml)}
     DynamoDbCustomerTable: ${file(./resources/DynamoDbCustomerTable.yml)}
     DynamoDbJobTable: ${file(./resources/DynamoDbJobTable.yml)}
+    DynamoDbMessageTable: ${file(./resources/DynamoDbMessageTable.yml)}
     LambdaRole: ${file(./resources/LambdaRole.yml)}
 
   Outputs:

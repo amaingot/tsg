@@ -1,0 +1,35 @@
+Type: AWS::DynamoDB::Table
+Properties:
+  TableName: ${self:provider.environment.MESSAGE_TABLE}
+  KeySchema:
+    - AttributeName: id
+      KeyType: HASH
+  AttributeDefinitions:
+    - AttributeName: id
+      AttributeType: S
+    - AttributeName: clientId
+      AttributeType: S
+    - AttributeName: employeeId
+      AttributeType: S
+    - AttributeName: customerId
+      AttributeType: S
+  GlobalSecondaryIndexes:
+    - IndexName: ClientMessages
+      KeySchema:
+        - AttributeName: clientId
+          KeyType: HASH
+      Projection:
+        ProjectionType: ALL
+    - IndexName: CustomerMessages
+      KeySchema:
+        - AttributeName: customerId
+          KeyType: HASH
+      Projection:
+        ProjectionType: ALL
+    - IndexName: EmployeeMessages
+      KeySchema:
+        - AttributeName: employeeId
+          KeyType: HASH
+      Projection:
+        ProjectionType: ALL
+  BillingMode: PAY_PER_REQUEST

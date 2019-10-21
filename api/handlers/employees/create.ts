@@ -3,6 +3,7 @@ import "source-map-support/register";
 import * as Responses from "../utils/responses";
 import dynamo from "../utils/dynamo";
 import withLogger, { Handler } from "../utils/withLogger";
+import twilio from "../utils/twilio";
 import getUserClient from "../utils/getUserClient";
 import { signUpUser, UserRecord, getUser } from "../utils/cognito";
 import {
@@ -15,12 +16,13 @@ import {
 const handler: Handler = logger => async event => {
   const request = JSON.parse(event.body) as CreateEmployeeRequest;
 
-  const { firstName, lastName, email, cellPhone } = request.data;
+  const { lastName, firstName, email, cellPhone, userRole } = request.data;
 
-  if (!firstName || !lastName || !cellPhone || !email) {
-    logger.error("No firstName and/or lastName provided");
+  if (!lastName || !firstName || !email || !cellPhone || !userRole) {
+    logger.error("Did not supply all of the required params");
     return Responses.badRequest();
   }
+
   const { client, user } = await getUserClient(event, logger);
 
   if (!user.clientId) {
@@ -32,10 +34,9 @@ const handler: Handler = logger => async event => {
     });
   }
 
-  const { userRole } = user;
   if (
-    userRole !== UserRoles.AccountAdmin &&
-    userRole !== UserRoles.SuperAdmin
+    user.userRole !== UserRoles.AccountAdmin &&
+    user.userRole !== UserRoles.SuperAdmin
   ) {
     logger.error(
       `The user record does sufficient permissions to create a user. User role: ${userRole}`
@@ -78,14 +79,14 @@ const handler: Handler = logger => async event => {
     lastName,
     email,
     cellPhone,
-    userRole: UserRoles.Employee,
+    userRole,
     updatedAt: new Date().toISOString(),
     createdAt: new Date().toISOString()
   };
 
   const newUser = await dynamo
     .put({
-      TableName: process.env.CUSTOMER_TABLE,
+      TableName: process.env.USER_TABLE,
       Item: userData
     })
     .promise();
@@ -93,6 +94,28 @@ const handler: Handler = logger => async event => {
   const response: CreateEmployeeResponse = {
     data: newUser.Attributes as Employee
   };
+
+  const message = await twilio.messages.create({
+    body:
+      `Hello from Tennis Shop Guru! ${user.firstName} at ${client.name}` +
+      ` created you an account! Visit https://tsg.hmm.dev/login to setup your account.` +
+      ` Your username is ${email} and your temporary password is ${tempPassword}`,
+    to: cellPhone,
+    from: process.env.TWILIO_PHONE_NUMBER
+  });
+
+  await dynamo
+    .put({
+      TableName: process.env.MESSAGE_TABLE,
+      Item: {
+        id: uuid(),
+        employeeId: cognitoUserId,
+        clientId: client.id,
+        customerId: "n/a",
+        ...message
+      }
+    })
+    .promise();
 
   return Responses.success(response);
 };

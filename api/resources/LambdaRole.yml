@@ -31,6 +31,7 @@ Properties:
               - Fn::GetAtt: [DynamoDbCustomerTable, Arn]
               - Fn::GetAtt: [DynamoDbJobTable, Arn]
               - Fn::GetAtt: [DynamoDbUserTable, Arn]
+              - Fn::GetAtt: [DynamoDbMessageTable, ARN]
     - PolicyName: ${self:service.app}-CognitoUserPoolAdminAccess-${self:provider.stage}
       PolicyDocument:
         Version: "2012-10-17"
