@@ -15,7 +15,7 @@ const handler: Handler = logger => async event => {
 
   const { client } = await getUserClient(event, logger);
 
-  const customer = await dynamo
+  const customerRecord = await dynamo
     .get({
       TableName: process.env.CUSTOMER_TABLE,
       Key: {
@@ -24,25 +24,30 @@ const handler: Handler = logger => async event => {
     })
     .promise();
 
-  if (customer.Item.clientId !== client.id) {
+  const customer = customerRecord.Item as Customer;
+
+  if (customer.clientId !== client.id) {
     logger.info("User is accessing something they do not have access to");
     return Responses.forbidden();
   }
 
-  const customerJobs = await dynamo
-    .scan({
+  const customerJobRecords = await dynamo
+    .query({
       TableName: process.env.JOB_TABLE,
+      IndexName: "CustomerJobs",
+      KeyConditionExpression: "customerId = :customerId",
       ExpressionAttributeValues: {
-        ":value0": customer.Item.id
-      },
-      FilterExpression: "customerId = :value0"
+        ":customerId": customer.id
+      }
     })
     .promise();
 
+  const customerJobs = customerJobRecords.Items as Array<Job>;
+
   const response: GetCustomerResponse = {
     data: {
-      customer: customer.Item as Customer,
-      jobs: customerJobs.Items as Array<Job>
+      customer: customer,
+      jobs: customerJobs
     }
   };
 

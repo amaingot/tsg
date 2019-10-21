@@ -10,12 +10,13 @@ const handler: Handler = logger => async event => {
   const { client } = await getUserClient(event, logger);
 
   const customers = await dynamo
-    .scan({
+    .query({
       TableName: process.env.CUSTOMER_TABLE,
+      IndexName: "CustomerClients",
+      KeyConditionExpression: "clientId = :clientId",
       ExpressionAttributeValues: {
-        ":value0": client.id
-      },
-      FilterExpression: "clientId = :value0"
+        ":clientId": client.id
+      }
     })
     .promise();
 
