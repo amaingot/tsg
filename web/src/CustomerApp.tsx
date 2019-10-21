@@ -18,13 +18,9 @@ import AppLayout from "./components/AppLayout";
 import LoadingSpinner from "./components/LoadingSpinner";
 
 const App: React.FC<RouteComponentProps> = () => {
-  const userData = useUserData();
+  const { loading, user } = useUserData();
 
-  React.useEffect(() => {
-    userData.reload();
-  }, [userData]);
-
-  if (!userData.user || userData.loading) {
+  if (!user || loading) {
     return <LoadingSpinner fullPage />;
   }
 
