@@ -7,12 +7,11 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
-import Badge from "@material-ui/core/Badge";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 
 import MenuIcon from "@material-ui/icons/Menu";
-import NotificationsIcon from "@material-ui/icons/Notifications";
+import HelpIcon from "@material-ui/icons/Help";
 import AccountIcon from "@material-ui/icons/AccountCircle";
 import Auth from "@aws-amplify/auth";
 import { useUserData } from "../contexts/UserDataContext";
@@ -106,10 +105,8 @@ const AppNavBar: React.FC<Props> = props => {
         >
           Tennis Shop Guru
         </Typography>
-        <IconButton color="inherit">
-          <Badge badgeContent={4} color="secondary">
-            <NotificationsIcon />
-          </Badge>
+        <IconButton color="inherit" component={NavLink} to="app/support">
+          <HelpIcon />
         </IconButton>
         <IconButton color="inherit" aria-haspopup="true" onClick={handleClick}>
           <AccountIcon />
