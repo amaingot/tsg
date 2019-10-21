@@ -27,6 +27,10 @@ const useStyles = makeStyles({
   },
   title: {
     position: "relative"
+  },
+  paper: {
+    minHeight: "40vh",
+    display: "flex"
   }
 });
 
@@ -61,7 +65,7 @@ const CustomersPage: React.FC<RouteComponentProps> = props => {
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Paper>
+          <Paper className={classes.paper}>
             {!customers ? (
               <LoadingSpinner />
             ) : (

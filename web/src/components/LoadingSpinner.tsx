@@ -5,6 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   container: {
+    flexGrow: 100,
     display: "flex",
     justifyContent: "center",
     alignItems: "center"
@@ -19,7 +20,8 @@ const useStyles = makeStyles({
   normalContainer: {
     position: "relative",
     width: "100%",
-    height: "100%"
+    height: "100%",
+    margin: "auto"
   },
   withMinHeight: {
     minHeight: "50vh"
