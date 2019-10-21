@@ -105,7 +105,7 @@ const AppNavBar: React.FC<Props> = props => {
         >
           Tennis Shop Guru
         </Typography>
-        <IconButton color="inherit" component={NavLink} to="app/support">
+        <IconButton color="inherit" component={NavLink} to="/app/support">
           <HelpIcon />
         </IconButton>
         <IconButton color="inherit" aria-haspopup="true" onClick={handleClick}>
