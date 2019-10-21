@@ -16,6 +16,7 @@ import Typography from "@material-ui/core/Typography";
 import Fab from "@material-ui/core/Fab";
 import SaveIcon from "@material-ui/icons/Save";
 import EditIcon from "@material-ui/icons/Edit";
+import AddIcon from "@material-ui/icons/Add";
 import CancelIcon from "@material-ui/icons/Close";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -26,6 +27,7 @@ import TableRow from "@material-ui/core/TableRow";
 import { phoneNumberIsValid } from "../components/PhoneTextMask";
 import axios from "../utils/axios";
 import TextField from "../components/TextField";
+import NewJobDrawer, { DRAWER_WIDTH } from "../components/NewJobDrawer";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -48,6 +50,20 @@ const useStyles = makeStyles(theme => ({
   },
   jobsCartTitle: {
     padding: theme.spacing(2)
+  },
+  content: {
+    transition: theme.transitions.create("margin", {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen
+    }),
+    marginRight: 0
+  },
+  contentDrawerOpen: {
+    transition: theme.transitions.create("margin", {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen
+    }),
+    marginRight: DRAWER_WIDTH
   }
 }));
 
@@ -60,6 +76,7 @@ const CustomerDetailPage: React.FC<
 
   const [error, setError] = React.useState<string>();
   const [loading, setLoading] = React.useState(true);
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
 
   const [customer, setCustomer] = React.useState<Partial<Customer>>({});
   const [jobs, setJobs] = React.useState<Array<Job>>([]);
@@ -161,6 +178,11 @@ const CustomerDetailPage: React.FC<
     }
   };
 
+  const startEdit = () => {
+    setEditMode(true);
+    setDrawerOpen(false);
+  };
+
   return (
     <>
       <Typography variant="h4" gutterBottom className={classes.title}>
@@ -180,18 +202,27 @@ const CustomerDetailPage: React.FC<
               </Fab>
             </>
           ) : (
-            <Fab
-              color="primary"
-              aria-label="edit"
-              onClick={() => setEditMode(true)}
-            >
-              <EditIcon />
-            </Fab>
+            <>
+              <Fab
+                color="primary"
+                aria-label="add"
+                onClick={() => setDrawerOpen(true)}
+              >
+                <AddIcon />
+              </Fab>
+              <Fab color="primary" aria-label="edit" onClick={startEdit}>
+                <EditIcon />
+              </Fab>
+            </>
           )}
         </div>
       </Typography>
       {error && <Typography color="error">{error}</Typography>}
-      <Grid container spacing={3}>
+      <Grid
+        container
+        spacing={3}
+        className={drawerOpen ? classes.contentDrawerOpen : classes.content}
+      >
         <Grid item xs={12} md={6}>
           <Paper className={classes.paper}>
             <Typography gutterBottom variant="h6">
@@ -408,6 +439,7 @@ const CustomerDetailPage: React.FC<
           </Paper>
         </Grid>
       </Grid>
+      <NewJobDrawer open={drawerOpen} customerId={id} />
     </>
   );
 };

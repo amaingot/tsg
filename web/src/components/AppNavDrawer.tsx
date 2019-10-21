@@ -12,6 +12,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListSubheader from "@material-ui/core/ListSubheader";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import DashboardIcon from "@material-ui/icons/Dashboard";
@@ -46,12 +47,43 @@ const useStyles = makeStyles(theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
-    width: theme.spacing(7),
+    width: theme.spacing(6),
     [theme.breakpoints.up("sm")]: {
       width: theme.spacing(9)
     }
+  },
+  itemIcon: {
+    paddingLeft: theme.spacing(1)
   }
 }));
+
+interface ItemProps {
+  showTooltip: boolean;
+  to: string;
+  title: string;
+  icon: React.ReactElement;
+}
+
+export const DrawerItem: React.FC<ItemProps> = props => {
+  const { showTooltip, to, title, icon } = props;
+  const classes = useStyles();
+
+  const item = (
+    <ListItem component={NavLink} to={to} button>
+      <ListItemIcon className={classes.itemIcon}>{icon}</ListItemIcon>
+      <ListItemText primary={title} />
+    </ListItem>
+  );
+
+  if (showTooltip) {
+    return (
+      <Tooltip title={title} placement="right">
+        {item}
+      </Tooltip>
+    );
+  }
+  return item;
+};
 
 interface Props {
   handleDrawerClose: () => void;
@@ -77,46 +109,46 @@ const AppNavDrawer: React.FC<Props> = props => {
       </div>
       <Divider />
       <List>
-        <ListItem component={NavLink} to="/app/dashboard" button>
-          <ListItemIcon>
-            <DashboardIcon />
-          </ListItemIcon>
-          <ListItemText primary="Dashboard" />
-        </ListItem>
-        <ListItem component={NavLink} to="/app/jobs" button>
-          <ListItemIcon>
-            <AssignmentIcon />
-          </ListItemIcon>
-          <ListItemText primary="Jobs" />
-        </ListItem>
-        <ListItem component={NavLink} to="/app/customers" button>
-          <ListItemIcon>
-            <CustomersIcon />
-          </ListItemIcon>
-          <ListItemText primary="Customers" />
-        </ListItem>
-        <ListItem component={NavLink} to="/app/employees" button>
-          <ListItemIcon>
-            <GroupIcon />
-          </ListItemIcon>
-          <ListItemText primary="Employees" />
-        </ListItem>
-        <ListItem component={NavLink} to="/app" button>
-          <ListItemIcon>
-            <BarChartIcon />
-          </ListItemIcon>
-          <ListItemText primary="Reports" />
-        </ListItem>
+        <DrawerItem
+          title="Dashboard"
+          showTooltip={!open}
+          to="/app/dashboard"
+          icon={<DashboardIcon />}
+        />
+        <DrawerItem
+          title="Jobs"
+          showTooltip={!open}
+          to="/app/jobs"
+          icon={<AssignmentIcon />}
+        />
+        <DrawerItem
+          title="Customers"
+          showTooltip={!open}
+          to="/app/customers"
+          icon={<CustomersIcon />}
+        />
+        <DrawerItem
+          title="Employees"
+          showTooltip={!open}
+          to="/app/employees"
+          icon={<GroupIcon />}
+        />
+        <DrawerItem
+          title="Reports"
+          showTooltip={!open}
+          to="/app/reports"
+          icon={<BarChartIcon />}
+        />
       </List>
       <Divider />
       <List>
         <ListSubheader inset>Shortcuts</ListSubheader>
-        <ListItem component={NavLink} to="/app/customers/create" button>
-          <ListItemIcon>
-            <AddIcon />
-          </ListItemIcon>
-          <ListItemText primary="New Customer" />
-        </ListItem>
+        <DrawerItem
+          title="New Customer"
+          showTooltip={!open}
+          to="/app/customers/create"
+          icon={<AddIcon />}
+        />
       </List>
     </Drawer>
   );
