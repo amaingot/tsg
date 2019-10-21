@@ -193,6 +193,17 @@ functions:
           cors: *corsConfig
           authorizer: *authorizerConfig
 
+  job-count-breakdown:
+    handler: handlers/jobs/count-breakdown.default
+    layers:
+      - { Ref: SharedLambdaLayer }
+    events:
+      - http:
+          method: get
+          path: jobs/count-breakdown
+          cors: *corsConfig
+          authorizer: *authorizerConfig
+
   job-list-pending:
     handler: handlers/jobs/list-pending.default
     layers:
@@ -223,6 +234,36 @@ functions:
       - http:
           method: post
           path: jobs/{id}/update
+          cors: *corsConfig
+          authorizer: *authorizerConfig
+          request:
+            parameters:
+              paths:
+                id: true
+
+  job-finish:
+    handler: handlers/jobs/finish.default
+    layers:
+      - { Ref: SharedLambdaLayer }
+    events:
+      - http:
+          method: put
+          path: jobs/{id}/finish
+          cors: *corsConfig
+          authorizer: *authorizerConfig
+          request:
+            parameters:
+              paths:
+                id: true
+
+  job-detail:
+    handler: handlers/jobs/detail.default
+    layers:
+      - { Ref: SharedLambdaLayer }
+    events:
+      - http:
+          method: get
+          path: jobs/{id}/detail
           cors: *corsConfig
           authorizer: *authorizerConfig
           request:

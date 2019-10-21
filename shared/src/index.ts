@@ -18,6 +18,7 @@ export {
   UpdateJobResponse,
   GetJobResponse,
   ListJobsResponse,
+  JobsBreakdownResponse,
   CreateCustomerRequest,
   UpdateCustomerRequest,
   UpdateCustomerResponse,

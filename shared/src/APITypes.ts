@@ -28,8 +28,19 @@ export type CreateJobRequest = Request<EntityTypes.NewJob>;
 export type CreateJobResponse = SingleResponse<EntityTypes.Job>;
 export type UpdateJobRequest = Request<EntityTypes.NewJob>;
 export type UpdateJobResponse = SingleResponse<EntityTypes.Job>;
-export type GetJobResponse = SingleResponse<EntityTypes.Job>;
+export type GetJobResponse = SingleResponse<{
+  customer: EntityTypes.Customer;
+  job: EntityTypes.Job;
+}>;
+
 export type ListJobsResponse = ListResponse<EntityTypes.Job>;
+export type JobsBreakdownResponse = SingleResponse<{
+  jobs: Array<EntityTypes.Job>;
+  byMonth: {[key: string]: {
+    count: number;
+    month: string;
+  }}
+}>;
 
 // Customers
 export type CreateCustomerRequest = Request<EntityTypes.NewCustomer>;

@@ -17,8 +17,9 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 
 import axios from "../utils/axios";
+import LoadingSpinner from "../components/LoadingSpinner";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
   addButton: {
     position: "absolute",
     right: 0
@@ -26,7 +27,7 @@ const useStyles = makeStyles(theme => ({
   title: {
     position: "relative"
   }
-}));
+});
 
 const JobsPage: React.FC<RouteComponentProps> = props => {
   const classes = useStyles();
@@ -34,7 +35,7 @@ const JobsPage: React.FC<RouteComponentProps> = props => {
   const [jobs, setJobs] = React.useState<Array<Job>>();
 
   React.useEffect(() => {
-    axios.get<ListJobsResponse>("/jobs/list").then(resp => {
+    axios.get<ListJobsResponse>("/jobs/list/pending").then(resp => {
       if (resp.status === 200) {
         setJobs(resp.data.data);
       }
@@ -58,39 +59,43 @@ const JobsPage: React.FC<RouteComponentProps> = props => {
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Paper>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Racket</TableCell>
-                  <TableCell>String</TableCell>
-                  <TableCell>Tension</TableCell>
-                  <TableCell>Guage</TableCell>
-                  <TableCell>Strung On</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {jobs &&
-                  jobs.map(j => (
-                    <TableRow
-                      key={j.id}
-                      onClick={() => history.push(`/app/jobs/${j.id}`)}
-                      hover
-                    >
-                      <TableCell component="th" scope="row">
-                        {j.name}
-                      </TableCell>
-                      <TableCell>{j.stringName}</TableCell>
-                      <TableCell>{j.racket}</TableCell>
-                      <TableCell>{j.tension}</TableCell>
-                      <TableCell>{j.gauge}</TableCell>
-                      <TableCell>
-                        {moment(j.finishedAt).format("MMM d, YY")}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
+            {!jobs ? (
+              <LoadingSpinner />
+            ) : (
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Racket</TableCell>
+                    <TableCell>String</TableCell>
+                    <TableCell>Tension</TableCell>
+                    <TableCell>Guage</TableCell>
+                    <TableCell>Strung On</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {jobs &&
+                    jobs.map(j => (
+                      <TableRow
+                        key={j.id}
+                        onClick={() => history.push(`/app/jobs/${j.id}`)}
+                        hover
+                      >
+                        <TableCell component="th" scope="row">
+                          {j.name}
+                        </TableCell>
+                        <TableCell>{j.stringName}</TableCell>
+                        <TableCell>{j.racket}</TableCell>
+                        <TableCell>{j.tension}</TableCell>
+                        <TableCell>{j.gauge}</TableCell>
+                        <TableCell>
+                          {moment(j.finishedAt).format("MMM d, YY")}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            )}
           </Paper>
         </Grid>
       </Grid>

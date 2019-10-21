@@ -9,6 +9,7 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Fab from "@material-ui/core/Fab";
+import Tooltip from "@material-ui/core/Tooltip";
 import AddIcon from "@material-ui/icons/Add";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -19,7 +20,7 @@ import TableRow from "@material-ui/core/TableRow";
 import axios from "../utils/axios";
 import LoadingSpinner from "../components/LoadingSpinner";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
   addButton: {
     position: "absolute",
     right: 0
@@ -27,7 +28,7 @@ const useStyles = makeStyles(theme => ({
   title: {
     position: "relative"
   }
-}));
+});
 
 const CustomersPage: React.FC<RouteComponentProps> = props => {
   const classes = useStyles();
@@ -46,15 +47,17 @@ const CustomersPage: React.FC<RouteComponentProps> = props => {
     <React.Fragment>
       <Typography variant="h4" gutterBottom className={classes.title}>
         Customers
-        <Fab
-          color="primary"
-          aria-label="add"
-          className={classes.addButton}
-          component={NavLink}
-          to="/app/customers/create"
-        >
-          <AddIcon />
-        </Fab>
+        <Tooltip title="Add New Customer">
+          <Fab
+            color="primary"
+            aria-label="add"
+            className={classes.addButton}
+            component={NavLink}
+            to="/app/customers/create"
+          >
+            <AddIcon />
+          </Fab>
+        </Tooltip>
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12}>
