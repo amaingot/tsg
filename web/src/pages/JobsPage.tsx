@@ -3,7 +3,6 @@ import { RouteComponentProps } from "react-router";
 import { NavLink } from "react-router-dom";
 import { ListJobsResponse, Job } from "tsg-shared";
 import moment from "moment";
-import { Column } from "material-table";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -11,11 +10,11 @@ import Typography from "@material-ui/core/Typography";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 
-import Table from "../components/Table";
+import Table, { Column } from "../components/Table";
 import axios from "../utils/axios";
-// import LoadingSpinner from "../components/LoadingSpinner";
+import JobDetailTablePanel from "../components/JobDetailTablePanel";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   actionContainer: {
     position: "absolute",
     right: 0,
@@ -24,8 +23,13 @@ const useStyles = makeStyles({
   title: {
     position: "relative",
     zIndex: 1
+  },
+  paper: {
+    padding: theme.spacing(2),
+    display: "flex",
+    overflow: "auto"
   }
-});
+}));
 
 const JobsPage: React.FC<RouteComponentProps> = props => {
   const classes = useStyles();
@@ -47,11 +51,12 @@ const JobsPage: React.FC<RouteComponentProps> = props => {
     { title: "String", field: "stringName" },
     { title: "Racket", field: "racket" },
     { title: "Tension", field: "tension" },
-    { title: "Guage", field: "gauge" },
+    { title: "Gauge", field: "gauge" },
     {
       title: "Strung On",
       field: "finishedAt",
-      render: j => moment(j.finishedAt).format("MMM d, YY")
+      render: j => moment(j.finishedAt).format("MMM d, YY"),
+      defaultSort: "desc"
     }
   ];
 
@@ -86,6 +91,7 @@ const JobsPage: React.FC<RouteComponentProps> = props => {
             data={jobs}
             isLoading={loading}
             onRowClick={handleRowClick}
+            detailPanel={job => <JobDetailTablePanel {...job} />}
           />
         </Grid>
       </Grid>
