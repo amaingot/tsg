@@ -3,7 +3,7 @@ import * as Responses from "../utils/responses";
 import dynamo from "../utils/dynamo";
 import withLogger, { Handler } from "../utils/withLogger";
 import getUserClient from "../utils/getUserClient";
-import { GetJobResponse, Customer, Job } from "tsg-shared";
+import { GetJobResponse, Customer, Job, Employee } from "tsg-shared";
 
 const handler: Handler = logger => async event => {
   const recordId = event.pathParameters.id;
@@ -42,10 +42,25 @@ const handler: Handler = logger => async event => {
 
   const customer = customerRecord.Item as Customer;
 
+  let employee: Employee;
+
+  if (job.finishedBy) {
+    const employeeRecord = await dynamo
+      .get({
+        TableName: process.env.USER_TABLE,
+        Key: {
+          id: job.finishedBy
+        }
+      })
+      .promise();
+    employee = employeeRecord.Item as Employee;
+  }
+
   const response: GetJobResponse = {
     data: {
       customer,
-      job
+      job,
+      employee
     }
   };
 

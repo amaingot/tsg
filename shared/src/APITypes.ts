@@ -31,15 +31,18 @@ export type UpdateJobResponse = SingleResponse<EntityTypes.Job>;
 export type GetJobResponse = SingleResponse<{
   customer: EntityTypes.Customer;
   job: EntityTypes.Job;
+  employee?: EntityTypes.Employee;
 }>;
 
 export type ListJobsResponse = ListResponse<EntityTypes.Job>;
 export type JobsBreakdownResponse = SingleResponse<{
   jobs: Array<EntityTypes.Job>;
-  byMonth: {[key: string]: {
-    count: number;
-    month: string;
-  }}
+  byMonth: {
+    [key: string]: {
+      count: number;
+      month: string;
+    };
+  };
 }>;
 
 // Customers
