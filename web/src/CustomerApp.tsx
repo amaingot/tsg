@@ -13,6 +13,7 @@ import JobsPage from "./pages/JobsPage";
 import ErrorPage from "./pages/ErrorPage";
 import SupportPage from "./pages/SupportPage";
 import CreateEmployeePage from "./pages/CreateEmployeePage";
+import ComingSoonPage from "./pages/ComingSoonPage";
 
 import { useUserData } from "./contexts/UserDataContext";
 import AppLayout from "./components/AppLayout";
@@ -43,8 +44,13 @@ const App: React.FC<RouteComponentProps> = () => {
         <Route path="/app/customers/:id" exact component={CustomerDetailPage} />
         <Route path="/app/customers" exact component={CustomersPage} />
         <Route path="/app/employees" exact component={EmployeesPage} />
-        <Route path="/app/employees/create" exact component={CreateEmployeePage} />
+        <Route
+          path="/app/employees/create"
+          exact
+          component={CreateEmployeePage}
+        />
         <Route path="/app/jobs" exact component={JobsPage} />
+        <Route path="/app/reports" exact component={ComingSoonPage} />
         <Route path="/app/support" exact component={SupportPage} />
         <Redirect from="/app" exact to="/app/dashboard" />
         <Route component={ErrorPage} />
