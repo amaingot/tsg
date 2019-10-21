@@ -5,8 +5,10 @@ import {
   APIGatewayProxyResult,
   Callback
 } from "aws-lambda";
-import AWSXRay from "aws-xray-sdk-core";
+import AWSXRay from "aws-xray-sdk";
 import * as Responses from "./responses";
+import * as http from "http";
+import * as https from "https";
 
 import * as Winston from "winston";
 import RollbarTransport from "winston-transport-rollbar-3";
@@ -62,7 +64,9 @@ const withLogger: LoggerEnhancer = (handler: Handler) => async (
       })
     ]
   });
+  AWSXRay.captureHTTPsGlobal(https);
   AWSXRay.setLogger(logger);
+  AWSXRay.set
 
   logger.info("Received event:", event);
 

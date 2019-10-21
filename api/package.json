@@ -16,6 +16,7 @@
   "dependencies": {
     "amazon-cognito-identity-js": "^3.0.15",
     "aws-sdk": "^2.541.0",
+    "aws-xray-sdk": "^2.4.0",
     "aws-xray-sdk-core": "^2.3.6",
     "immutable": "^4.0.0-rc.12",
     "moment": "^2.24.0",
@@ -34,8 +35,8 @@
     "@types/aws-lambda": "^8.10.17",
     "@types/google-libphonenumber": "^7.4.17",
     "@types/node": "^12.7.9",
-    "@types/stripe": "^6.32.8",
     "@types/qs": "^6.5.3",
+    "@types/stripe": "^6.32.8",
     "@types/uuid": "^3.4.5",
     "google-libphonenumber": "^3.2.6",
     "serverless": "^1.53.0",
