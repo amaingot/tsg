@@ -1,9 +1,9 @@
 import "source-map-support/register";
-import * as Responses from "../utils/responses";
 import dynamo from "../utils/dynamo";
 import withLogger, { Handler } from "../utils/withLogger";
 import qs from "qs";
-import { Customer, Employee } from "tsg-shared";
+import { Customer, Employee, Client } from "tsg-shared";
+import { twiml } from "twilio";
 
 interface SMSIncomingRequest {
   ToCountry?: string;
@@ -85,6 +85,8 @@ const handler: Handler = logger => async event => {
   s["updatedAt"] = new Date().toISOString();
   s["createdAt"] = new Date().toISOString();
 
+  let callbackNumber: string;
+
   const potentialCustomers = await dynamo
     .scan({
       TableName: process.env.CUSTOMER_TABLE,
@@ -101,6 +103,15 @@ const handler: Handler = logger => async event => {
     s["customerId"] = customer.id;
     s["clientId"] = customer.clientId;
     s["employeeId"] = "none";
+
+    const clientRecord = await dynamo
+      .get({
+        TableName: process.env.CLIENT_TABLE,
+        Key: { id: customer.clientId }
+      })
+      .promise();
+
+    callbackNumber = (clientRecord.Item as Client).phone;
   } else {
     const potentialEmployees = await dynamo
       .scan({
@@ -113,6 +124,15 @@ const handler: Handler = logger => async event => {
       .promise();
     if (potentialEmployees.Items.length > 0) {
       const employee = potentialEmployees.Items[0] as Employee;
+
+      const clientRecord = await dynamo
+        .get({
+          TableName: process.env.CLIENT_TABLE,
+          Key: { id: employee.clientId }
+        })
+        .promise();
+
+      callbackNumber = (clientRecord.Item as Client).phone;
       s["employeeId"] = employee.id;
       s["clientId"] = employee.clientId;
       s["customerId"] = "none";
@@ -130,7 +150,20 @@ const handler: Handler = logger => async event => {
     })
     .promise();
 
-  return Responses.success();
+  const response = new twiml.MessagingResponse();
+
+  response.message(
+    `Hello! Sorry but we haven't set up our texting system, please call us. ${callbackNumber &&
+      `Please call us at ${callbackNumber}`}`
+  );
+
+  return {
+    statusCode: 200,
+    body: response.toString(),
+    headers: {
+      "Content-Type": "text/xml"
+    }
+  };
 };
 
 export default withLogger(handler);
