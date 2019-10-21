@@ -32,6 +32,35 @@ Properties:
               - Fn::GetAtt: [DynamoDbJobTable, Arn]
               - Fn::GetAtt: [DynamoDbUserTable, Arn]
               - Fn::GetAtt: [DynamoDbMessageTable, Arn]
+    - PolicyName: ${self:service.app}-DynamoDBIndexReadAccess-${self:provider.stage}
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:Query
+              - dynamodb:Scan
+            Resource:
+              - "Fn::Join":
+                  - "/"
+                  - - Fn::GetAtt: [DynamoDbClientTable, Arn]
+                    - "index/*"
+              - "Fn::Join":
+                  - "/"
+                  - - Fn::GetAtt: [DynamoDbCustomerTable, Arn]
+                    - "index/*"
+              - "Fn::Join":
+                  - "/"
+                  - - Fn::GetAtt: [DynamoDbJobTable, Arn]
+                    - "index/*"
+              - "Fn::Join":
+                  - "/"
+                  - - Fn::GetAtt: [DynamoDbUserTable, Arn]
+                    - "index/*"
+              - "Fn::Join":
+                  - "/"
+                  - - Fn::GetAtt: [DynamoDbMessageTable, Arn]
+                    - "index/*"
     - PolicyName: ${self:service.app}-CognitoUserPoolAdminAccess-${self:provider.stage}
       PolicyDocument:
         Version: "2012-10-17"
