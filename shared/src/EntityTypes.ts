@@ -19,6 +19,7 @@ export interface NewJob {
   finished?: boolean;
   recievedAt?: string;
   finishedAt?: string;
+  finishedBy?: string;
 }
 
 export interface Job extends NewJob {
@@ -51,7 +52,6 @@ export interface Customer extends NewCustomer {
 }
 
 export interface NewEmployee {
-
   clientId: string;
   firstName: string;
   lastName: string;

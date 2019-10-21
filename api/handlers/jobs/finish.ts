@@ -3,8 +3,9 @@ import * as Responses from "../utils/responses";
 import dynamo from "../utils/dynamo";
 import withLogger, { Handler } from "../utils/withLogger";
 import getUserClient from "../utils/getUserClient";
-import { Job, UpdateJobResponse } from "tsg-shared";
+import { Job, UpdateJobResponse, Customer } from "tsg-shared";
 import dynamoUpdateExp from "../utils/dynamoUpdateExp";
+import { sendMessage } from "../utils/twilio";
 
 const handler: Handler = logger => async event => {
   if (!event.pathParameters || !event.pathParameters.id) {
@@ -14,7 +15,7 @@ const handler: Handler = logger => async event => {
 
   const recordId = event.pathParameters.id;
 
-  const { client } = await getUserClient(event, logger);
+  const { client, user } = await getUserClient(event, logger);
 
   const oldJobRecord = await dynamo
     .get({
@@ -26,6 +27,17 @@ const handler: Handler = logger => async event => {
     .promise();
 
   const oldJob = oldJobRecord.Item as Job;
+
+  const customerRecord = await dynamo
+    .get({
+      TableName: process.env.CUSTOMER_TABLE,
+      Key: {
+        id: oldJob.customerId
+      }
+    })
+    .promise();
+
+  const customer = customerRecord.Item as Customer;
 
   if (oldJob.clientId !== client.id) {
     logger.info("User is updating something they do not have access to");
@@ -43,6 +55,7 @@ const handler: Handler = logger => async event => {
     ...oldJob,
     updatedAt: new Date().toISOString(),
     finished: true,
+    finishedBy: user.id,
     finishedAt: new Date().toISOString()
   };
 
@@ -57,6 +70,19 @@ const handler: Handler = logger => async event => {
       ...updateExpression
     })
     .promise();
+
+  if (customer.cellPhone) {
+    await sendMessage({
+      body:
+        `Hello! ${client.name} here! We just wanted to let you know that your ` +
+        `tennis racket is ready to be picked up! Call us at ${client.phone}, if you have ` +
+        `any questions! See you soon!`,
+      to: customer.cellPhone,
+      clientId: client.id,
+      customerId: customer.id,
+      employeeId: user.id
+    });
+  }
 
   const response: UpdateJobResponse = {
     data: updatedRecord.Attributes as Job
