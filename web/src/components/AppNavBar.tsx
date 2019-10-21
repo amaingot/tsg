@@ -6,6 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
+import Link from "@material-ui/core/Link";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -76,6 +77,7 @@ const AppNavBar: React.FC<Props> = props => {
     });
     await Auth.signOut();
     await userData.reload();
+    window.location.replace("/");
   };
 
   return (
@@ -96,15 +98,16 @@ const AppNavBar: React.FC<Props> = props => {
         >
           <MenuIcon />
         </IconButton>
-        <Typography
-          component="h1"
+        <Link
           variant="h6"
+          underline="none"
+          href="/"
           color="inherit"
           noWrap
           className={classes.title}
         >
           Tennis Shop Guru
-        </Typography>
+        </Link>
         <IconButton color="inherit" component={NavLink} to="/app/support">
           <HelpIcon />
         </IconButton>
@@ -132,9 +135,7 @@ const AppNavBar: React.FC<Props> = props => {
           >
             Account Settings
           </MenuItem>
-          <MenuItem component={NavLink} to="/" onClick={handleLogout}>
-            Logout
-          </MenuItem>
+          <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>
       </Toolbar>
     </AppBar>
