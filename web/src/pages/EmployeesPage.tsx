@@ -83,7 +83,7 @@ const EmployeesPage: React.FC<RouteComponentProps> = props => {
                       <TableCell>{e.cellPhone}</TableCell>
                       <TableCell>{e.userRole}</TableCell>
                       <TableCell>
-                        {moment(e.updatedAt).format("MMM d, YY")}
+                        {moment(e.updatedAt).format("MMM D, YY")}
                       </TableCell>
                     </TableRow>
                   ))}

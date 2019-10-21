@@ -1,4 +1,3 @@
-import * as uuid from "uuid/v4";
 import "source-map-support/register";
 import * as Responses from "../utils/responses";
 import dynamo from "../utils/dynamo";
@@ -12,6 +11,7 @@ import {
   CreateEmployeeRequest,
   CreateEmployeeResponse
 } from "tsg-shared";
+import generatePassword from "../utils/generatePassword";
 
 const handler: Handler = logger => async event => {
   const request = JSON.parse(event.body) as CreateEmployeeRequest;
@@ -46,7 +46,7 @@ const handler: Handler = logger => async event => {
     });
   }
 
-  const tempPassword = uuid();
+  const tempPassword = generatePassword(14);
 
   try {
     await signUpUser({
@@ -101,23 +101,42 @@ const handler: Handler = logger => async event => {
       ` created you an account! Visit https://tsg.hmm.dev/login to setup your account.` +
       ` Your username is ${email} and your temporary password is ${tempPassword}`,
     to: cellPhone,
-    from: process.env.TWILIO_PHONE_NUMBER
+    from: process.env.TWILIO_PHONE_NUMBER,
+    statusCallback: "https://tsg-api.hmm.dev/sms/status"
+  });
+
+  const newMessageRecord = {
+    id: message.sid,
+    employeeId: cognitoUserId,
+    clientId: client.id,
+    customerId: "none",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+
+  Object.keys(message).forEach(k => {
+    if (
+      message[k] &&
+      message[k] !== null &&
+      typeof message[k] !== "object" &&
+      typeof message[k] !== "function" &&
+      typeof message[k] !== "undefined"
+    ) {
+      newMessageRecord[k] = message[k];
+    }
   });
 
   await dynamo
     .put({
       TableName: process.env.MESSAGE_TABLE,
-      Item: {
-        id: uuid(),
-        employeeId: cognitoUserId,
-        clientId: client.id,
-        customerId: "n/a",
-        ...message
-      }
+      Item: newMessageRecord
     })
     .promise();
 
-  return Responses.success(response);
+  return Responses.success({
+    ...response,
+    newMessageRecord
+  });
 };
 
 export default withLogger(handler);
