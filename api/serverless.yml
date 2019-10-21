@@ -40,7 +40,9 @@ provider:
     USER_POOL_CLIENT_ID: { Ref: UserPoolClientServer }
     STRIPE_SECRET_KEY: ${env:STRIPE_SECRET_KEY}
     LOG_LEVEL: debug
-
+    TWILIO_PHONE_NUMBER: ${env:TWILIO_PHONE_NUMBER}
+    TWILIO_ACCOUNT_SID: ${env:TWILIO_ACCOUNT_SID}
+    TWILIO_AUTH_TOKEN: ${env:TWILIO_AUTH_TOKEN}
 package:
   individually: true
 
