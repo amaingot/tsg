@@ -8,6 +8,7 @@ import {
   UpdateCustomerResponse
 } from "tsg-shared";
 import moment from "moment";
+import queryString from "query-string";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -23,6 +24,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import yellow from "@material-ui/core/colors/yellow";
 
 import { phoneNumberIsValid } from "../components/PhoneTextMask";
 import axios from "../utils/axios";
@@ -64,6 +66,9 @@ const useStyles = makeStyles(theme => ({
       duration: theme.transitions.duration.enteringScreen
     }),
     marginRight: DRAWER_WIDTH
+  },
+  highlighedJobRow: {
+    background: yellow[50]
   }
 }));
 
@@ -71,6 +76,9 @@ const CustomerDetailPage: React.FC<
   RouteComponentProps<{ id: string }>
 > = props => {
   const { id } = props.match.params;
+  const { search } = props.location;
+  const [selectedJob, setSelectedJob] = React.useState<string>();
+
   const { history } = props;
   const classes = useStyles();
 
@@ -102,6 +110,12 @@ const CustomerDetailPage: React.FC<
         const { data } = resp.data;
         setCustomer(data.customer);
         setJobs(data.jobs);
+        if (search) {
+          const searchValues = queryString.parse(search);
+
+          if (typeof searchValues["jobId"] === "string")
+            setSelectedJob(searchValues["jobId"]);
+        }
       } else {
         setError("Uh oh! There seems to be an error!");
         window.Rollbar.error(
@@ -114,7 +128,7 @@ const CustomerDetailPage: React.FC<
       }
       setLoading(false);
     });
-  }, [id]);
+  }, [id, search]);
 
   const handleSave: React.FormEventHandler = async e => {
     setLoading(true);
@@ -421,7 +435,13 @@ const CustomerDetailPage: React.FC<
               <TableBody>
                 {jobs &&
                   jobs.map(j => (
-                    <TableRow key={j.id} hover>
+                    <TableRow
+                      key={j.id}
+                      hover
+                      className={
+                        selectedJob === j.id ? classes.highlighedJobRow : ""
+                      }
+                    >
                       <TableCell component="th" scope="row">
                         {j.name}
                       </TableCell>

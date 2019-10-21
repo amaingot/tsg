@@ -15,14 +15,17 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Switch from "@material-ui/core/Switch";
 
 import axios from "../utils/axios";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const useStyles = makeStyles({
-  addButton: {
+  actionContainer: {
     position: "absolute",
-    right: 0
+    right: 0,
+    top: 0
   },
   title: {
     position: "relative"
@@ -37,28 +40,43 @@ const JobsPage: React.FC<RouteComponentProps> = props => {
   const classes = useStyles();
   const { history } = props;
   const [jobs, setJobs] = React.useState<Array<Job>>();
+  const [hideFinished, setHideFinished] = React.useState(false);
 
   React.useEffect(() => {
-    axios.get<ListJobsResponse>("/jobs/list/pending").then(resp => {
-      if (resp.status === 200) {
-        setJobs(resp.data.data);
-      }
-    });
-  }, []);
+    axios
+      .get<ListJobsResponse>(`/jobs/list${hideFinished ? "/finished" : ""}`)
+      .then(resp => {
+        if (resp.status === 200) {
+          setJobs(resp.data.data);
+        }
+      });
+  }, [hideFinished]);
 
   return (
     <React.Fragment>
       <Typography variant="h4" gutterBottom className={classes.title}>
         Jobs
-        <Fab
-          color="primary"
-          aria-label="add"
-          className={classes.addButton}
-          component={NavLink}
-          to="/app/jobs/create"
-        >
-          <AddIcon />
-        </Fab>
+        <div className={classes.actionContainer}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={hideFinished}
+                onChange={() => setHideFinished(v => !v)}
+                value="hideFinished"
+                color="primary"
+              />
+            }
+            label="Hide Finished Jobs"
+          />
+          <Fab
+            color="primary"
+            aria-label="add"
+            component={NavLink}
+            to="/app/jobs/create"
+          >
+            <AddIcon />
+          </Fab>
+        </div>
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12}>
@@ -82,7 +100,11 @@ const JobsPage: React.FC<RouteComponentProps> = props => {
                     jobs.map(j => (
                       <TableRow
                         key={j.id}
-                        onClick={() => history.push(`/app/jobs/${j.id}`)}
+                        onClick={() =>
+                          history.push(
+                            `/app/customers/${j.customerId}?jobId=${j.id}`
+                          )
+                        }
                         hover
                       >
                         <TableCell component="th" scope="row">
