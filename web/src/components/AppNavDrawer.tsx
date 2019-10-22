@@ -22,6 +22,8 @@ import BarChartIcon from "@material-ui/icons/BarChart";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import AddIcon from "@material-ui/icons/Add";
 
+import { useUserData } from "../contexts/UserDataContext";
+import { UserRoles } from "tsg-shared";
 export const DRAWER_WIDTH = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -92,6 +94,8 @@ interface Props {
 
 const AppNavDrawer: React.FC<Props> = props => {
   const classes = useStyles();
+  const { employee } = useUserData();
+
   const { handleDrawerClose, open } = props;
 
   return (
@@ -127,18 +131,22 @@ const AppNavDrawer: React.FC<Props> = props => {
           to="/app/customers"
           icon={<CustomersIcon />}
         />
-        <DrawerItem
-          title="Employees"
-          showTooltip={!open}
-          to="/app/employees"
-          icon={<GroupIcon />}
-        />
-        <DrawerItem
-          title="Reports"
-          showTooltip={!open}
-          to="/app/reports"
-          icon={<BarChartIcon />}
-        />
+        {!!employee && employee.userRole !== UserRoles.Employee && (
+          <>
+            <DrawerItem
+              title="Employees"
+              showTooltip={!open}
+              to="/app/employees"
+              icon={<GroupIcon />}
+            />
+            <DrawerItem
+              title="Reports"
+              showTooltip={!open}
+              to="/app/reports"
+              icon={<BarChartIcon />}
+            />
+          </>
+        )}
       </List>
       <Divider />
       <List>
