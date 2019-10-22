@@ -11,12 +11,12 @@ const handler: Handler = logger => async event => {
   const jobs = await dynamo
     .query({
       TableName: process.env.JOB_TABLE,
-      IndexName: "ClientJobs",
-      KeyConditionExpression: "clientId = :clientId",
+      IndexName: "ClientJobsByStatus",
+      KeyConditionExpression: "clientId = :clientId AND finished = :finished",
       ExpressionAttributeValues: {
-        ":clientId": client.id
+        ":clientId": client.id,
+        ":finished": "no"
       },
-      FilterExpression: "attribute_not_exists( finishedAt )"
     })
     .promise();
 
@@ -25,7 +25,7 @@ const handler: Handler = logger => async event => {
     count: jobs.Count
   };
 
-  return Responses.success(response);
+  return Responses.success({...response, query: jobs});
 };
 
 export default withLogger(handler);

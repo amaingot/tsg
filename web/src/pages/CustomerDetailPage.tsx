@@ -7,7 +7,6 @@ import {
   UpdateCustomerRequest,
   UpdateCustomerResponse
 } from "tsg-shared";
-import moment from "moment";
 import queryString from "query-string";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -19,17 +18,13 @@ import SaveIcon from "@material-ui/icons/Save";
 import EditIcon from "@material-ui/icons/Edit";
 import AddIcon from "@material-ui/icons/Add";
 import CancelIcon from "@material-ui/icons/Close";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
 import yellow from "@material-ui/core/colors/yellow";
 
 import { phoneNumberIsValid } from "../components/PhoneTextMask";
 import axios from "../utils/axios";
 import TextField from "../components/TextField";
-import NewJobDrawer, { DRAWER_WIDTH } from "../components/NewJobDrawer";
+import CreateJobDrawer, { DRAWER_WIDTH } from "../components/CreateJobDrawer";
+import JobTable from "../components/JobTable";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -129,6 +124,15 @@ const CustomerDetailPage: React.FC<
       setLoading(false);
     });
   }, [id, search]);
+
+  const handleNewJob = (newJob?: Job) => {
+    if (!newJob) {
+      setDrawerOpen(false);
+    } else {
+      setJobs(j => [newJob, ...j]);
+      setDrawerOpen(false);
+    }
+  };
 
   const handleSave: React.FormEventHandler = async e => {
     setLoading(true);
@@ -412,54 +416,19 @@ const CustomerDetailPage: React.FC<
           </Paper>
         </Grid>
         <Grid item xs={12}>
-          <Paper>
-            <Typography
-              gutterBottom
-              variant="h6"
-              className={classes.jobsCartTitle}
-            >
-              Past Jobs
-            </Typography>
-
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Racket</TableCell>
-                  <TableCell>String</TableCell>
-                  <TableCell>Tension</TableCell>
-                  <TableCell>Guage</TableCell>
-                  <TableCell>Strung On</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {jobs &&
-                  jobs.map(j => (
-                    <TableRow
-                      key={j.id}
-                      hover
-                      className={
-                        selectedJob === j.id ? classes.highlighedJobRow : ""
-                      }
-                    >
-                      <TableCell component="th" scope="row">
-                        {j.name}
-                      </TableCell>
-                      <TableCell>{j.stringName}</TableCell>
-                      <TableCell>{j.racket}</TableCell>
-                      <TableCell>{j.tension}</TableCell>
-                      <TableCell>{j.gauge}</TableCell>
-                      <TableCell>
-                        {moment(j.finishedAt).format("MMM d, YY")}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-          </Paper>
+          <JobTable
+            title="Past Jobs"
+            jobs={jobs}
+            loading={loading}
+            options={{ paging: false, search: false }}
+          />
         </Grid>
       </Grid>
-      <NewJobDrawer open={drawerOpen} customerId={id} />
+      <CreateJobDrawer
+        onFinish={handleNewJob}
+        open={drawerOpen}
+        customerId={id}
+      />
     </>
   );
 };

@@ -38,7 +38,7 @@ const handler: Handler = logger => async event => {
     id: newJobId,
     clientId: client.id as string,
     customerId,
-    finished: finishedAt !== undefined,
+    finished: finishedAt !== undefined ? "yes" : "no",
     recievedAt: recievedAt || new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     createdAt: new Date().toISOString()

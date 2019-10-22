@@ -1,8 +1,8 @@
 import * as AWS from "aws-sdk";
 import * as Immutable from "immutable";
 import * as uuid from "uuid/v4";
-import Customers from "./Customers.json";
-import Jobs from "./Jobs.json";
+import Customers from "./Customers";
+import Jobs from "./Jobs";
 import * as moment from "moment";
 import * as LibPhoneNumber from "google-libphonenumber";
 
@@ -76,6 +76,8 @@ const run = async () => {
     return reduction.push(filteredCustomerData);
   }, Immutable.List());
 
+  console.log(`Mapped ${mappedCustomers.size} customers`);
+
   const mappedJobs: Immutable.List<Immutable.Map<string, string>> = jobs.reduce(
     (reduction, j) => {
       const jobUuid = uuid();
@@ -92,9 +94,12 @@ const run = async () => {
         gauge: j.get("Gauge"),
         recievedAt: moment(j.get("Recieved")).format(),
         finishedAt: moment(j.get("Finished")).format(),
-        finished: true,
+        finished:
+          !!j.get("Finished") && j.get("Finished") !== "" ? "yes" : "no",
         stringName: titleCase(j.get("String")),
-        oldStringerId: j.get("StringerID")
+        oldStringerId: j.get("StringerID"),
+        createdAt: moment(j.get("Recieved")).format(),
+        updatedAt: moment(j.get("Finished")).format()
       });
 
       const filteredJobData = jobData.filter(
@@ -106,34 +111,82 @@ const run = async () => {
     Immutable.List()
   );
 
-  let c = 0;
-  while (c < mappedCustomers.size) {
-    const cust = mappedCustomers.get(c).toJS();
+  console.log(`Mapped ${mappedJobs.size} jobs`);
 
-    await dynamo
-      .put({
-        TableName: "tsg-CustomerTable-prod",
-        Item: cust
+  const batchSize = 25;
+
+  let custPutRequests = mappedCustomers.map(v => ({
+    PutRequest: { Item: v }
+  }));
+
+  while (custPutRequests.size > 0) {
+    const putBatch = custPutRequests.take(batchSize).toJS();
+
+    const custResponse = await dynamo
+      .batchWrite({
+        RequestItems: {
+          "tsg-CustomerTable-prod": putBatch
+        }
       })
       .promise();
 
-    console.log("PUT CUST: ", cust);
-    c++;
+    console.log(custResponse);
+
+    custPutRequests = custPutRequests.skip(batchSize);
+
+    console.log(`Only ${custPutRequests.size} customers to go`);
   }
 
-  let j = 0;
-  while (j < mappedJobs.size) {
-    const job = mappedJobs.get(j).toJS();
+  // let c = 0;
+  // while (c < mappedCustomers.size) {
+  //   const cust = mappedCustomers.get(c).toJS();
 
-    await dynamo
-      .put({
-        TableName: "tsg-JobTable-prod",
-        Item: job
+  //   await dynamo
+  //     .put({
+  //       TableName: "tsg-CustomerTable-prod",
+  //       Item: cust
+  //     })
+  //     .promise();
+
+  //   console.log("PUT CUST: ", cust);
+  //   c++;
+  // }
+
+  let jobPutRequests = mappedJobs.map(v => ({
+    PutRequest: { Item: v }
+  }));
+
+  while (jobPutRequests.size > 0) {
+    const putBatch = jobPutRequests.take(batchSize).toJS();
+
+    const jobResponse = await dynamo
+      .batchWrite({
+        RequestItems: {
+          "tsg-JobTable-prod": putBatch
+        }
       })
       .promise();
 
-    console.log("PUT JOB: ", job);
-    j++;
+    console.log(jobResponse);
+
+    jobPutRequests = jobPutRequests.skip(batchSize);
+
+    console.log(`Only ${jobPutRequests.size} jobs to go`);
   }
+
+  // let j = 0;
+  // while (j < mappedJobs.size) {
+  //   const job = mappedJobs.get(j).toJS();
+
+  //   await dynamo
+  //     .put({
+  //       TableName: "tsg-JobTable-prod",
+  //       Item: job
+  //     })
+  //     .promise();
+
+  //   console.log("PUT JOB: ", job);
+  //   j++;
+  // }
 };
 run();

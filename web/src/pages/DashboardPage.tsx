@@ -8,16 +8,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
 
 import axios from "../utils/axios";
 import { ListJobsResponse, Job, JobsBreakdownResponse } from "tsg-shared";
 import LoadingSpinner from "../components/LoadingSpinner";
-import moment from "moment";
+import JobTable from "../components/JobTable";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -46,11 +41,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const DashboardPage: React.FC<RouteComponentProps> = props => {
-  const { history } = props;
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-  const [jobs, setJobs] = React.useState<Array<Job>>();
+  const [jobs, setJobs] = React.useState<Array<Job>>([]);
+  const [jobsLoading, setJobsLoading] = React.useState(true);
   const [monthCounts, setMonthCounts] = React.useState<
     Array<{ month: string; count: number }>
   >([]);
@@ -68,12 +63,18 @@ const DashboardPage: React.FC<RouteComponentProps> = props => {
     });
   }, []);
 
-  React.useEffect(() => {
+  const loadJobs = () => {
+    setJobsLoading(true);
     axios.get<ListJobsResponse>("/jobs/list/pending").then(resp => {
       if (resp.status === 200) {
         setJobs(resp.data.data);
+        setJobsLoading(false);
       }
     });
+  };
+
+  React.useEffect(() => {
+    loadJobs();
   }, []);
 
   return (
@@ -105,48 +106,12 @@ const DashboardPage: React.FC<RouteComponentProps> = props => {
           </Paper>
         </Grid>
         <Grid item xs={12}>
-          <Paper className={classes.fixedHeight}>
-            <Typography variant="h6" className={classes.cardTitle}>
-              Jobs Queue
-            </Typography>
-            {!jobs ? (
-              <LoadingSpinner size="sm" />
-            ) : (
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Racket</TableCell>
-                    <TableCell>String</TableCell>
-                    <TableCell>Tension</TableCell>
-                    <TableCell>Guage</TableCell>
-                    <TableCell>Strung On</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {jobs &&
-                    jobs.map(j => (
-                      <TableRow
-                        key={j.id}
-                        onClick={() => history.push(`/app/jobs/${j.id}`)}
-                        hover
-                      >
-                        <TableCell component="th" scope="row">
-                          {j.name}
-                        </TableCell>
-                        <TableCell>{j.stringName}</TableCell>
-                        <TableCell>{j.racket}</TableCell>
-                        <TableCell>{j.tension}</TableCell>
-                        <TableCell>{j.gauge}</TableCell>
-                        <TableCell>
-                          {moment(j.finishedAt).format("MMM d, YY")}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
-            )}
-          </Paper>
+          <JobTable
+            jobs={jobs}
+            loading={jobsLoading}
+            options={{ paging: false, search: false }}
+            reloadData={loadJobs}
+          />
         </Grid>
       </Grid>
     </React.Fragment>

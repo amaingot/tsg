@@ -1,16 +1,27 @@
 import React from "react";
 import MUITextField, { TextFieldProps } from "@material-ui/core/TextField";
+import { makeStyles } from "@material-ui/core/styles";
+import clsx from "clsx";
 
 import PhoneTextMask, { phoneNumberIsValid } from "../components/PhoneTextMask";
 import emailIsValid from "../utils/emailIsValid";
 
 interface Props {
   hide?: boolean;
+  withBottomGutter?: boolean;
 }
+
+const useStyles = makeStyles(theme => ({
+  withBottomGutter: {
+    marginBottom: theme.spacing(2)
+  }
+}));
 
 type CombinedProps = Props & TextFieldProps;
 
 const TextField: React.FC<CombinedProps> = props => {
+  const classes = useStyles();
+
   const {
     id,
     name = props.id,
@@ -21,6 +32,8 @@ const TextField: React.FC<CombinedProps> = props => {
     value = "",
     error = false,
     hide = false,
+    withBottomGutter = false,
+    className,
     ...others
   } = props;
 
@@ -50,6 +63,7 @@ const TextField: React.FC<CombinedProps> = props => {
 
   return (
     <MUITextField
+      className={clsx(className, withBottomGutter && classes.withBottomGutter)}
       id={id}
       name={name}
       variant={variant as any}

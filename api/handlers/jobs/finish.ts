@@ -44,7 +44,7 @@ const handler: Handler = logger => async event => {
     return Responses.forbidden();
   }
 
-  if (oldJob.finished || !!oldJob.finishedAt) {
+  if (oldJob.finished === "yes" || !!oldJob.finishedAt) {
     logger.info("User is trying to finish a job that is already finished");
     return Responses.badRequest(
       "You are trying to finish a job that is already finished"
@@ -54,7 +54,7 @@ const handler: Handler = logger => async event => {
   const updatedJob: Job = {
     ...oldJob,
     updatedAt: new Date().toISOString(),
-    finished: true,
+    finished: "yes",
     finishedBy: user.id,
     finishedAt: new Date().toISOString()
   };

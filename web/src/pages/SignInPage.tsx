@@ -43,14 +43,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SignInPage: React.FC<RouteComponentProps> = props => {
-  const { history } = props;
+  const { history, location } = props;
+  const { email: previousPageEmail } = location.state;
   const classes = useStyles();
   const userData = useUserData();
 
   const [challenge, setChallenge] = React.useState<string>();
   const [error, setError] = React.useState<string>();
 
-  const [email, setEmail] = React.useState("");
+  const [email, setEmail] = React.useState(previousPageEmail || "");
   const [password, setPassword] = React.useState("");
 
   const [mfaCode, setMfaCode] = React.useState("");

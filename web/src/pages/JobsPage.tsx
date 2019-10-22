@@ -2,7 +2,6 @@ import React from "react";
 import { RouteComponentProps } from "react-router";
 import { NavLink } from "react-router-dom";
 import { ListJobsResponse, Job } from "tsg-shared";
-import moment from "moment";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -10,9 +9,9 @@ import Typography from "@material-ui/core/Typography";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 
-import Table, { Column } from "../components/Table";
 import axios from "../utils/axios";
 import JobDetailTablePanel from "../components/JobDetailTablePanel";
+import JobTable from "../components/JobTable";
 
 const useStyles = makeStyles(theme => ({
   actionContainer: {
@@ -46,20 +45,6 @@ const JobsPage: React.FC<RouteComponentProps> = props => {
     });
   }, []);
 
-  const columns: Column<Job>[] = [
-    { title: "Name", field: "name" },
-    { title: "String", field: "stringName" },
-    { title: "Racket", field: "racket" },
-    { title: "Tension", field: "tension" },
-    { title: "Gauge", field: "gauge" },
-    {
-      title: "Strung On",
-      field: "finishedAt",
-      render: j => moment(j.finishedAt).format("MMM d, YY"),
-      defaultSort: "desc"
-    }
-  ];
-
   const handleRowClick = (
     _event?: React.MouseEvent<Element, MouseEvent> | undefined,
     rowData?: Job | undefined
@@ -86,10 +71,9 @@ const JobsPage: React.FC<RouteComponentProps> = props => {
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Table
-            columns={columns}
-            data={jobs}
-            isLoading={loading}
+          <JobTable
+            jobs={jobs}
+            loading={loading}
             onRowClick={handleRowClick}
             detailPanel={job => <JobDetailTablePanel {...job} />}
           />

@@ -93,13 +93,12 @@ const SignUpPage: React.FC<RouteComponentProps> = props => {
       });
       if (response.status !== 200) {
         setError(response.data["message"] || "Oops! There is something wrong!");
+        setLoading(false);
         window.Rollbar.error(response);
-      } else {
-        history.push("/sign-up/confirm", { email });
+        return;
       }
+      history.push("/sign-up/confirm", { email });
     }
-
-    setLoading(false);
   };
 
   return (
@@ -216,6 +215,15 @@ const SignUpPage: React.FC<RouteComponentProps> = props => {
             disabled={loading}
           >
             Sign Up
+          </Button>
+          <Button
+            onClick={() =>
+              history.push("/sign-up/confirm", {
+                email: "alex@esyncsolutions.net"
+              })
+            }
+          >
+            Boom
           </Button>
           <Grid container justify="flex-end">
             <Grid item>

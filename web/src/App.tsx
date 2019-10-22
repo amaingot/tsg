@@ -33,6 +33,7 @@ const App: React.FC = () => {
           <Route path="/sign-up-plus" exact component={AdvancedSignUpPage} />
           <Route path="/support" exact component={SupportPage} />
           <Redirect from="/sign-in" exact to="/login" />
+          <Redirect from="/signup" exact to="/sign-up" />
           <Route path="/app" component={CustomerApp} />
           <Route component={ErrorPage} />
         </Switch>

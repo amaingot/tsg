@@ -12,15 +12,14 @@ const handler: Handler = logger => async event => {
   const jobRecords = await dynamo
     .query({
       TableName: process.env.JOB_TABLE,
-      IndexName: "ClientJobs",
-      KeyConditionExpression: "clientId = :clientId",
+      IndexName: "ClientJobsByCreated",
+      KeyConditionExpression: "clientId = :clientId AND createdAt > :createdAt",
       ExpressionAttributeValues: {
         ":clientId": client.id,
-        ":finishedAt": moment()
+        ":createdAt": moment()
           .subtract(1, "year")
           .toISOString()
       },
-      FilterExpression: "finishedAt > :finishedAt"
     })
     .promise();
 

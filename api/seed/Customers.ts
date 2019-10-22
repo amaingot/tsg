@@ -1,4 +1,4 @@
-[
+export default [
   {
     "ID": 8199,
     "MemNum": "CC10159",
@@ -11091,7 +11091,7 @@
     "HomePhone": null,
     "CellPhone": "(361)813-9116",
     "WorkPhone": null,
-    "LastUpdated": "2019-09-15 15:34:28.453",
+    "LastUpdated": "2019-10-20 17:11:42.603",
     "Created": "2014-04-24 17:21:59.000",
     "FullName": "BORKOWSKI, JOHN"
   },
@@ -26785,7 +26785,7 @@
     "HomePhone": null,
     "CellPhone": "361-779-7518",
     "WorkPhone": null,
-    "LastUpdated": "2018-01-19 18:36:43.680",
+    "LastUpdated": "2019-10-20 15:14:52.783",
     "Created": "2014-10-16 14:40:48.343",
     "FullName": "Schuster, Patsy"
   },

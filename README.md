@@ -36,7 +36,7 @@ type Job {
   tension: String
   gauge: String
   recieved: AWSDateTime
-  finished: AWSDateTime
+  finished: String
   stringName: String
   lastUpdated: AWSDateTime
   createdAt: AWSDateTime

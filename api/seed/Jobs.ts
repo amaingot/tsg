@@ -1,4 +1,4 @@
-[
+export default [
   {
     "ID": 26228,
     "CustomerID": 8199,
@@ -140361,6 +140361,30 @@
     "Recieved": "2019-10-19 13:13:17.000",
     "Finished": "2019-10-19 13:13:30.747",
     "String": "velocity mlt/hsg",
+    "StringerId": 13
+  },
+  {
+    "ID": 67452,
+    "CustomerID": 15599,
+    "Name": "Patsy",
+    "Racket": "warrior 100esp",
+    "Tension": 55.00,
+    "Gauge": 18,
+    "Recieved": "2019-10-20 15:14:52.000",
+    "Finished": "2019-10-20 15:15:14.037",
+    "String": "tnt",
+    "StringerId": 13
+  },
+  {
+    "ID": 67453,
+    "CustomerID": 8782,
+    "Name": "JOHN",
+    "Racket": "radical mp",
+    "Tension": 5051.00,
+    "Gauge": 1617,
+    "Recieved": "2019-10-20 17:11:42.000",
+    "Finished": "2019-10-20 17:11:51.157",
+    "String": "own",
     "StringerId": 13
   }
 ];

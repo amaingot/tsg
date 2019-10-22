@@ -34,19 +34,21 @@ provider:
     MESSAGE_TABLE: ${self:service.app}-MessageTable-${self:provider.stage}
     NODE_PATH: "./:/opt/node_modules"
     ENV: ${self:provider.stage}
-    LAMBDA_ROLLBAR_TOKEN: ${env:LAMBDA_ROLLBAR_TOKEN}
+    LAMBDA_ROLLBAR_TOKEN: ${self:custom.secrets.LAMBDA_ROLLBAR_TOKEN}
     CODE_VERSION: ${env:CIRCLE_SHA1}
     USER_POOL_ID: { Ref: UserPool }
     USER_POOL_CLIENT_ID: { Ref: UserPoolClientServer }
-    STRIPE_SECRET_KEY: ${env:STRIPE_SECRET_KEY}
+    STRIPE_SECRET_KEY: ${self:custom.secrets.STRIPE_SECRET_KEY}
     LOG_LEVEL: debug
-    TWILIO_PHONE_NUMBER: ${env:TWILIO_PHONE_NUMBER}
-    TWILIO_ACCOUNT_SID: ${env:TWILIO_ACCOUNT_SID}
-    TWILIO_AUTH_TOKEN: ${env:TWILIO_AUTH_TOKEN}
+    TWILIO_PHONE_NUMBER: ${self:custom.secrets.TWILIO_PHONE_NUMBER}
+    TWILIO_ACCOUNT_SID: ${self:custom.secrets.TWILIO_ACCOUNT_SID}
+    TWILIO_AUTH_TOKEN: ${self:custom.secrets.TWILIO_AUTH_TOKEN}
+
 package:
   individually: true
 
 custom:
+  secrets: ${ssm:/aws/reference/secretsmanager/${env:AWS_SECRET_NAME}~true}
   webpack:
     keepOutputDirectory: true
   serverless-offline:

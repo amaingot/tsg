@@ -46,10 +46,11 @@ interface Props extends RouteComponentProps {
 
 const SignUpConfirmPage: React.FC<Props> = props => {
   const classes = useStyles();
-  const { history, email } = props;
+  const { history, location } = props;
+  const { email } = location.state;
 
   React.useEffect(() => {
-    if (!email) {
+    if (typeof email !== "string") {
       history.push("/login");
     }
   }, [history, email]);

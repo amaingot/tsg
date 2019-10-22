@@ -9,6 +9,8 @@ export interface Client {
   createdAt: string;
 }
 
+type Finished = "yes" | "no";
+
 export interface NewJob {
   customerId: string;
   name?: string;
@@ -16,7 +18,7 @@ export interface NewJob {
   racket?: string;
   tension?: string;
   gauge?: string;
-  finished?: boolean;
+  finished?: Finished;
   recievedAt?: string;
   finishedAt?: string;
   finishedBy?: string;
@@ -24,6 +26,7 @@ export interface NewJob {
 
 export interface Job extends NewJob {
   id: string;
+  finished: Finished;
   clientId: string;
   updatedAt: string;
   createdAt: string;
