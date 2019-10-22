@@ -123,7 +123,7 @@ const CustomerDetailPage: React.FC<
       }
       setLoading(false);
     });
-  }, [id, search]);
+  }, [id]);
 
   const handleNewJob = (newJob?: Job) => {
     if (!newJob) {
