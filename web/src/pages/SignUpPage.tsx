@@ -216,15 +216,6 @@ const SignUpPage: React.FC<RouteComponentProps> = props => {
           >
             Sign Up
           </Button>
-          <Button
-            onClick={() =>
-              history.push("/sign-up/confirm", {
-                email: "alex@esyncsolutions.net"
-              })
-            }
-          >
-            Boom
-          </Button>
           <Grid container justify="flex-end">
             <Grid item>
               <Link component={RouterLink} to="/sign-in" variant="body2">
