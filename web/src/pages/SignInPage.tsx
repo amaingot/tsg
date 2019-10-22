@@ -44,7 +44,11 @@ const useStyles = makeStyles(theme => ({
 
 const SignInPage: React.FC<RouteComponentProps> = props => {
   const { history, location } = props;
-  const { email: previousPageEmail } = location.state;
+
+  const previousPageEmail =
+    !!location.state && !!location.state["email"]
+      ? location.state["email"]
+      : undefined;
   const classes = useStyles();
   const userData = useUserData();
 
