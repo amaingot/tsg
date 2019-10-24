@@ -1,7 +1,7 @@
 import axios from "axios";
 import Auth from "@aws-amplify/auth";
 
-export const ApiBaseURL = `${process.env.REACT_APP_API_HOST}/`;
+export const ApiBaseURL = process.env.REACT_APP_API_HOST || `https://api.${document.location.host}/`;
 
 const axiosInstance = axios.create({
   baseURL: ApiBaseURL

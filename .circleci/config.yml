@@ -79,7 +79,6 @@ jobs:
             REACT_APP_COGNITO_REGION=`jq -r '.Region' ./env.json` \
             REACT_APP_COGNITO_USER_POOL_ID=`jq -r '.UserPoolId' ./env.json` \
             REACT_APP_COGNITO_USER_POOL_CLIENT_ID=`jq -r '.UserPoolClientId' ./env.json` \
-            REACT_APP_API_HOST=`jq -r '.ServiceEndpoint' ./env.json` \
             REACT_APP_ENV=prod \
             npm run build-web
 
