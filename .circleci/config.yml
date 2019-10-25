@@ -47,7 +47,7 @@ jobs:
                 export ENV=staging
                 export CLOUDFRONT_DIST_ID=$CLOUDFRONT_DIST_ID_STAGING
                 export S3_BUCKET_NAME=S3_BUCKET_NAME_STAGING
-            elif [[ $CIRCLE_TAG =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]]; then
+            elif [[ "$CIRCLE_TAG" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
                 export ENV=prod
                 export CLOUDFRONT_DIST_ID=$CLOUDFRONT_DIST_ID_PROD
                 export S3_BUCKET_NAME=S3_BUCKET_NAME_PROD
