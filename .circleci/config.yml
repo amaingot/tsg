@@ -121,6 +121,11 @@ workflows:
     jobs:
       - test:
           context: maingot
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              only: /.*/
 
       - deploy:
           context: maingot
