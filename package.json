@@ -10,6 +10,7 @@
     "fresh": "rm -rf node_modules && lerna run fresh",
     "start": "REACT_APP_API_HOST=http://localhost:3001 lerna run start --parallel",
     "deploy-api": "lerna run --scope tsg-api deploy:prod --stream",
+    "deploy-api:ci": "lerna run --scope tsg-api deploy:ci --stream",
     "test-web": "lerna run --scope tsg-web test --stream",
     "build-web": "lerna run --scope tsg-web build --stream",
     "deploy-web": "s3-deploy './web/build/**' --cwd './web/build/' --region $AWS_REGION --bucket $S3_BUCKET_NAME --deleteRemoved --distId $CLOUDFRONT_DIST_ID --invalidate '/*'"

@@ -40,37 +40,36 @@ jobs:
     docker:
       - image: circleci/node:10
     steps:
+      - run:
+          name: Set deploy environment
+          commnad: |
+            if [[ "$CIRCLE_BRANCH" == "master" ]]; then
+                export ENV=staging
+                export CLOUDFRONT_DIST_ID=$CLOUDFRONT_DIST_ID_STAGING
+                export S3_BUCKET_NAME=S3_BUCKET_NAME_STAGING
+            elif [[ $CIRCLE_TAG =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]]; then
+                export ENV=prod
+                export CLOUDFRONT_DIST_ID=$CLOUDFRONT_DIST_ID_PROD
+                export S3_BUCKET_NAME=S3_BUCKET_NAME_PROD
+            else
+                exit 1
+            fi
+
       - attach_workspace:
           at: ./
 
       - run:
           name: Deploying API
-          command: npm run deploy-api
+          command: npm run deploy-api:ci
 
       - run:
           name: Deployment notification to Rollbar for tsg-api
           command: |
             curl https://api.rollbar.com/api/1/deploy/ \
               -F access_token=$ROLLBAR_API_DEPLOY_TOKEN \
-              -F environment=prod \
+              -F environment=$ENV \
               -F revision=$CIRCLE_SHA1 \
               -F local_username=$CIRCLE_USERNAME
-
-      # - run:
-      #     name: Move sourcemaps to their own directory
-      #     command: mkdir api-sm && mv api/.webpack/**/handlers/**/*.map api-sm/
-
-      # - run:
-      #     name: Upload Rollbar sourcemaps
-      #     command: |
-      #       cd api-sm
-      #       find **.js.map | while read file
-      #       do
-      #         curl https://api.rollbar.com/api/1/sourcemap/ \
-      #           -F access_token=$ROLLBAR_API_DEPLOY_TOKEN \
-      #           -F version=$CIRCLE_SHA1 \
-      #           -F source_map=@"${file}"
-      #       done
 
       - run:
           name: Build web bundle and all assets
@@ -79,7 +78,7 @@ jobs:
             REACT_APP_COGNITO_REGION=`jq -r '.Region' ./env.json` \
             REACT_APP_COGNITO_USER_POOL_ID=`jq -r '.UserPoolId' ./env.json` \
             REACT_APP_COGNITO_USER_POOL_CLIENT_ID=`jq -r '.UserPoolClientId' ./env.json` \
-            REACT_APP_ENV=prod \
+            REACT_APP_ENV=$ENV \
             npm run build-web
 
       - run:
@@ -95,7 +94,7 @@ jobs:
           command: |
             curl https://api.rollbar.com/api/1/deploy/ \
               -F access_token=$ROLLBAR_WEB_DEPLOY_TOKEN \
-              -F environment=prod \
+              -F environment=$ENV \
               -F revision=$CIRCLE_SHA1 \
               -F local_username=$CIRCLE_USERNAME
 
@@ -130,3 +129,5 @@ workflows:
           filters:
             branches:
               only: master
+            tags:
+              only: /^(v\d+)\.\d+.(\d+)$/
