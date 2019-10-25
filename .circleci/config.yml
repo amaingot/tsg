@@ -46,11 +46,11 @@ jobs:
             if [[ "$CIRCLE_BRANCH" == "master" ]]; then
                 echo 'export ENV=staging' >> $BASH_ENV
                 echo 'export CLOUDFRONT_DIST_ID=$CLOUDFRONT_DIST_ID_STAGING' >> $BASH_ENV
-                echo 'export S3_BUCKET_NAME=S3_BUCKET_NAME_STAGING' >> $BASH_ENV
+                echo 'export S3_BUCKET_NAME=$S3_BUCKET_NAME_STAGING' >> $BASH_ENV
             elif [[ "$CIRCLE_TAG" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
                 echo 'export ENV=prod' >> $BASH_ENV
                 echo 'export CLOUDFRONT_DIST_ID=$CLOUDFRONT_DIST_ID_PROD' >> $BASH_ENV
-                echo 'export S3_BUCKET_NAME=S3_BUCKET_NAME_PROD' >> $BASH_ENV
+                echo 'export S3_BUCKET_NAME=$S3_BUCKET_NAME_PROD' >> $BASH_ENV
             else
                 exit 1
             fi
