@@ -20,7 +20,7 @@ const App: React.FC = () => {
   const { pathname } = useLocation();
 
   React.useEffect(() => {
-    window.analytics.page(pathname);
+    window.analytics && window.analytics.page(pathname);
   }, [pathname]);
 
   return (
