@@ -75,7 +75,7 @@ const ForgotPasswordPage: React.FC<RouteComponentProps> = () => {
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link component={RouterLink} to="/sign-in" variant="body2">
+              <Link component={RouterLink} to="/login" variant="body2">
                 Remembered your password? Sign In
               </Link>
             </Grid>

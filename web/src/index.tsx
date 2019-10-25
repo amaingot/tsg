@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import Amplify from "@aws-amplify/core";
+import { BrowserRouter } from "react-router-dom";
+import AllContextProviders from "./contexts";
 
 Amplify.configure({
   Auth: {
@@ -20,6 +22,13 @@ Amplify.configure({
   }
 });
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(
+  <AllContextProviders>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </AllContextProviders>,
+  document.getElementById("root")
+);
 
 serviceWorker.unregister();

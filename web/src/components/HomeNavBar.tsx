@@ -122,7 +122,7 @@ const HomeNavBar: React.FC = () => {
         </nav>
         <Button
           component={RouterLink}
-          to={!user ? "/sign-in" : "/app"}
+          to={!user ? "/login" : "/app"}
           color="primary"
           variant={!user ? "outlined" : "contained"}
           className={classes.link}

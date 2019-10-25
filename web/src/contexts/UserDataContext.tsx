@@ -31,25 +31,6 @@ export const UserDataContextProvider: React.FC = props => {
       const currentUser: CognitoUser = await Auth.currentAuthenticatedUser();
       setUser(currentUser);
       setCogLoading(false);
-      currentUser.getUserData(
-        (error, userData) =>
-          !error &&
-          !!userData &&
-          window.Rollbar.configure({
-            payload: {
-              person: {
-                id: userData.Username,
-                username: (
-                  userData.UserAttributes.find(a => a.Name === "email") || {}
-                ).Value,
-                email: (
-                  userData.UserAttributes.find(a => a.Name === "email") || {}
-                ).Value
-              }
-            }
-          })
-      );
-
       const meResponse = await axios.get<GetMeResponse>("/clients/me");
       setClient(meResponse.data.data.client);
       setEmployee(meResponse.data.data.user);
@@ -75,8 +56,32 @@ export const UserDataContextProvider: React.FC = props => {
     }
   }, [meLoading, cogLoading]);
 
+  React.useEffect(() => {
+    if (employee && client) {
+      window.Rollbar.configure({
+        payload: {
+          person: {
+            id: employee.id,
+            username: employee.email,
+            email: employee.email
+          }
+        }
+      });
+      window.analytics.identify(employee.id, {
+        name: `${employee.firstName} ${employee.lastName}`,
+        email: employee.email
+      });
+
+      window.analytics.group(client.id, {
+        name: client.name
+      });
+    }
+  }, [employee, client]);
+
   return (
-    <UserDataContext.Provider value={{ user, client, employee, loading, reload }}>
+    <UserDataContext.Provider
+      value={{ user, client, employee, loading, reload }}
+    >
       {props.children}
     </UserDataContext.Provider>
   );
