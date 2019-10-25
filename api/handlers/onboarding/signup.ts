@@ -5,8 +5,9 @@ import { SignUpRequest, UserRoles } from "tsg-shared";
 import * as Responses from "../utils/responses";
 import dynamo from "../utils/dynamo";
 import withLogger, { Handler } from "../utils/withLogger";
-import { signUpUser, getUser, UserRecord } from "../utils/cognito";
+import { createUser, UserRecord } from "../utils/cognito";
 import Stripe from "../utils/stripe";
+import { sendConfirmEmail } from "../utils/sendgrid";
 
 const handler: Handler = logger => async event => {
   const signUpRequest: Partial<SignUpRequest> = JSON.parse(event.body);
@@ -36,23 +37,18 @@ const handler: Handler = logger => async event => {
     return Responses.badRequest();
   }
 
-  try {
-    await signUpUser({
-      email,
-      password,
-      lastName,
-      firstName,
-      phoneNumber: cellPhone
-    });
-  } catch (e) {
-    logger.error("Error when signing up user", e);
-    return Responses.internalError(e);
-  }
-
   let newCognitoUser: UserRecord;
 
   try {
-    newCognitoUser = await getUser(email);
+    newCognitoUser = await createUser(
+      {
+        email,
+        lastName,
+        firstName,
+        phoneNumber: cellPhone
+      },
+      password
+    );
     logger.info("Cognito user created: ", newCognitoUser);
   } catch (e) {
     logger.error("Error when getting newly signed up user", e);
@@ -120,6 +116,8 @@ const handler: Handler = logger => async event => {
   }
 
   logger.info("Succesfully created new signup");
+
+  await sendConfirmEmail(email, cognitoUserId);
 
   return Responses.success({
     userId: cognitoUserId,

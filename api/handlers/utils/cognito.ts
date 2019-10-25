@@ -33,6 +33,95 @@ interface SignUpUserParams extends InitialUserAttributes {
   password: string;
 }
 
+export interface UserRecord extends InitialUserAttributes {
+  id: string;
+  enabled: boolean;
+  emailVerified: boolean;
+  phoneVerified: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  status: string;
+}
+
+export const createUser = async (
+  params: InitialUserAttributes,
+  password?: string
+) => {
+  const { email, phoneNumber, firstName, lastName } = params;
+
+  const request = {
+    UserPoolId: Config.UserPoolId,
+    Username: email,
+    MessageAction: "SUPPRESS",
+    UserAttributes: [
+      {
+        Name: "email",
+        Value: email
+      },
+      {
+        Name: "phone_number",
+        Value: phoneNumber
+      },
+      {
+        Name: "given_name",
+        Value: firstName
+      },
+      {
+        Name: "family_name",
+        Value: lastName
+      }
+    ]
+  };
+
+  return new Promise<UserRecord>((resolve, reject) => {
+    cognitoidentityserviceprovider.adminCreateUser(request, (err, data) => {
+      if (err) reject(err);
+      if (!!data && !!data.User && data.User !== null) {
+        const {
+          Username,
+          UserCreateDate,
+          UserLastModifiedDate,
+          Enabled,
+          UserStatus
+        } = data.User;
+
+        const user: UserRecord = {
+          id: Username,
+          ...params,
+          enabled: Enabled,
+          emailVerified: false,
+          phoneVerified: false,
+          createdAt: UserCreateDate,
+          updatedAt: UserLastModifiedDate,
+          status: UserStatus
+        };
+
+        if (password) {
+          const passwordSetRequest = {
+            Password: password,
+            UserPoolId: Config.UserPoolId,
+            Username: Username,
+            Permanent: true
+          };
+          console.log(passwordSetRequest);
+          cognitoidentityserviceprovider.adminSetUserPassword(
+            passwordSetRequest,
+            (err, data) => {
+              if (err) console.error(err);
+              console.debug(data);
+            }
+          );
+        }
+
+        resolve(user);
+      }
+      reject(
+        "When creating a new user, the response from Cognito included no error and no user"
+      );
+    });
+  });
+};
+
 export const signUpUser = async (
   params: SignUpUserParams
 ): Promise<CognitoUser> => {
@@ -63,7 +152,7 @@ export const signUpUser = async (
     })
   );
 
-  const promise = new Promise<CognitoUser>((resolve, reject) => {
+  return new Promise<CognitoUser>((resolve, reject) => {
     userPool.signUp(
       params.email,
       params.password,
@@ -80,21 +169,7 @@ export const signUpUser = async (
       }
     );
   });
-
-  const user = await promise;
-
-  return user;
 };
-
-export interface UserRecord extends InitialUserAttributes {
-  id: string;
-  enabled: boolean;
-  emailVerified: boolean;
-  phoneVerified: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  status: string;
-}
 
 export const getUser = async (email: string): Promise<UserRecord> => {
   const userResponse = await cognitoidentityserviceprovider
