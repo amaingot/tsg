@@ -44,13 +44,13 @@ jobs:
           name: Set deploy environment
           command: |
             if [[ "$CIRCLE_BRANCH" == "master" ]]; then
-                export ENV=staging
-                export CLOUDFRONT_DIST_ID=$CLOUDFRONT_DIST_ID_STAGING
-                export S3_BUCKET_NAME=S3_BUCKET_NAME_STAGING
+                echo 'export ENV=staging' >> $BASH_ENV
+                echo 'export CLOUDFRONT_DIST_ID=$CLOUDFRONT_DIST_ID_STAGING' >> $BASH_ENV
+                echo 'export S3_BUCKET_NAME=S3_BUCKET_NAME_STAGING' >> $BASH_ENV
             elif [[ "$CIRCLE_TAG" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
-                export ENV=prod
-                export CLOUDFRONT_DIST_ID=$CLOUDFRONT_DIST_ID_PROD
-                export S3_BUCKET_NAME=S3_BUCKET_NAME_PROD
+                echo 'export ENV=prod' >> $BASH_ENV
+                echo 'export CLOUDFRONT_DIST_ID=$CLOUDFRONT_DIST_ID_PROD' >> $BASH_ENV
+                echo 'export S3_BUCKET_NAME=S3_BUCKET_NAME_PROD' >> $BASH_ENV
             else
                 exit 1
             fi
