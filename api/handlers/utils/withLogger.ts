@@ -7,7 +7,6 @@ import {
 } from "aws-lambda";
 import AWSXRay from "aws-xray-sdk";
 import * as Responses from "./responses";
-import * as http from "http";
 import * as https from "https";
 
 import * as Winston from "winston";

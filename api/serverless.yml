@@ -54,7 +54,7 @@ custom:
   serverless-offline:
     port: 3001
   corsConfig: &corsConfig
-    origin: "https://tsg.hmm.dev"
+    origin: "*"
     allowCredentials: true
   authorizerConfig: &authorizerConfig
     type: COGNITO_USER_POOLS
