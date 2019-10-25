@@ -42,7 +42,7 @@ jobs:
     steps:
       - run:
           name: Set deploy environment
-          commnad: |
+          command: |
             if [[ "$CIRCLE_BRANCH" == "master" ]]; then
                 export ENV=staging
                 export CLOUDFRONT_DIST_ID=$CLOUDFRONT_DIST_ID_STAGING
