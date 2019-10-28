@@ -11,6 +11,7 @@ import { useMemo } from "react";
 import { LOAD_JOBS } from "./actions/jobActions";
 import { LOAD_CUSTOMERS } from "./actions/customerActions";
 import { DashboardState } from "./reducers/dashboardReducer";
+import { LOAD_EMPLOYEES } from "./actions/employeeActions";
 
 export const useSelector = <TSelected>(
   selector: (state: AppState) => TSelected,
@@ -47,6 +48,17 @@ export const useLoadCustomers = () => {
     () => () =>
       dispatch({
         type: LOAD_CUSTOMERS
+      }),
+    [dispatch]
+  );
+};
+
+export const useLoadEmployeess = () => {
+  const dispatch = useDispatch();
+  return useMemo(
+    () => () =>
+      dispatch({
+        type: LOAD_EMPLOYEES
       }),
     [dispatch]
   );
