@@ -5,7 +5,6 @@ import Auth, { CognitoUser } from "@aws-amplify/auth";
 
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
@@ -14,6 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 
+import TextField from "../components/TextField";
 import Copyright from "../components/Copyright";
 import { useUserData } from "../contexts/UserDataContext";
 
@@ -196,26 +196,22 @@ const SignInPage: React.FC<RouteComponentProps> = props => {
           {!challenge && (
             <>
               <TextField
-                variant="outlined"
                 margin="normal"
                 required
-                fullWidth
                 id="email"
+                type="email"
                 label="Email Address"
-                name="email"
                 autoComplete="email"
+                defaultValue={previousPageEmail}
                 autoFocus
                 value={email}
                 onChange={e => setEmail(e.target.value)}
               />
               <TextField
-                variant="outlined"
                 margin="normal"
                 required
-                fullWidth
-                name="password"
-                label="Password"
                 type="password"
+                label="Password"
                 id="password"
                 autoComplete="current-password"
                 value={password}
@@ -232,13 +228,10 @@ const SignInPage: React.FC<RouteComponentProps> = props => {
                 We just sent you a code message. Type it below to log in.
               </Typography>
               <TextField
-                variant="outlined"
                 margin="normal"
                 required
-                fullWidth
                 id="mfa-code"
                 label="Verification Code"
-                name="mfa-code"
                 autoFocus
                 value={mfaCode}
                 onChange={e => setMfaCode(e.target.value)}
@@ -252,10 +245,8 @@ const SignInPage: React.FC<RouteComponentProps> = props => {
                 Looks like we need to you to change your password!
               </Typography>
               <TextField
-                variant="outlined"
                 margin="normal"
                 required
-                fullWidth
                 id="new-password"
                 label="New Password"
                 type="password"
@@ -265,10 +256,8 @@ const SignInPage: React.FC<RouteComponentProps> = props => {
                 onChange={e => setNewPassword(e.target.value)}
               />
               <TextField
-                variant="outlined"
                 margin="normal"
                 required
-                fullWidth
                 name="confirm-new-password"
                 label="Confirm New Password"
                 type="password"

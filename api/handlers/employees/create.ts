@@ -4,14 +4,15 @@ import dynamo from "../utils/dynamo";
 import withLogger, { Handler } from "../utils/withLogger";
 import { sendMessage } from "../utils/twilio";
 import getUserClient from "../utils/getUserClient";
-import { signUpUser, UserRecord, getUser } from "../utils/cognito";
+import { UserRecord, createUser, disableUser } from "../utils/cognito";
 import {
   UserRoles,
   Employee,
   CreateEmployeeRequest,
   CreateEmployeeResponse
 } from "tsg-shared";
-import generatePassword from "../utils/generatePassword";
+import { sendConfirmEmail } from "../utils/sendgrid";
+import generateRandomString from "../utils/generateRandomString";
 
 const handler: Handler = logger => async event => {
   const request = JSON.parse(event.body) as CreateEmployeeRequest;
@@ -25,15 +26,6 @@ const handler: Handler = logger => async event => {
 
   const { client, user } = await getUserClient(event, logger);
 
-  if (!user.clientId) {
-    logger.error(
-      `The user record does not have a client. User Record: ${user}`
-    );
-    return Responses.internalError({
-      message: "The user does not have a client"
-    });
-  }
-
   if (
     user.userRole !== UserRoles.AccountAdmin &&
     user.userRole !== UserRoles.SuperAdmin
@@ -46,30 +38,21 @@ const handler: Handler = logger => async event => {
     });
   }
 
-  const tempPassword = generatePassword(14);
+  let newCognitoUser: UserRecord;
 
   try {
-    await signUpUser({
+    newCognitoUser = await createUser({
       email,
-      password: tempPassword,
       lastName,
       firstName,
       phoneNumber: cellPhone
     });
+    await disableUser(newCognitoUser.id);
   } catch (e) {
-    logger.error("Error when signing up user", e);
+    logger.error("Error when creating user", e);
     return Responses.internalError(e);
   }
 
-  let newCognitoUser: UserRecord;
-
-  try {
-    newCognitoUser = await getUser(email);
-    logger.info("Cognito user created: ", newCognitoUser);
-  } catch (e) {
-    logger.error("Error when getting newly signed up user", e);
-    return Responses.internalError(e);
-  }
   const { id: cognitoUserId } = newCognitoUser;
 
   const userData: Employee = {
@@ -80,11 +63,12 @@ const handler: Handler = logger => async event => {
     email,
     cellPhone,
     userRole,
+    confirmAccountCode: generateRandomString(24),
     updatedAt: new Date().toISOString(),
     createdAt: new Date().toISOString()
   };
 
-  const newUser = await dynamo
+  await dynamo
     .put({
       TableName: process.env.USER_TABLE,
       Item: userData
@@ -92,14 +76,17 @@ const handler: Handler = logger => async event => {
     .promise();
 
   const response: CreateEmployeeResponse = {
-    data: newUser.Attributes as Employee
+    data: userData
   };
+
+  const acceptInvitationLink = `${event.headers["Origin"]}/accept-invitation?id=${userData.id}&code=${userData.confirmAccountCode}`;
+  await sendConfirmEmail(email, acceptInvitationLink);
 
   await sendMessage({
     body:
-      `Hello from Tennis Shop Guru! ${user.firstName} at ${client.name}` +
-      ` created you an account! Visit https://tsg.hmm.dev/login to setup your account.` +
-      ` Your username is ${email} and your temporary password is ${tempPassword}`,
+      `Hello from Tennis Shop Guru! ${user.firstName} at ${client.name} ` +
+      `created you an account! Check your email inbox for a welcome email. ` +
+      `It may have gone to spam, so check there too! Your username for TSG is ${email}`,
     to: cellPhone,
     employeeId: cognitoUserId,
     clientId: client.id,

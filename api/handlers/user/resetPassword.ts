@@ -2,54 +2,61 @@ import "source-map-support/register";
 import { Employee } from "tsg-shared";
 import withLogger, { Handler } from "../utils/withLogger";
 import dynamo from "../utils/dynamo";
-import { enableUser, setUserAttribute } from "../utils/cognito";
+import {
+  getUser as getCognitoUser,
+  setUserPassword,
+  enableUser,
+  setUserAttribute
+} from "../utils/cognito";
 import * as Responses from "../utils/responses";
 import getUser from "../utils/getUser";
 import dynamoUpdateExp from "../utils/dynamoUpdateExp";
 
 const handler: Handler = logger => async event => {
-  const { id, code } = JSON.parse(event.body);
+  const { id, code, password } = JSON.parse(event.body);
 
   if (!id) {
     return Responses.badRequest();
   }
-  logger.info(`Confirming account for user id: ${id}`);
+  logger.info(`Reset password for user id: ${id}`);
 
-  let userRecord: Employee;
-
-  try {
-    userRecord = await getUser(id);
-  } catch (e) {
-    logger.error(e);
-
-    return Responses.internalError({
-      message: "User does not exist in our system"
-    });
-  }
+  const userRecord = await getUser(id);
 
   if (userRecord === undefined) {
-    logger.error(`No user found in dynamodb: ${JSON.stringify(userRecord)}`);
+    logger.error(
+      `Cognito user found, but no user found in dynamodb: ${JSON.stringify(
+        userRecord
+      )}`
+    );
 
     return Responses.internalError({
       message: "User does not exist in our system"
     });
   }
 
-  if (userRecord.confirmAccountCode !== code) {
+  if (userRecord.resetPasswordCode !== code) {
     logger.error(
-      `User attempting to confirm account with invalid code (${code}), user record: ${JSON.stringify(
+      `User attempting to reset password with invalid code (${code}), user record: ${JSON.stringify(
         userRecord
       )}`
     );
     return Responses.forbidden({
       message:
-        "Your sign up link is no longer valid, please visit the forgot password page to request a new link"
+        "Your code is no longer valid, please visit the forgot password page to request a new code"
     });
   }
 
   try {
-    await enableUser(userRecord.id);
+    await getCognitoUser(userRecord.email);
+  } catch (e) {
+    logger.error(e);
+    return Responses.internalError(e);
+  }
+
+  try {
+    await setUserPassword(userRecord.id, password);
     await setUserAttribute(userRecord.id, "email_verified", "true");
+    await enableUser(userRecord.id);
   } catch (e) {
     logger.error(e);
     return Responses.badRequest(e);
@@ -57,7 +64,7 @@ const handler: Handler = logger => async event => {
 
   const updatedUserRecord: Employee = {
     ...userRecord,
-    confirmAccountCode: undefined
+    resetPasswordCode: undefined
   };
 
   const updateExpression = dynamoUpdateExp(userRecord, updatedUserRecord);

@@ -63,9 +63,8 @@ const withLogger: LoggerEnhancer = (handler: Handler) => async (
       })
     ]
   });
-  AWSXRay.captureHTTPsGlobal(https);
-  AWSXRay.setLogger(logger);
-  AWSXRay.set
+  !process.env.DISABLE_XRAY && AWSXRay.captureHTTPsGlobal(https);
+  !process.env.DISABLE_XRAY && AWSXRay.setLogger(logger);
 
   logger.info("Received event:", event);
 

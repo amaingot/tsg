@@ -27,6 +27,7 @@ provider:
   role: LambdaRole
   environment:
     AWS_XRAY_CONTEXT_MISSING: LOG_ERROR
+    APP_HOST: ${self:custom.secrets.APP_HOST}
     CLIENT_TABLE: ${self:service.app}-ClientTable-${self:provider.stage}
     USER_TABLE: ${self:service.app}-UserTable-${self:provider.stage}
     CUSTOMER_TABLE: ${self:service.app}-CustomerTable-${self:provider.stage}
@@ -49,7 +50,7 @@ package:
   individually: true
 
 custom:
-  secrets: ${ssm:/aws/reference/secretsmanager/${env:AWS_SECRET_NAME}~true}
+  secrets: ${ssm:/aws/reference/secretsmanager/${self:provider.stage}/${self:service.app}~true}
   webpack:
     keepOutputDirectory: true
   serverless-offline:
@@ -101,6 +102,36 @@ functions:
       - http:
           method: post
           path: signup/confirm
+          cors: *corsConfig
+
+  forgot-password:
+    handler: handlers/user/forgotPassword.default
+    layers:
+      - { Ref: SharedLambdaLayer }
+    events:
+      - http:
+          method: post
+          path: user/forgot-password
+          cors: *corsConfig
+
+  reset-password:
+    handler: handlers/user/resetPassword.default
+    layers:
+      - { Ref: SharedLambdaLayer }
+    events:
+      - http:
+          method: post
+          path: user/reset-password
+          cors: *corsConfig
+
+  accept-invitation:
+    handler: handlers/user/acceptInvitation.default
+    layers:
+      - { Ref: SharedLambdaLayer }
+    events:
+      - http:
+          method: post
+          path: user/accept-invitation
           cors: *corsConfig
 
   client-me:

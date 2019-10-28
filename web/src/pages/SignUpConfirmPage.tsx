@@ -1,11 +1,10 @@
 import React from "react";
 import { RouteComponentProps } from "react-router";
 import axios from "axios";
+import queryString from "query-string";
 
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
@@ -46,22 +45,22 @@ interface Props extends RouteComponentProps {
 
 const SignUpConfirmPage: React.FC<Props> = props => {
   const classes = useStyles();
-  const { history, location } = props;
-  const { email } = location.state;
+  const { history } = props;
 
-  React.useEffect(() => {
-    if (typeof email !== "string") {
-      history.push("/login");
-    }
-  }, [history, email]);
-
-  const [code, setCode] = React.useState("");
+  const { search } = props.location;
+  const searchValues = queryString.parse(search);
+  const { id, code } = searchValues;
 
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string>();
+  const [email, setEmail] = React.useState<string>();
 
-  const submit: React.FormEventHandler = async e => {
-    e.preventDefault();
+  const confirmAccount = React.useCallback(async () => {
+    if (typeof id !== "string" || typeof code !== "string") {
+      history.push("/login");
+      return;
+    }
+
     setLoading(true);
     setError(undefined);
 
@@ -70,40 +69,27 @@ const SignUpConfirmPage: React.FC<Props> = props => {
       baseURL: ApiBaseURL,
       method: "POST",
       data: {
-        email,
+        id,
         code
       }
     });
     if (response.status !== 200) {
-      setError(response.data["message"] || "Oops! There is something wrong!");
+      setError(response.data["message"]);
       window.Rollbar.error(response);
     } else {
-      history.push("/login", { email });
+      setEmail(response.data.email);
     }
 
     setLoading(false);
+  }, [id, code, history]);
+
+  const visitLogin = () => {
+    history.push("/login", { email });
   };
 
-  const resendCode = async () => {
-    setLoading(true);
-    setError(undefined);
-
-    const response = await axios({
-      url: "/signup/resend",
-      baseURL: ApiBaseURL,
-      method: "POST",
-      data: {
-        email
-      }
-    });
-
-    if (response.status !== 200) {
-      setError(response.data["message"] || "Oops! There is something wrong!");
-      window.Rollbar.error(response);
-    }
-
-    setLoading(false);
-  };
+  React.useEffect(() => {
+    confirmAccount();
+  }, [confirmAccount]);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -112,51 +98,17 @@ const SignUpConfirmPage: React.FC<Props> = props => {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Confirm sign up
+          Thank you for verifying your account!
         </Typography>
-        <form className={classes.form} onSubmit={submit}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="code"
-                label="Verification Code"
-                name="code"
-                value={code}
-                autoFocus
-                onChange={e => setCode(e.target.value)}
-              />
-            </Grid>
-
-            {error && (
-              <Grid item xs={12}>
-                <Typography color="error">{error}</Typography>
-              </Grid>
-            )}
-          </Grid>
-          <Button
-            fullWidth
-            variant="contained"
-            color="secondary"
-            className={classes.submit}
-            disabled={loading}
-            onClick={resendCode}
-          >
-            Resend Verification Code
-          </Button>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            disabled={loading}
-          >
-            Confirm Sign Up
-          </Button>
-        </form>
+        <Button
+          fullWidth
+          variant="contained"
+          color="primary"
+          onClick={visitLogin}
+          disabled={!!error || !email || loading}
+        >
+          Login In To Your Account
+        </Button>
       </div>
       <Box mt={5}>
         <Copyright />

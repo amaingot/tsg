@@ -43,7 +43,9 @@ const dynamoUpdate = (original: Obj, modified: Obj): DynamoUpdate => {
   }
 
   const removes = ori
-    .filter((_v, k) => !mod.has(k) || mod.get(k) === "")
+    .filter(
+      (_v, k) => !mod.has(k) || mod.get(k) === "" || mod.get(k) === undefined
+    )
     .reduce((reduction, _v, k) => {
       updateExp.ExpressionAttributeNames[`#${k}`] = k;
       return reduction.push(`#${k}`);
@@ -51,6 +53,10 @@ const dynamoUpdate = (original: Obj, modified: Obj): DynamoUpdate => {
 
   if (!removes.isEmpty()) {
     updateExp.UpdateExpression += ` REMOVE ${removes.join(", ")}`;
+  }
+
+  if (Object.keys(updateExp.ExpressionAttributeValues).length === 0) {
+    delete updateExp.ExpressionAttributeValues;
   }
 
   return updateExp;

@@ -6,7 +6,9 @@
   "homepage": "https://tsg.hmm.dev",
   "author": "Alex Maingot (alex@maingot.us)",
   "scripts": {
-    "start": "react-scripts start",
+    "start": "REACT_APP_API_HOST=http://localhost:3001 react-scripts start",
+    "start:staging": "REACT_APP_API_HOST=http://api.staging.tennisshop.guru react-scripts start",
+    "start:prod": "REACT_APP_API_HOST=http://api.tennisshop.guru react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

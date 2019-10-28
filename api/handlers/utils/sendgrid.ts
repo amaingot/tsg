@@ -16,28 +16,18 @@ export const sendEmail = async (params: Partial<MailData>) => {
   return sendgrid.send(request);
 };
 
-export const sendConfirmEmail = async (email: string, code: string) => {
+export const sendConfirmEmail = async (email: string, link: string) => {
   return sendEmail({
     subject: "Welcome to Tennis Shop Guru",
     to: email,
-    html: `
-      <div>
-        <h2>Welcome to Tennis Shop Guru!</h2>
-        <p> Click <a href="https://tennisshop.guru/login?code=${code}">this link</a> to get started</p>
-      </div>
-    `
+    html: `<div>Click this <a href="${link}">link</a> to get started in Tennis Shop Guru!</div>`
   });
 };
 
-export const sendForgotPasswordEmail = async (email: string, code: string) => {
+export const sendForgotPasswordEmail = async (email: string, link: string) => {
   return sendEmail({
     subject: "Tennis Shop Guru Password Reset",
     to: email,
-    html: `
-      <div>
-        <h2>Reset your TSG Account!</h2>
-        <p> Click <a href="https://tennisshop.guru/reset-password?code=${code}">this link</a> change your password!</p>
-      </div>
-    `
+    html: `<div>Click this <a href="${link}">link</a> to reset your password in Tennis Shop Guru!</div>`
   });
 };

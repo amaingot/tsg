@@ -5,7 +5,8 @@
   "private": true,
   "author": "Alex Maingot (alex@maingot.us)",
   "scripts": {
-    "start": "serverless offline",
+    "start": "serverless offline --stage staging",
+    "start:prod": "serverless offline --stage prod",
     "deploy:ci": "serverless deploy -v --stage ${ENV}",
     "deploy:prod": "serverless deploy -v --stage prod",
     "deploy:staging": "serverless deploy -v --stage staging",

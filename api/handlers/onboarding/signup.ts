@@ -1,13 +1,14 @@
 import * as uuid from "uuid/v4";
 import "source-map-support/register";
-import { SignUpRequest, UserRoles } from "tsg-shared";
+import { SignUpRequest, UserRoles, Client, Employee } from "tsg-shared";
 
 import * as Responses from "../utils/responses";
 import dynamo from "../utils/dynamo";
 import withLogger, { Handler } from "../utils/withLogger";
-import { createUser, UserRecord } from "../utils/cognito";
+import { createUser, UserRecord, disableUser } from "../utils/cognito";
 import Stripe from "../utils/stripe";
 import { sendConfirmEmail } from "../utils/sendgrid";
+import generateRandomString from "../utils/generateRandomString";
 
 const handler: Handler = logger => async event => {
   const signUpRequest: Partial<SignUpRequest> = JSON.parse(event.body);
@@ -49,12 +50,18 @@ const handler: Handler = logger => async event => {
       },
       password
     );
-    logger.info("Cognito user created: ", newCognitoUser);
   } catch (e) {
     logger.error("Error when getting newly signed up user", e);
     return Responses.internalError(e);
   }
   const { id: cognitoUserId } = newCognitoUser;
+
+  try {
+    await disableUser(cognitoUserId);
+  } catch (e) {
+    logger.error(e);
+    return Responses.badRequest(e);
+  }
 
   let stripeCustomerId: string;
 
@@ -70,58 +77,59 @@ const handler: Handler = logger => async event => {
     return Responses.internalError(e);
   }
 
-  const newClientId = uuid();
+  const newClient: Client = {
+    id: uuid(),
+    name: companyName,
+    phone: workPhone,
+    stripeCustomerId,
+    updatedAt: new Date().toISOString(),
+    createdAt: new Date().toISOString()
+  };
 
   try {
-    const newClient = await dynamo
+    await dynamo
       .put({
         TableName: process.env.CLIENT_TABLE,
-        Item: {
-          id: newClientId,
-          name: companyName,
-          phone: workPhone,
-          stripeCustomerId,
-          updatedAt: new Date().toISOString(),
-          createdAt: new Date().toISOString()
-        }
+        Item: newClient
       })
       .promise();
-    logger.info("Created client record: ", newClient);
   } catch (e) {
     logger.error("Error creating a client in the client table", e);
     return Responses.internalError(e);
   }
 
+  const newUser: Employee = {
+    id: cognitoUserId,
+    clientId: newClient.id,
+    email,
+    firstName,
+    lastName,
+    cellPhone,
+    userRole: UserRoles.AccountAdmin,
+    confirmAccountCode: generateRandomString(24),
+    updatedAt: new Date().toISOString(),
+    createdAt: new Date().toISOString()
+  };
+
   try {
-    const newUserRecord = await dynamo
+    await dynamo
       .put({
         TableName: process.env.USER_TABLE,
-        Item: {
-          id: cognitoUserId,
-          clientId: newClientId,
-          email,
-          firstName,
-          lastName,
-          cellPhone,
-          userRole: UserRoles.AccountAdmin,
-          updatedAt: new Date().toISOString(),
-          createdAt: new Date().toISOString()
-        }
+        Item: newUser
       })
       .promise();
-    logger.info("Created user record: ", newUserRecord);
   } catch (e) {
     logger.error("Error creating user record", e);
     return Responses.internalError(e);
   }
 
-  logger.info("Succesfully created new signup");
+  const confirmAccountLink = `${event.headers["Origin"]}/sign-up/confirm?id=${cognitoUserId}&code=${newUser.confirmAccountCode}`;
 
-  await sendConfirmEmail(email, cognitoUserId);
+  await sendConfirmEmail(email, confirmAccountLink);
 
   return Responses.success({
-    userId: cognitoUserId,
-    clientId: newClientId
+    userId: newUser.id,
+    clientId: newClient.id
   });
 };
 

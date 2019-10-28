@@ -61,6 +61,8 @@ export interface NewEmployee {
   email: string;
   cellPhone: string;
   userRole: UserRoles;
+  resetPasswordCode?: string;
+  confirmAccountCode?: string;
 }
 
 export interface Employee extends NewEmployee {
