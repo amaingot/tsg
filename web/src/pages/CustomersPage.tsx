@@ -1,7 +1,7 @@
 import React from "react";
-import { RouteComponentProps } from "react-router";
+import { RouteComponentProps, useHistory } from "react-router";
 import { NavLink } from "react-router-dom";
-import { ListCustomersResponse, Customer } from "tsg-shared";
+import { Customer } from "tsg-shared";
 import moment from "moment";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -13,7 +13,7 @@ import AddIcon from "@material-ui/icons/Add";
 
 import Table, { Column } from "../components/Table";
 
-import axios from "../utils/axios";
+import { useCustomers, useLoadCustomers } from "../store/hooks";
 
 const useStyles = makeStyles({
   addButton: {
@@ -25,20 +25,15 @@ const useStyles = makeStyles({
   }
 });
 
-const CustomersPage: React.FC<RouteComponentProps> = props => {
+const CustomersPage: React.FC<RouteComponentProps> = () => {
   const classes = useStyles();
-  const { history } = props;
-  const [customers, setCustomers] = React.useState<Array<Customer>>([]);
-  const [loading, setLoading] = React.useState(true);
+  const { list, loading } = useCustomers();
+  const loadCustomers = useLoadCustomers();
+  const history = useHistory();
 
   React.useEffect(() => {
-    axios.get<ListCustomersResponse>("/customers/list").then(resp => {
-      if (resp.status === 200) {
-        setCustomers(resp.data.data);
-        setLoading(false);
-      }
-    });
-  }, []);
+    loadCustomers();
+  }, [loadCustomers]);
 
   const columns: Column<Customer>[] = [
     { title: "First Name", field: "firstName" },
@@ -84,7 +79,7 @@ const CustomersPage: React.FC<RouteComponentProps> = props => {
         <Grid item xs={12}>
           <Table
             columns={columns}
-            data={customers}
+            data={list}
             isLoading={loading}
             onRowClick={handleRowClick}
           />

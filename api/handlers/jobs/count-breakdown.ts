@@ -19,7 +19,7 @@ const handler: Handler = logger => async event => {
         ":createdAt": moment()
           .subtract(1, "year")
           .toISOString()
-      },
+      }
     })
     .promise();
 
@@ -40,7 +40,7 @@ const handler: Handler = logger => async event => {
   });
 
   const response: JobsBreakdownResponse = {
-    data: { jobs, byMonth: jobsMonthlyBreakdown }
+    data: { byMonth: jobsMonthlyBreakdown }
   };
 
   return Responses.success(response);

@@ -18,9 +18,15 @@ import ComingSoonPage from "./pages/ComingSoonPage";
 import { useUserData } from "./contexts/UserDataContext";
 import AppLayout from "./components/AppLayout";
 import LoadingSpinner from "./components/LoadingSpinner";
+import { useLoadAppData } from "./store/hooks";
 
 const App: React.FC<RouteComponentProps> = () => {
   const { loading, user } = useUserData();
+  const loadAppData = useLoadAppData();
+
+  React.useEffect(() => {
+    loadAppData();
+  }, [loadAppData]);
 
   if (!user || loading) {
     return <LoadingSpinner fullPage />;

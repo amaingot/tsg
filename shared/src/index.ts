@@ -12,6 +12,7 @@ export { UserRoles } from "./Constants";
 
 export {
   SignUpRequest,
+  JobCountByMonth,
   CreateJobRequest,
   CreateJobResponse,
   UpdateJobRequest,

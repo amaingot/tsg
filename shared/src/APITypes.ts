@@ -23,6 +23,14 @@ export interface SignUpRequest {
   workPhone: string;
 }
 
+// Dashboard
+export type JobCountByMonth = {
+  [key: string]: {
+    count: number;
+    month: string;
+  };
+};
+
 // Jobs
 export type CreateJobRequest = Request<EntityTypes.NewJob>;
 export type CreateJobResponse = SingleResponse<EntityTypes.Job>;
@@ -36,13 +44,7 @@ export type GetJobResponse = SingleResponse<{
 
 export type ListJobsResponse = ListResponse<EntityTypes.Job>;
 export type JobsBreakdownResponse = SingleResponse<{
-  jobs: Array<EntityTypes.Job>;
-  byMonth: {
-    [key: string]: {
-      count: number;
-      month: string;
-    };
-  };
+  byMonth: JobCountByMonth;
 }>;
 
 // Customers

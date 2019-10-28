@@ -1,7 +1,7 @@
 import React from "react";
-import { RouteComponentProps } from "react-router";
+import { RouteComponentProps, useHistory } from "react-router";
 import { NavLink } from "react-router-dom";
-import { ListJobsResponse, Job } from "tsg-shared";
+import { Job } from "tsg-shared";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -9,9 +9,9 @@ import Typography from "@material-ui/core/Typography";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 
-import axios from "../utils/axios";
 import JobDetailTablePanel from "../components/JobDetailTablePanel";
 import JobTable from "../components/JobTable";
+import { useJobs, useLoadJobs } from "../store/hooks";
 
 const useStyles = makeStyles(theme => ({
   actionContainer: {
@@ -30,20 +30,15 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const JobsPage: React.FC<RouteComponentProps> = props => {
+const JobsPage: React.FC<RouteComponentProps> = () => {
   const classes = useStyles();
-  const { history } = props;
-  const [jobs, setJobs] = React.useState<Array<Job>>([]);
-  const [loading, setLoading] = React.useState(true);
+  const history = useHistory();
+  const { list, loading } = useJobs();
+  const loadJobs = useLoadJobs();
 
   React.useEffect(() => {
-    axios.get<ListJobsResponse>("/jobs/list").then(resp => {
-      if (resp.status === 200) {
-        setJobs(resp.data.data);
-        setLoading(false);
-      }
-    });
-  }, []);
+    loadJobs();
+  }, [loadJobs]);
 
   const handleRowClick = (
     _event?: React.MouseEvent<Element, MouseEvent> | undefined,
@@ -72,7 +67,7 @@ const JobsPage: React.FC<RouteComponentProps> = props => {
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <JobTable
-            jobs={jobs}
+            jobs={list}
             loading={loading}
             onRowClick={handleRowClick}
             detailPanel={job => <JobDetailTablePanel {...job} />}

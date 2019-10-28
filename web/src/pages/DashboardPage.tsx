@@ -9,10 +9,9 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 
-import axios from "../utils/axios";
-import { ListJobsResponse, Job, JobsBreakdownResponse } from "tsg-shared";
 import LoadingSpinner from "../components/LoadingSpinner";
 import JobTable from "../components/JobTable";
+import { useParsedJobsByMonth, useJobs, useDashboard } from "../store/hooks";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -40,42 +39,12 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const DashboardPage: React.FC<RouteComponentProps> = props => {
+const DashboardPage: React.FC<RouteComponentProps> = () => {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-
-  const [jobs, setJobs] = React.useState<Array<Job>>([]);
-  const [jobsLoading, setJobsLoading] = React.useState(true);
-  const [monthCounts, setMonthCounts] = React.useState<
-    Array<{ month: string; count: number }>
-  >([]);
-
-  React.useEffect(() => {
-    axios.get<JobsBreakdownResponse>("/jobs/count-breakdown").then(resp => {
-      if (resp.status === 200) {
-        let temp: Array<{ month: string; count: number }> = [];
-        const { byMonth } = resp.data.data;
-        Object.keys(byMonth).forEach(k => {
-          temp.push({ ...byMonth[k] });
-        });
-        setMonthCounts(temp);
-      }
-    });
-  }, []);
-
-  const loadJobs = () => {
-    setJobsLoading(true);
-    axios.get<ListJobsResponse>("/jobs/list/pending").then(resp => {
-      if (resp.status === 200) {
-        setJobs(resp.data.data);
-        setJobsLoading(false);
-      }
-    });
-  };
-
-  React.useEffect(() => {
-    loadJobs();
-  }, []);
+  const dashboardData = useDashboard();
+  const monthCounts = useParsedJobsByMonth();
+  const { pending, loading } = useJobs();
 
   return (
     <React.Fragment>
@@ -87,11 +56,15 @@ const DashboardPage: React.FC<RouteComponentProps> = props => {
           <Paper className={fixedHeightPaper}>
             <Typography variant="h6">Jobs Completed by Month</Typography>
             <ResponsiveContainer className={classes.graphContainer}>
-              <BarChart data={monthCounts}>
-                <XAxis dataKey="month" />
-                <Tooltip />
-                <Bar dataKey="count" fill="#3f51b5" />
-              </BarChart>
+              {dashboardData.loading ? (
+                <LoadingSpinner size="sm" />
+              ) : (
+                <BarChart data={monthCounts}>
+                  <XAxis dataKey="month" />
+                  <Tooltip />
+                  <Bar dataKey="count" fill="#3f51b5" />
+                </BarChart>
+              )}
             </ResponsiveContainer>
           </Paper>
         </Grid>
@@ -100,17 +73,16 @@ const DashboardPage: React.FC<RouteComponentProps> = props => {
             <Typography variant="h6">Pending Jobs</Typography>
             <div className={classes.jobCount}>
               <Typography variant="h1" align="center">
-                {jobs ? jobs.length : <LoadingSpinner size="sm" />}
+                {loading ? <LoadingSpinner size="sm" /> : pending.length}
               </Typography>
             </div>
           </Paper>
         </Grid>
         <Grid item xs={12}>
           <JobTable
-            jobs={jobs}
-            loading={jobsLoading}
+            jobs={pending}
+            loading={loading}
             options={{ paging: false, search: false }}
-            reloadData={loadJobs}
           />
         </Grid>
       </Grid>
