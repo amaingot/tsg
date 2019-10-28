@@ -31,17 +31,23 @@ export const UserDataContextProvider: React.FC = props => {
       const currentUser: CognitoUser = await Auth.currentAuthenticatedUser();
       setUser(currentUser);
       setCogLoading(false);
+
       const meResponse = await axios.get<GetMeResponse>("/clients/me");
+
       setClient(meResponse.data.data.client);
       setEmployee(meResponse.data.data.user);
+
       setMeLoading(false);
     } catch (e) {
-      if (forceRedirect) {
+      setCogLoading(false);
+      setMeLoading(false);
+
+      Auth.signOut();
+      if (window.location.pathname.includes("/app") || forceRedirect) {
         window.Rollbar.info(
-          "A user tried to access private pages without being logged in",
-          e
+          "A user tried to access private pages without being logged in"
         );
-        window.location.replace("/");
+        window.location.replace("/login");
       }
     }
   };

@@ -15,8 +15,6 @@ const getUserClient = async (
 ): Promise<Result> => {
   const userId = event.requestContext.authorizer.claims["cognito:username"];
 
-  logger.info("Fetching auth info becasue of this request: ", event);
-
   if (!userId) {
     logger.error("No user claim in event");
     throw new Error("No user");
@@ -30,10 +28,18 @@ const getUserClient = async (
     throw e;
   }
 
+  if (user === undefined) {
+    logger.error(
+      `User record does not exist in dynamo DB. Cognito user id: ${userId}`
+    );
+    throw new Error(`User record does not exist in dynamo DB.`);
+  }
+
   try {
     client = await getClient(user.clientId);
   } catch (e) {
     logger.error(`Error fetching a client record. Client ID: ${user.clientId}`);
+    throw e;
   }
 
   return { user, client };

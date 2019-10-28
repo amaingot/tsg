@@ -1,7 +1,7 @@
 import { APIGatewayProxyResult } from "aws-lambda";
 
 const headers = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": `https://${process.env.APP_HOST}`,
   "Access-Control-Allow-Credentials": true
 };
 

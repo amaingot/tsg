@@ -5,13 +5,17 @@ import getUserClient from "../utils/getUserClient";
 import { GetMeResponse } from "tsg-shared";
 
 const handler: Handler = logger => async event => {
-  const clientuser = await getUserClient(event, logger);
+  try {
+    const clientuser = await getUserClient(event, logger);
+    const response: GetMeResponse = {
+      data: clientuser
+    };
 
-  const response: GetMeResponse = {
-    data: clientuser
-  };
-
-  return Responses.success(response);
+    return Responses.success(response);
+  } catch (e) {
+    logger.error(e);
+    return Responses.forbidden({ message: "Please login again" });
+  }
 };
 
 export default withLogger(handler);
