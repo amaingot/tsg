@@ -79,7 +79,7 @@ const handler: Handler = logger => async event => {
     data: userData
   };
 
-  const acceptInvitationLink = `${event.headers["Origin"]}/accept-invitation?id=${userData.id}&code=${userData.confirmAccountCode}`;
+  const acceptInvitationLink = `https://${process.env.APP_HOST}/accept-invitation?id=${userData.id}&code=${userData.confirmAccountCode}`;
   await sendConfirmEmail(email, acceptInvitationLink);
 
   await sendMessage({

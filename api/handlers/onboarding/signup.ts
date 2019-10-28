@@ -123,7 +123,7 @@ const handler: Handler = logger => async event => {
     return Responses.internalError(e);
   }
 
-  const confirmAccountLink = `${event.headers["Origin"]}/sign-up/confirm?id=${cognitoUserId}&code=${newUser.confirmAccountCode}`;
+  const confirmAccountLink = `https://${process.env.APP_HOST}/sign-up/confirm?id=${cognitoUserId}&code=${newUser.confirmAccountCode}`;
 
   await sendConfirmEmail(email, confirmAccountLink);
 

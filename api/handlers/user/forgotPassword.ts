@@ -77,7 +77,7 @@ const handler: Handler = logger => async event => {
     return Responses.internalError(e);
   }
 
-  const resetPasswordLink = `${event.headers["Origin"]}/reset-password?id=${updatedUser.id}&code=${updatedUser.resetPasswordCode}`;
+  const resetPasswordLink = `https://${process.env.APP_HOST}/reset-password?id=${updatedUser.id}&code=${updatedUser.resetPasswordCode}`;
 
   await sendForgotPasswordEmail(updatedUser.email, resetPasswordLink);
 
