@@ -99,7 +99,7 @@ const CreateEmployeePage: React.FC<RouteComponentProps> = props => {
     <React.Fragment>
       <form onSubmit={handleSubmit}>
         <Typography variant="h4" gutterBottom className={classes.title}>
-          New Customer
+          New Employee
           <Fab
             type="submit"
             color="primary"
