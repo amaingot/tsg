@@ -76,8 +76,8 @@ layers:
 functions:
   signup:
     handler: handlers/onboarding/signup.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: post
@@ -86,8 +86,8 @@ functions:
 
   signup-resend-code:
     handler: handlers/onboarding/resendCode.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: post
@@ -96,8 +96,8 @@ functions:
 
   signup-confirm:
     handler: handlers/onboarding/confirm.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: post
@@ -106,8 +106,8 @@ functions:
 
   forgot-password:
     handler: handlers/user/forgotPassword.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: post
@@ -116,8 +116,8 @@ functions:
 
   reset-password:
     handler: handlers/user/resetPassword.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: post
@@ -126,8 +126,8 @@ functions:
 
   accept-invitation:
     handler: handlers/user/acceptInvitation.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: post
@@ -136,8 +136,8 @@ functions:
 
   client-me:
     handler: handlers/clients/me.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: get
@@ -147,8 +147,8 @@ functions:
 
   employee-list:
     handler: handlers/employees/list.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: get
@@ -158,8 +158,8 @@ functions:
 
   employee-create:
     handler: handlers/employees/create.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: post
@@ -169,8 +169,8 @@ functions:
 
   employee-update:
     handler: handlers/employees/update.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: post
@@ -184,8 +184,8 @@ functions:
 
   employee-detail:
     handler: handlers/employees/detail.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: get
@@ -199,8 +199,8 @@ functions:
 
   customer-list:
     handler: handlers/customers/list.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: get
@@ -210,8 +210,8 @@ functions:
 
   customer-create:
     handler: handlers/customers/create.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: post
@@ -221,8 +221,8 @@ functions:
 
   customer-update:
     handler: handlers/customers/update.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: post
@@ -236,8 +236,8 @@ functions:
 
   customer-detail:
     handler: handlers/customers/detail.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: get
@@ -251,8 +251,8 @@ functions:
 
   job-list:
     handler: handlers/jobs/list.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: get
@@ -262,8 +262,8 @@ functions:
 
   job-count-breakdown:
     handler: handlers/jobs/count-breakdown.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: get
@@ -273,8 +273,8 @@ functions:
 
   job-list-pending:
     handler: handlers/jobs/list-pending.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: get
@@ -284,8 +284,8 @@ functions:
 
   job-create:
     handler: handlers/jobs/create.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: post
@@ -295,8 +295,8 @@ functions:
 
   job-update:
     handler: handlers/jobs/update.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: post
@@ -310,8 +310,8 @@ functions:
 
   job-finish:
     handler: handlers/jobs/finish.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: put
@@ -325,8 +325,8 @@ functions:
 
   job-detail:
     handler: handlers/jobs/detail.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: get
@@ -340,8 +340,8 @@ functions:
 
   sms-status:
     handler: handlers/sms/status.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: post
@@ -350,8 +350,8 @@ functions:
 
   sms-incoming:
     handler: handlers/sms/incoming.default
-    layers:
-      - { Ref: SharedLambdaLayer }
+    # layers:
+      # - { Ref: SharedLambdaLayer }
     events:
       - http:
           method: post
@@ -374,11 +374,8 @@ resources:
 
   Outputs:
     UserPoolClientId:
-      Value:
-        Ref: UserPoolClient
+      Value: !Ref UserPoolClient
     UserPoolId:
-      Value:
-        Ref: UserPool
+      Value: !Ref UserPool
     Region:
-      Value:
-        Ref: "AWS::Region"
+      Value: !Ref "AWS::Region"

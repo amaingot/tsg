@@ -31,5 +31,5 @@ module.exports = {
       }
     ]
   },
-  externals: [nodeExternals()] // in order to ignore all modules in node_modules folder
+  // externals: [nodeExternals()] // in order to ignore all modules in node_modules folder
 };
