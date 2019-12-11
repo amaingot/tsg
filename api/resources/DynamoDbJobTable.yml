@@ -16,7 +16,7 @@ Properties:
     - AttributeName: finished
       AttributeType: S
   GlobalSecondaryIndexes:
-    - IndexName: ClientJobsz
+    - IndexName: ClientJobs
       KeySchema:
         - AttributeName: clientId
           KeyType: HASH
