@@ -58,13 +58,13 @@ export const findMany = async <Entity extends ApplicationEntity>(
 
   const protectedQuery = getProtectedQuery<Entity>(target)(context);
 
-  const limit = input.limit || 100;
+  const limit = input.limit || 25;
   const order = input.order || "ASC";
   const { cursor: cursorKey, type } = input.cursor || {};
 
   const queryBuilder = query(
     protectedQuery(
-      getConnection().getRepository<Entity>(target).createQueryBuilder()
+      getConnection().getRepository<Entity>(target).createQueryBuilder("ALIAS")
     )
   );
 
@@ -76,6 +76,7 @@ export const findMany = async <Entity extends ApplicationEntity>(
       afterCursor: type === "AFTER" ? cursorKey : undefined,
       beforeCursor: type === "BEFORE" ? cursorKey : undefined,
     },
+    alias: "ALIAS",
   });
 
   const { data, cursor } = await paginator.paginate(queryBuilder);
