@@ -2,16 +2,7 @@ import { GraphQLScalarType } from "graphql";
 import { UserInputError } from "apollo-server-express";
 
 import { Resolvers } from "./types";
-import {
-  Client,
-  Customer,
-  Job,
-  Employee,
-  findMany,
-  findOne,
-  deleteOne,
-} from "../db";
-import { updateOne, findOneOrFail } from "../db/helpers";
+import * as DB from "../db";
 
 const resolvers: Partial<Resolvers> = {
   DateTime: new GraphQLScalarType({
@@ -29,61 +20,130 @@ const resolvers: Partial<Resolvers> = {
     },
   }),
   Client: {
-    jobs: (parent, { input }) =>
-      findMany(Job, input, {
-        alias: "c",
+    jobs: (parent, { input }, context) =>
+      DB.findMany({
+        target: DB.Job,
+        input,
         query: (qb) => qb.where({ clientId: parent.id }),
+        context,
       }),
-    customers: (parent, { input }) =>
-      findMany(Customer, input, {
-        alias: "c",
+    customers: (parent, { input }, context) =>
+      DB.findMany({
+        target: DB.Customer,
+        input,
         query: (qb) => qb.where({ clientId: parent.id }),
+        context,
       }),
-    employees: (parent, { input }) =>
-      findMany(Employee, input, {
-        alias: "c",
+    employees: (parent, { input }, context) =>
+      DB.findMany({
+        target: DB.Employee,
+        input,
         query: (qb) => qb.where({ clientId: parent.id }),
+        context,
       }),
   },
   Customer: {
-    jobs: (parent, { input }) =>
-      findMany(Job, input, {
-        alias: "c",
+    jobs: (parent, { input }, context) =>
+      DB.findMany({
+        target: DB.Job,
+        input,
         query: (qb) => qb.where({ customerId: parent.id }),
+        context,
       }),
   },
   Employee: {
-    jobsFinished: (parent, { input }) =>
-      findMany(Job, input, {
-        alias: "c",
+    jobsFinished: (parent, { input }, context) =>
+      DB.findMany({
+        target: DB.Job,
+        input,
         query: (qb) => qb.where({ finishedByEmployeeId: parent.id }),
+        context,
       }),
   },
   Job: {
-    customer: ({ customerId }) => findOneOrFail(Customer, customerId),
-    client: ({ clientId }) => findOneOrFail(Client, clientId),
-    finishedByEmployee: ({ finishedByEmployeeId }) =>
-      findOne(Employee, finishedByEmployeeId),
+    customer: ({ customerId }, _args, context) =>
+      DB.findOneOrFail({ target: DB.Customer, id: customerId, context }),
+    client: ({ clientId }, _args, context) =>
+      DB.findOneOrFail({ target: DB.Client, id: clientId, context }),
+    finishedByEmployee: ({ finishedByEmployeeId }, _args, context) =>
+      DB.findOne({ target: DB.Employee, id: finishedByEmployeeId, context }),
   },
   Query: {
-    clients: (_, { input }) => findMany(Client, input),
-    client: (_, { id }) => findOne(Client, id),
-    customers: (_, { input }) => findMany(Customer, input),
-    customer: (_, { id }) => findOne(Customer, id),
-    jobs: (_, { input }) => findMany(Job, input),
-    job: (_, { id }) => findOne(Job, id),
-    employees: (_, { input }) => findMany(Employee, input),
-    employee: (_, { id }) => findOne(Employee, id),
+    clients: (_, { input }, context) =>
+      DB.findMany({
+        target: DB.Client,
+        input,
+        context,
+      }),
+    client: (_, { id }, context) =>
+      DB.findOne({ target: DB.Client, id, context }),
+
+    customers: (_, { input }, context) =>
+      DB.findMany({
+        target: DB.Customer,
+        input,
+        context,
+      }),
+    customer: (_, { id }, context) =>
+      DB.findOne({ target: DB.Customer, id, context }),
+
+    jobs: (_, { input }, context) =>
+      DB.findMany({ target: DB.Job, input, context }),
+    job: (_, { id }, context) => DB.findOne({ target: DB.Job, id, context }),
+
+    employees: (_, { input }, context) =>
+      DB.findMany({ target: DB.Employee, input, context }),
+    employee: (_, { id }, context) =>
+      DB.findOne({ target: DB.Employee, id, context }),
   },
   Mutation: {
-    updateClient: (_, { input }) => updateOne(Client, input.id, input),
-    deleteClient: async (_, { id }) => deleteOne(Client, id),
-    updateCustomer: (_, { input }) => updateOne(Customer, input.id, input),
-    deleteCustomer: async (_, { id }) => deleteOne(Customer, id),
-    updateJob: (_, { input }) => updateOne(Job, input.id, input),
-    deleteJob: async (_, { id }) => deleteOne(Job, id),
-    updateEmployee: (_, { input }) => updateOne(Employee, input.id, input),
-    deleteEmployee: async (_, { id }) => deleteOne(Employee, id),
+    createClient: async (_, { input }, context) =>
+      DB.createOne({ target: DB.Client, item: input, context }),
+    updateClient: async (_, { input }, context) =>
+      DB.updateOne({
+        target: DB.Client,
+        id: input.id,
+        updatedItem: input,
+        context,
+      }),
+    deleteClient: async (_, { id }, context) =>
+      DB.deleteOne({ target: DB.Client, id, context }),
+
+    createCustomer: async (_, { input }, context) =>
+      DB.createOne({ target: DB.Customer, item: input, context }),
+    updateCustomer: (_, { input }, context) =>
+      DB.updateOne({
+        target: DB.Customer,
+        id: input.id,
+        updatedItem: input,
+        context,
+      }),
+    deleteCustomer: async (_, { id }, context) =>
+      DB.deleteOne({ target: DB.Customer, id, context }),
+
+    createJob: async (_, { input }, context) =>
+      DB.createOne({ target: DB.Job, item: input, context }),
+    updateJob: (_, { input }, context) =>
+      DB.updateOne({
+        target: DB.Job,
+        id: input.id,
+        updatedItem: input,
+        context,
+      }),
+    deleteJob: async (_, { id }, context) =>
+      DB.deleteOne({ target: DB.Job, id, context }),
+
+    createEmployee: async (_, { input }, context) =>
+      DB.createOne({ target: DB.Employee, item: input, context }),
+    updateEmployee: (_, { input }, context) =>
+      DB.updateOne({
+        target: DB.Employee,
+        id: input.id,
+        updatedItem: input,
+        context,
+      }),
+    deleteEmployee: async (_, { id }, context) =>
+      DB.deleteOne({ target: DB.Employee, id, context }),
   },
 };
 
