@@ -7,13 +7,17 @@ import {
   UpdateDateColumn,
   OneToMany,
   DeleteDateColumn,
+  SelectQueryBuilder,
+  BaseEntity,
 } from "typeorm";
 import { Customer } from "./Customer";
 import { Job } from "./Job";
-import { Employee } from "./Employee";
+import { Employee, UserRole } from "./Employee";
+import { GraphqlContext } from "../../graphql/context";
+import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
 @Entity()
-export class Client {
+export class Client extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -45,4 +49,42 @@ export class Client {
 
   @OneToMany((type) => Employee, (e) => e.client, { cascade: true })
   employees: Employee[];
+
+  // Auth
+
+  canAccess(context: GraphqlContext): boolean {
+    const { clientId, userRole } = context.currentUser || {};
+    return clientId === this.id || userRole === UserRole.SuperAdmin;
+  }
+
+  canUpdate(context: GraphqlContext): boolean {
+    const { clientId, userRole } = context.currentUser || {};
+    return (
+      (clientId === this.id && userRole === UserRole.AccountAdmin) ||
+      userRole === UserRole.SuperAdmin
+    );
+  }
+
+  canDelete(context: GraphqlContext): boolean {
+    const { userRole } = context.currentUser || {};
+    return userRole === UserRole.SuperAdmin;
+  }
+
+  static canCreate(
+    context: GraphqlContext,
+    _input: QueryDeepPartialEntity<Job>
+  ): boolean {
+    const { userRole } = context.currentUser || {};
+    return userRole === UserRole.SuperAdmin;
+  }
+
+  static protectedQuery(context: GraphqlContext) {
+    const { clientId, userRole } = context.currentUser || {};
+
+    if (userRole === UserRole.SuperAdmin) {
+      return (qb: SelectQueryBuilder<Client>) => qb;
+    } else {
+      return (qb: SelectQueryBuilder<Client>) => qb.where({ clientId });
+    }
+  }
 }

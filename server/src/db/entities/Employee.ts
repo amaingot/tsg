@@ -8,9 +8,13 @@ import {
   OneToMany,
   ManyToOne,
   DeleteDateColumn,
+  SelectQueryBuilder,
+  BaseEntity,
 } from "typeorm";
 import { Client } from "./Client";
 import { Job } from "./Job";
+import { GraphqlContext } from "../../graphql/context";
+import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
 export enum UserRole {
   SuperAdmin = "SuperAdmin",
@@ -19,7 +23,7 @@ export enum UserRole {
 }
 
 @Entity()
-export class Employee {
+export class Employee extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -66,4 +70,49 @@ export class Employee {
 
   @OneToMany((type) => Job, (j) => j.finishedByEmployee)
   jobsFinished: Job[];
+
+  // Auth
+
+  canAccess(context: GraphqlContext): boolean {
+    const { clientId, userRole } = context.currentUser || {};
+    return clientId === this.clientId || userRole === UserRole.SuperAdmin;
+  }
+
+  canUpdate(context: GraphqlContext): boolean {
+    const { clientId, userRole, employeeId } = context.currentUser || {};
+    return (
+      employeeId === this.id ||
+      (clientId === this.clientId && userRole === UserRole.AccountAdmin) ||
+      userRole === UserRole.SuperAdmin
+    );
+  }
+
+  canDelete(context: GraphqlContext): boolean {
+    const { clientId, userRole } = context.currentUser || {};
+    return (
+      (clientId === this.clientId && userRole === UserRole.AccountAdmin) ||
+      userRole === UserRole.SuperAdmin
+    );
+  }
+
+  static canCreate(
+    context: GraphqlContext,
+    input: QueryDeepPartialEntity<Employee>
+  ): boolean {
+    const { clientId, userRole } = context.currentUser || {};
+    return (
+      (clientId === input.clientId && userRole === UserRole.AccountAdmin) ||
+      userRole === UserRole.SuperAdmin
+    );
+  }
+
+  static protectedQuery(context: GraphqlContext) {
+    const { clientId, userRole } = context.currentUser || {};
+
+    if (userRole === UserRole.SuperAdmin) {
+      return (qb: SelectQueryBuilder<Employee>) => qb;
+    } else {
+      return (qb: SelectQueryBuilder<Employee>) => qb.where({ clientId });
+    }
+  }
 }
