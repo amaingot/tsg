@@ -10,5 +10,5 @@ data:
   GCP_BIGQUERY_INCIDENT_TABLE_NAME: "incidents"
   GCP_PROJECT_ID: "hmm-dev"
   POSTGRES_DATABASE: "tsg-staging"
-  POSTGRES_HOST: "tsg-postgres.staging.cluster.local"
   POSTGRES_USERNAME: "postgres"
+  GCP_IDP_TENANT_ID: "tsg-staging-odrqp"

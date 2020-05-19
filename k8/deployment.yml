@@ -34,6 +34,9 @@ spec:
                 name: tsg-config
             - secretRef:
                 name: tsg-secrets
+          env:
+            - name: POSTGRES_HOST
+              value: tsg-postgres
 
 ---
 apiVersion: v1
