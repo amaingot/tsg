@@ -11,7 +11,7 @@ import {
   findOne,
   deleteOne,
 } from "../db";
-import { updateOne, findOneOrFail } from "src/db/helpers";
+import { updateOne, findOneOrFail } from "../db/helpers";
 
 const resolvers: Partial<Resolvers> = {
   DateTime: new GraphQLScalarType({
