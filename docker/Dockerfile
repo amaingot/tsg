@@ -5,7 +5,7 @@ RUN mkdir -p /usr/src/app/
 WORKDIR /usr/src/app
 
 COPY ./server .
-COPY ./web/build ./assets
+# COPY ./web/build ./assets
 
 ARG SHA
 ENV SHA=${SHA}
