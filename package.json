@@ -12,7 +12,7 @@
     "postinstall": "yarn generate",
     "start": "concurrently \"yarn:start:web\" \"yarn:start:server\"",
     "start:web": "yarn --cwd=web start",
-    "start:server": "yarn --cwd=server start:server",
+    "start:server": "yarn --cwd=server start",
     "start:in-container": "yarn --cwd=server start:in-container",
     "build:web": "yarn --cwd=web build"
   },
