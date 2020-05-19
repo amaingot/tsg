@@ -1,0 +1,107 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: tsg
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: tsg
+  template:
+    metadata:
+      labels:
+        app: tsg
+    spec:
+      containers:
+        - name: tsg
+          # The parameter below is replaced during circle build
+          image: gcr.io/hmm-dev/tsg:${parameters.tag}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "1"
+            requests:
+              memory: "256Mi"
+              cpu: "0.25"
+          envFrom:
+            - configMapRef:
+                name: tsg-config
+            - secretRef:
+                name: tsg-secrets
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tsg-service
+  labels:
+    name: tsg
+spec:
+  ports:
+    - port: 8080
+  selector:
+    app: tsg
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tsg-postgres
+spec:
+  selector:
+    matchLabels:
+      app: tsg-postgres
+  serviceName: tsg-postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: tsg-postgres
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: tsg-postgres
+          image: postgres:9.6-alpine
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tsg-secrets
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: tsg-config
+                  key: POSTGRES_DATABASE
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata/tsg_pgdata
+          volumeMounts:
+            - name: pgdata
+              mountPath: /var/lib/postgresql/data/pgdata
+  volumeClaimTemplates:
+    - metadata:
+        name: pgdata
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 4Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tsg-postgres
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+      protocol: TCP
+  selector:
+    app: tsg-postgres
