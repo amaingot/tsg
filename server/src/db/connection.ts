@@ -23,6 +23,31 @@ export const CONNECTION_CONFIG: ConnectionOptions = {
     subscribersDir: "src/db/subscribers",
   },
   logging: "all",
+  logger: {
+    logQuery: (query, params) =>
+      logger.info("[DB] Queried the DB", {
+        query,
+        params,
+      }),
+    logQueryError: (error, query, parameters) =>
+      logger.error("[DB] Error querying the DB", {
+        error,
+        query,
+        parameters,
+      }),
+    logQuerySlow: (time, query, parameters) =>
+      logger.warn("[DB] Slow DB query", {
+        time,
+        query,
+        parameters,
+      }),
+    logSchemaBuild: (message) => logger.info(`[DB SCHEMA BUILD] ${message}`),
+    logMigration: (message) => logger.info(`[DB MIGRATION] ${message}`),
+    log: (level, message) => {
+      if (level === "log" || level === "info") logger.info(`[DB] ${message}`);
+      if (level === "warn") logger.warn(`[DB] ${message}`);
+    },
+  },
 };
 
 const pollDatabaseConnect = async (connection: Connection) => {
@@ -41,7 +66,7 @@ const pollDatabaseConnect = async (connection: Connection) => {
     }
     await new Promise((resolve) => setTimeout(resolve, 1000));
   }
-  return false;
+  return connection.isConnected;
 };
 
 export const openConnection = async () => {
