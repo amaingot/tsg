@@ -4,7 +4,7 @@ RUN mkdir -p /usr/src/app/
 
 WORKDIR /usr/src/app
 
-COPY ./api .
+COPY ./server .
 COPY ./web/build ./assets
 
 ARG SHA
