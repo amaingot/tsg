@@ -14,7 +14,6 @@ import { Client } from "./Client";
 import { Customer } from "./Customer";
 import { Employee, UserRole } from "./Employee";
 import { GraphqlContext } from "../../graphql/context";
-import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
 @Entity()
 export class Job extends BaseEntity {
@@ -89,12 +88,12 @@ export class Job extends BaseEntity {
     return this.canAccess(context);
   }
 
-  static canCreate(
-    context: GraphqlContext,
-    input: QueryDeepPartialEntity<Job>
-  ): boolean {
+  canCreate(context: GraphqlContext): boolean {
     const { clientId, userRole } = context.currentUser || {};
-    return clientId === input.clientId || userRole === UserRole.SuperAdmin;
+    return (
+      (this.clientId && clientId === this.clientId) ||
+      userRole === UserRole.SuperAdmin
+    );
   }
 
   static protectedQuery(context: GraphqlContext) {

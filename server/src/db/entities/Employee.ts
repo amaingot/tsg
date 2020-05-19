@@ -14,7 +14,6 @@ import {
 import { Client } from "./Client";
 import { Job } from "./Job";
 import { GraphqlContext } from "../../graphql/context";
-import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
 export enum UserRole {
   SuperAdmin = "SuperAdmin",
@@ -95,13 +94,12 @@ export class Employee extends BaseEntity {
     );
   }
 
-  static canCreate(
-    context: GraphqlContext,
-    input: QueryDeepPartialEntity<Employee>
-  ): boolean {
+  canCreate(context: GraphqlContext): boolean {
     const { clientId, userRole } = context.currentUser || {};
     return (
-      (clientId === input.clientId && userRole === UserRole.AccountAdmin) ||
+      (this.clientId &&
+        clientId === this.clientId &&
+        userRole === UserRole.AccountAdmin) ||
       userRole === UserRole.SuperAdmin
     );
   }

@@ -140,48 +140,29 @@ export const deleteOne = async <Entity extends ApplicationEntity>(
   return true;
 };
 
-const getCanCreate = <Entity extends ApplicationEntity>(
-  target: ObjectType<Entity>
-) => {
-  switch (target.name) {
-    case Client.name:
-      return Client.canCreate;
-
-    case Employee.name:
-      return Employee.canCreate;
-
-    case Customer.name:
-      return Customer.canCreate;
-
-    case Job.name:
-      return Job.canCreate;
-    default:
-      throw new Error();
-  }
-};
-
 interface CreateOneArgs<Entity extends ApplicationEntity> {
   target: ObjectType<Entity>;
   item: DeepPartial<Entity>;
   context: GraphqlContext;
 }
 
-export const createOne = <Entity extends ApplicationEntity>(
+export const createOne = async <Entity extends ApplicationEntity>(
   args: CreateOneArgs<Entity>
 ) => {
   const { item, target, context } = args;
 
-  const canCreate = getCanCreate<Entity>(target);
+  const createdItem = getConnection().getRepository(target).create(item);
 
-  if (!canCreate(context, item as any)) {
+  if (!createdItem.canCreate(context)) {
     logger.warn("User trying to create an item they can't", {
       target,
       item,
-      context,
     });
     throw new AuthenticationError("You can't do this");
   }
-  return getConnection().getRepository(target).create(item);
+  await createdItem.save();
+
+  return createdItem;
 };
 
 interface UpdateOneArgs<Entity extends ApplicationEntity> {
