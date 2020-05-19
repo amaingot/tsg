@@ -40,3 +40,6 @@ lerna-debug.log*
 
 # Kubectl
 *.unsealed.yml
+
+# Generated Files
+server/src/graphql/types.ts

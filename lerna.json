@@ -1,4 +1,0 @@
-{
-  "packages": ["api", "web", "api/layer", "shared"],
-  "version": "0.0.0"
-}
