@@ -11,10 +11,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - "austin.staging.hmm.dev"
-      secretName: tsg-secrets
+        - "tsg.staging.hmm.dev"
+      secretName: tsg-cert-secret
   rules:
-    - host: "austin.staging.hmm.dev"
+    - host: "tsg.staging.hmm.dev"
       http:
         paths:
           - path: /

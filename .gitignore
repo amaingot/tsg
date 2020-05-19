@@ -37,3 +37,6 @@ lerna-debug.log*
 
 # Webpack directories
 .webpack
+
+# Kubectl
+*.unsealed.yml
