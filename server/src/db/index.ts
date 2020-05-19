@@ -5,4 +5,11 @@ export { Employee } from "./entities/Employee";
 
 export { openConnection, closeConnection } from "./connection";
 
-export { findOne, findMany, deleteOne } from "./helpers";
+export {
+  createOne,
+  findOne,
+  findMany,
+  deleteOne,
+  updateOne,
+  findOneOrFail,
+} from "./helpers";
