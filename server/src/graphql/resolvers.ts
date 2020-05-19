@@ -99,10 +99,10 @@ const resolvers: Partial<Resolvers> = {
   Mutation: {
     createClient: async (_, { input }, context) =>
       DB.createOne({ target: DB.Client, item: input, context }),
-    updateClient: async (_, { input }, context) =>
+    updateClient: async (_, { input, id }, context) =>
       DB.updateOne({
         target: DB.Client,
-        id: input.id,
+        id,
         updatedItem: input,
         context,
       }),
@@ -111,10 +111,10 @@ const resolvers: Partial<Resolvers> = {
 
     createCustomer: async (_, { input }, context) =>
       DB.createOne({ target: DB.Customer, item: input, context }),
-    updateCustomer: (_, { input }, context) =>
+    updateCustomer: (_, { input, id }, context) =>
       DB.updateOne({
         target: DB.Customer,
-        id: input.id,
+        id,
         updatedItem: input,
         context,
       }),
@@ -123,10 +123,10 @@ const resolvers: Partial<Resolvers> = {
 
     createJob: async (_, { input }, context) =>
       DB.createOne({ target: DB.Job, item: input, context }),
-    updateJob: (_, { input }, context) =>
+    updateJob: (_, { input, id }, context) =>
       DB.updateOne({
         target: DB.Job,
-        id: input.id,
+        id,
         updatedItem: input,
         context,
       }),
@@ -135,10 +135,10 @@ const resolvers: Partial<Resolvers> = {
 
     createEmployee: async (_, { input }, context) =>
       DB.createOne({ target: DB.Employee, item: input, context }),
-    updateEmployee: (_, { input }, context) =>
+    updateEmployee: (_, { input, id }, context) =>
       DB.updateOne({
         target: DB.Employee,
-        id: input.id,
+        id,
         updatedItem: input,
         context,
       }),
