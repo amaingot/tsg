@@ -1,15 +1,13 @@
 import express, { Request, Response } from "express";
-import path from "path";
 import { ApolloServer } from "apollo-server-express";
 
+import { closeConnection, openConnection } from "./db";
 import schema from "./graphql/schema";
 import resolvers from "./graphql/resolvers";
 import { GraphqlContext } from "./graphql/context";
 import { appLogger, appErrorLogger, logger } from "./utils/logger";
-import { closeConnection, openConnection } from "./db";
-import fetchTrafficIncidents from "./jobs/fetchTrafficIncidents";
-import indexTrafficIncidents from "./jobs/indexTrafficIncidents";
 import renderHtml from "./utils/renderHtml";
+import auth from "./utils/auth";
 
 const config = {
   name: "austin-data",
@@ -31,17 +29,26 @@ const server = new ApolloServer({
     defaultMaxAge: 500,
   },
   context: async (req: Request, res: Response): Promise<GraphqlContext> => {
+    const rawToken = req.header("Authorization");
+    let token: GraphqlContext["token"] = undefined;
+
+    if (rawToken) {
+      try {
+        token = await auth.verifyIdToken(rawToken);
+      } catch (e) {
+        logger.error("Invalid auth token", { req, res, rawToken });
+      }
+    }
+
     return {
       req,
       res,
+      token,
     };
   },
 });
 
 server.applyMiddleware({ app });
-
-app.get("/jobs/fetch-traffic-incidents", fetchTrafficIncidents);
-app.get("/jobs/index-traffic-incidents", indexTrafficIncidents);
 
 app.use(appErrorLogger());
 

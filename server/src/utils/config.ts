@@ -34,6 +34,12 @@ const configurationSchema = {
     format: String,
     sensitive: true,
   },
+  GCP_IDP_TENANT_ID: {
+    default: "",
+    doc: "Tenant id for GCP Identity Provider",
+    env: "GCP_IDP_TENANT_ID",
+    format: String,
+  },
   MAPBOX_TOKEN: {
     default: "",
     doc: "Token used to render Mapbox Map",

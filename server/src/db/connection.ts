@@ -1,4 +1,9 @@
-import { createConnection, getConnection, ConnectionOptions } from "typeorm";
+import {
+  createConnection,
+  getConnection,
+  ConnectionOptions,
+  Connection,
+} from "typeorm";
 import config from "../utils/config";
 import { logger } from "../utils/logger";
 
@@ -20,31 +25,38 @@ export const CONNECTION_CONFIG: ConnectionOptions = {
   logging: "all",
 };
 
+const pollDatabaseConnect = async (connection: Connection) => {
+  let attempts = 0;
+  while (!connection.isConnected && attempts < 100) {
+    try {
+      await connection.connect();
+      logger.info("Successfully connected to the database", { attempts });
+      return true;
+    } catch (e) {
+      logger.warn("Could not connect to the database, will retry", {
+        error: e,
+        attempts,
+      });
+      attempts++;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+  return false;
+};
+
 export const openConnection = async () => {
   const connection = await createConnection(CONNECTION_CONFIG);
 
-  try {
-    if (!connection.isConnected) {
-      await connection.connect();
-      logger.info("Successfully connected to the database");
-    } else {
-      logger.info("Already connected to the database");
-    }
-  } catch (e) {
-    logger.error({ message: "Error connecting to the database", error: e });
+  const connected = await pollDatabaseConnect(connection);
+  if (connected === false) {
+    logger.error("Error connecting to the database");
   }
 
   try {
     const migrations = await connection.runMigrations({ transaction: "each" });
-    logger.info({
-      message: "Successfully ran migrations on the database",
-      migrations,
-    });
+    logger.info("Successfully ran migrations on the database", { migrations });
   } catch (e) {
-    logger.error({
-      message: "Error running migrations on the database",
-      error: e,
-    });
+    logger.error("Error running migrations on the database", { error: e });
   }
   return connection;
 };
