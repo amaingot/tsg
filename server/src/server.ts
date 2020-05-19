@@ -28,23 +28,10 @@ const server = new ApolloServer({
   cacheControl: {
     defaultMaxAge: 500,
   },
-  context: async (req: Request, res: Response): Promise<GraphqlContext> => {
-    const rawToken = req.header("Authorization");
-    let token: GraphqlContext["token"] = undefined;
-
-    if (rawToken) {
-      try {
-        token = await auth.verifyIdToken(rawToken);
-      } catch (e) {
-        logger.error("Invalid auth token", { req, res, rawToken });
-      }
-    }
-
-    return {
-      req,
-      res,
-      token,
-    };
+  context: async (expressContext): Promise<GraphqlContext> => {
+    const context = new GraphqlContext(expressContext);
+    await context.parseToken();
+    return context;
   },
 });
 
