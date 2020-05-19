@@ -141,13 +141,12 @@ const schema = gql`
   }
 
   input CreateOrUpdateClientInput {
-    id: ID!
     name: String!
     stripeCustomerId: String!
   }
 
   input CreateOrUpdateEmployeeInput {
-    id: ID!
+    clientId: ID!
     firstName: String!
     lastName: String!
     email: String!
@@ -156,7 +155,7 @@ const schema = gql`
   }
 
   input CreateOrUpdateCustomerInput {
-    id: ID!
+    clientId: ID!
     memNum: String
     firstName: String
     lastName: String
@@ -171,8 +170,8 @@ const schema = gql`
   }
 
   input CreateOrUpdateJobInput {
-    id: ID!
-    customerId: String!
+    clientId: ID!
+    customerId: ID!
     finished: Boolean!
     name: String
     stringName: String
@@ -191,19 +190,19 @@ const schema = gql`
     acceptInvitation: Employee!
 
     createClient(input: CreateOrUpdateClientInput!): Client!
-    updateClient(input: CreateOrUpdateClientInput!): Client!
+    updateClient(id: ID!, input: CreateOrUpdateClientInput!): Client!
     deleteClient(id: ID!): Boolean!
 
     createEmployee(input: CreateOrUpdateEmployeeInput!): Employee!
-    updateEmployee(input: CreateOrUpdateEmployeeInput!): Employee!
+    updateEmployee(id: ID!, input: CreateOrUpdateEmployeeInput!): Employee!
     deleteEmployee(id: ID!): Boolean!
 
     createCustomer(input: CreateOrUpdateCustomerInput!): Customer!
-    updateCustomer(input: CreateOrUpdateCustomerInput!): Customer!
+    updateCustomer(id: ID!, input: CreateOrUpdateCustomerInput!): Customer!
     deleteCustomer(id: ID!): Boolean!
 
     createJob(input: CreateOrUpdateJobInput!): Job!
-    updateJob(input: CreateOrUpdateJobInput!): Job!
+    updateJob(id: ID!, input: CreateOrUpdateJobInput!): Job!
     finishJob(id: ID!): Job!
     restartJob(id: ID!): Job!
     deleteJob(id: ID!): Boolean!
