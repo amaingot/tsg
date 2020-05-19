@@ -8,10 +8,6 @@ jobs:
     steps:
       - checkout
 
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "yarn.lock" }}
-            - v1-dependencies
       - run:
           name: Installing dependencies
           command: yarn
@@ -27,11 +23,6 @@ jobs:
           command: |
             REACT_APP_SHA=$CIRCLE_SHA1 \
               yarn build:web
-
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "yarn.lock" }}
 
       - store_test_results:
           path: test-results
