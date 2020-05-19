@@ -21,12 +21,6 @@ const configurationSchema = {
     env: "GCP_BIGQUERY_DATASET_ID",
     format: String,
   },
-  GCP_BIGQUERY_INCIDENT_TABLE_NAME: {
-    default: "incidents",
-    doc: "GCP BigQuery table for incident data",
-    env: "GCP_BIGQUERY_INCIDENT_TABLE_NAME",
-    format: String,
-  },
   GCP_SERVICE_ACCOUNT_KEY: {
     default: "",
     doc: "JSON string of the GCP service account key",
@@ -39,13 +33,6 @@ const configurationSchema = {
     doc: "Tenant id for GCP Identity Provider",
     env: "GCP_IDP_TENANT_ID",
     format: String,
-  },
-  MAPBOX_TOKEN: {
-    default: "",
-    doc: "Token used to render Mapbox Map",
-    env: "MAPBOX_TOKEN",
-    format: String,
-    sensitive: true,
   },
   NODE_ENV: {
     // ref: http://expressjs.com/en/advanced/best-practice-performance.html#set-node_env-to-production
@@ -84,13 +71,6 @@ const configurationSchema = {
     doc: "Specifies the sha of the current version of the application",
     env: "SHA",
     format: String,
-  },
-  TRAFFIC_APP_TOKEN: {
-    default: "no-sha-provided",
-    doc: "Token used to get the Austin traffic data",
-    env: "TRAFFIC_APP_TOKEN",
-    format: String,
-    sensitive: true,
   },
 };
 
