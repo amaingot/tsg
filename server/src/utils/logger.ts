@@ -16,6 +16,10 @@ transports.push(new winston.transports.Console());
 export const logger = winston.createLogger({
   level: "info",
   transports,
+  format:
+    config.get("NODE_ENV") !== "production"
+      ? winston.format.simple()
+      : undefined,
 });
 
 export const appLogger = () =>
