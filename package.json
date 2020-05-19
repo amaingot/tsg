@@ -32,5 +32,9 @@
   "keywords": [
     "react",
     "typescript"
+  ],
+  "workspaces": [
+    "server",
+    "web"
   ]
 }
