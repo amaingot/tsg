@@ -37,6 +37,11 @@ spec:
           env:
             - name: POSTGRES_HOST
               value: tsg-postgres
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              valueFrom:
+                secretKeyRef:
+                  name: tsg-secrets
+                  key: GCP_SERVICE_ACCOUNT_KEY
 
 ---
 apiVersion: v1
@@ -94,7 +99,7 @@ spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
-            storage: 4Gi
+            storage: 10Gi
 
 ---
 apiVersion: v1
