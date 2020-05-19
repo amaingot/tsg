@@ -22,7 +22,9 @@ export class GraphqlContext {
     const { req, res } = expressContext;
     this.req = req;
     this.res = res;
-    this._currentUser = undefined;
+    this._currentUser = {
+      userRole: UserRole.SuperAdmin,
+    };
   }
 
   async parseToken() {
