@@ -1,5 +1,6 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import { ApolloServer } from "apollo-server-express";
+import { getConnection } from "typeorm";
 
 import { closeConnection, openConnection } from "./db";
 import schema from "./graphql/schema";
@@ -7,7 +8,6 @@ import resolvers from "./graphql/resolvers";
 import { GraphqlContext } from "./graphql/context";
 import { appLogger, appErrorLogger, logger } from "./utils/logger";
 import renderHtml from "./utils/renderHtml";
-import auth from "./utils/auth";
 
 const config = {
   name: "austin-data",
@@ -43,6 +43,26 @@ app.use(appErrorLogger());
 renderHtml(app);
 
 openConnection();
+
+app.get("/_health/ready", async (_req, res) => {
+  const isReady = getConnection().isConnected;
+
+  if (isReady) {
+    return res.status(200).send("Ready");
+  } else {
+    return res.status(500).send("Not ready");
+  }
+});
+
+app.get("/_health/alive", async (_req, res) => {
+  const isReady = getConnection().isConnected;
+
+  if (isReady) {
+    return res.status(200).send("Alive");
+  } else {
+    return res.status(500).send("Not alive");
+  }
+});
 
 const expressServer = app.listen(config.port, config.host, (e) => {
   if (e) {

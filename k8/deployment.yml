@@ -34,6 +34,25 @@ spec:
                 name: tsg-config
             - secretRef:
                 name: tsg-secrets
+
+          readinessProbe:
+            httpGet:
+              path: /_health/ready
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            timeoutSeconds: 15
+
+          livenessProbe:
+            httpGet:
+              path: /_health/alive
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+
           env:
             - name: POSTGRES_HOST
               value: tsg-postgres
