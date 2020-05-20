@@ -38,10 +38,15 @@ spec:
             - name: POSTGRES_HOST
               value: tsg-postgres
             - name: GOOGLE_APPLICATION_CREDENTIALS
-              valueFrom:
-                secretKeyRef:
-                  name: tsg-secrets
-                  key: GCP_SERVICE_ACCOUNT_KEY
+              value: "/config/GCP_SERVICE_ACCOUNT_KEY"
+          volumeMounts:
+            - name: gcp-key
+              mountPath: "/config"
+              readOnly: true
+      volumes:
+        - name: gcp-key
+          secret:
+            secretName: tsg-secrets
 
 ---
 apiVersion: v1
