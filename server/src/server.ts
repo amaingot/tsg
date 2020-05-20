@@ -28,6 +28,7 @@ const server = new ApolloServer({
   cacheControl: {
     defaultMaxAge: 500,
   },
+  tracing: true,
   context: async (expressContext): Promise<GraphqlContext> => {
     const context = new GraphqlContext(expressContext);
     await context.parseToken();
