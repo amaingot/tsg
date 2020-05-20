@@ -40,9 +40,8 @@ jobs:
       PROJECT_NAME: "tsg"
       GOOGLE_COMPUTE_ZONE: "us-central1"
     steps:
-      # - attach_workspace:
-      #     at: .
-      - checkout
+      - attach_workspace:
+          at: .
 
       - run:
           name: Setup Google Cloud SDK
@@ -180,18 +179,18 @@ workflows:
   version: 2
   tsg:
     jobs:
-      # - build-frontend:
-      #     context: maingot
-      #     filters:
-      #       branches:
-      #         only: /.*/
-      #       tags:
-      #         ignore: /.*/
+      - build-frontend:
+          context: maingot
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              ignore: /.*/
 
       - build-backend:
           context: maingot
-          # requires:
-          #   - build-frontend
+          requires:
+            - build-frontend
           filters:
             branches:
               only: /.*/
@@ -204,7 +203,7 @@ workflows:
             - build-backend
           filters:
             branches:
-              only: master
+              only: go-gcp
             tags:
               ignore: /.*/
 
