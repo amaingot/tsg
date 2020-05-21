@@ -183,9 +183,14 @@ const schema = gql`
     finishedByEmployeeId: ID
   }
 
+  input SignUpInput {
+    name: String!
+    stripeCustomerId: String!
+  }
+
   type Mutation {
-    signUp: Client!
-    forgotPassword: String!
+    signUp(input: SignUpInput!): Client!
+    forgotPassword(email: Email!): String!
     resetPassword: String!
     acceptInvitation: Employee!
 

@@ -1,9 +1,14 @@
-import React from 'react';
-import { render } from '@testing-library/react';
-import App from './App';
+import React from "react";
+import { MockedProvider } from "@apollo/react-testing";
+import { render } from "@testing-library/react";
+import App from "./App";
 
-test('renders learn react link', () => {
-  const { getByText } = render(<App />);
-  const linkElement = getByText(/learn react/i);
+test("renders home page", () => {
+  const { getByText } = render(
+    <MockedProvider>
+      <App />
+    </MockedProvider>
+  );
+  const linkElement = getByText(/Chores App/i);
   expect(linkElement).toBeInTheDocument();
 });

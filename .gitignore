@@ -43,3 +43,4 @@ lerna-debug.log*
 
 # Generated Files
 server/src/graphql/types.ts
+web/src/graphql/hooks.tsx

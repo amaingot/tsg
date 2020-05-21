@@ -23,6 +23,7 @@
     "@graphql-codegen/typescript-react-apollo": "^1.13.5",
     "@graphql-codegen/typescript-resolvers": "^1.13.5",
     "concurrently": "^5.2.0",
+    "graphql-config": "^3.0.2",
     "jest-junit": "^10.0.0"
   },
   "repository": {

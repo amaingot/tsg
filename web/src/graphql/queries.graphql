@@ -1,0 +1,104 @@
+query GetMe {
+  me {
+    id
+    clientId
+    firstName
+    lastName
+    email
+    cellPhone
+    userRole
+    updatedAt
+    createdAt
+
+    client {
+      id
+      name
+      stripeCustomerId
+      updatedAt
+      createdAt
+    }
+  }
+}
+
+query GetEmployee($id: ID!, $jobsPagination: PaginationInput) {
+  employee(id: $id) {
+    id
+    clientId
+    firstName
+    lastName
+    email
+    cellPhone
+    userRole
+    updatedAt
+    createdAt
+
+    jobsFinished(input: $jobsPagination) {
+      data {
+        id
+        customerId
+        clientId
+        finished
+        updatedAt
+        createdAt
+        name
+        stringName
+        racket
+        tension
+        gauge
+        recievedAt
+        finishedAt
+        finishedByEmployeeId
+      }
+      cursor {
+        beforeCursor
+        afterCursor
+      }
+    }
+  }
+}
+
+query GetEmployees($input: PaginationInput) {
+  employees(input: $input) {
+    data {
+      id
+      clientId
+      firstName
+      lastName
+      email
+      cellPhone
+      userRole
+      updatedAt
+      createdAt
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
+
+query GetCustomers($input: PaginationInput) {
+  customers(input: $input) {
+    data {
+      id
+      clientId
+      memNum
+      firstName
+      lastName
+      middleInitial
+      email
+      address
+      address2
+      city
+      zip
+      homePhone
+      workPhone
+      updatedAt
+      createdAt
+    }
+    cursor {
+      beforeCursor
+      afterCursor
+    }
+  }
+}
