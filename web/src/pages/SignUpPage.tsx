@@ -13,11 +13,18 @@ import Link from "@material-ui/core/Link";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Container from "@material-ui/core/Container";
 
-import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import {
+  CardNumberElement,
+  CardExpiryElement,
+  CardCvcElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
 
 import Layout from "../components/Layout";
-import { StripeCardElementChangeEvent } from "@stripe/stripe-js";
+import { StripeElementChangeEvent } from "@stripe/stripe-js";
 import { useSignUpMutation } from "../graphql/hooks";
+import { InputBaseComponentProps } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   gridContainer: {
@@ -42,6 +49,30 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+type StripeComponent =
+  | typeof CardNumberElement
+  | typeof CardExpiryElement
+  | typeof CardCvcElement;
+
+const stripeWrapper = (
+  Component: StripeComponent,
+  handleChange: (event: StripeElementChangeEvent) => void
+) => (props: InputBaseComponentProps) => {
+  const { onBlur, onChange, onFocus, ...rest } = props;
+
+  return (
+    <Component
+      {...rest}
+      onBlur={() => onBlur && onBlur({} as any)}
+      onFocus={() => onFocus && onFocus({} as any)}
+      onChange={handleChange}
+      options={{
+        placeholder: "",
+      }}
+    />
+  );
+};
+
 const SignUpPage: React.FC = () => {
   const classes = useStyles();
   const [error, setError] = React.useState<string>();
@@ -51,6 +82,7 @@ const SignUpPage: React.FC = () => {
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
   const [email, setEmail] = React.useState("");
+  const [zip, setZip] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [signUp, signUpResult] = useSignUpMutation();
 
@@ -65,7 +97,7 @@ const SignUpPage: React.FC = () => {
   }
 
   // Handle real-time validation errors from the card Element.
-  const handleChange = (event: StripeCardElementChangeEvent) => {
+  const handleChange = (event: StripeElementChangeEvent) => {
     if (event.error) {
       setError(event.error.message);
     } else {
@@ -76,13 +108,16 @@ const SignUpPage: React.FC = () => {
   // Handle form submission.
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const card = elements.getElement(CardElement);
-    if (card === null) return;
+    const cardNum = elements.getElement(CardNumberElement);
+    if (cardNum === null) return;
     const result = await stripe.createPaymentMethod({
       type: "card",
-      card,
+      card: cardNum,
       billing_details: {
-        name: "a",
+        name: `${firstName} ${lastName} (${companyName})`,
+        address: {
+          postal_code: zip,
+        },
       },
     });
 
@@ -190,10 +225,64 @@ const SignUpPage: React.FC = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <CardElement
-                  id="card-element"
-                  // options={CARD_ELEMENT_OPTIONS}
-                  onChange={handleChange}
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="card-number"
+                  label="Card Number"
+                  helperText="1234 1234 1234 1234"
+                  id="card-number"
+                  InputProps={{
+                    inputComponent: stripeWrapper(
+                      CardNumberElement,
+                      handleChange
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="card-number"
+                  label="Expiration"
+                  helperText="MM YY"
+                  id="card-number"
+                  InputProps={{
+                    inputComponent: stripeWrapper(
+                      CardExpiryElement,
+                      handleChange
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="card-number"
+                  label="CVC"
+                  id="card-number"
+                  InputProps={{
+                    inputComponent: stripeWrapper(CardCvcElement, handleChange),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="zip"
+                  label="Zip Code"
+                  type="number"
+                  id="zip"
+                  value={zip}
+                  onChange={(e) => setZip(e.target.value)}
+                  autoComplete="postal-code"
                 />
               </Grid>
               <Grid item xs={12}>
