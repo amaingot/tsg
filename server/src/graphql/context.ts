@@ -11,6 +11,7 @@ interface CurrentUser {
   clientId?: string;
   userRole?: UserRole;
   employeeId?: string;
+  firebaseId?: string;
 }
 
 interface GraphqlContextParams {
@@ -55,7 +56,7 @@ export class GraphqlContext {
     if (rawToken) {
       try {
         this._decodedToken = await auth.verifyIdToken(rawToken);
-        this._currentUser.userId = this._decodedToken?.uid;
+        this._currentUser.firebaseId = this._decodedToken?.uid;
 
         // TODO: parse user claims for user role and client ID
       } catch (e) {
