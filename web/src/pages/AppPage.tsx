@@ -9,6 +9,8 @@ import CustomersPage from "./CustomersPage";
 import JobsPage from "./JobsPage";
 import EmployeesPage from "./EmployeesPage";
 import ReportsPage from "./ReportsPage";
+import CreateCustomerPage from "./CreateCustomerPage";
+import CustomerDetailPage from "./CustomerDetailPage";
 
 const useStyles = makeStyles({
   container: {
@@ -40,9 +42,23 @@ const AppPage: React.FC = () => {
       <div className={classes.container}>
         <Switch>
           <Route path="/app/dashboard" exact component={DashboardPage} />
-          <Route path="/app/jobs" exact component={JobsPage} />
+
           <Route path="/app/customers" exact component={CustomersPage} />
+          <Route
+            path="/app/customers/create"
+            exact
+            component={CreateCustomerPage}
+          />
+          <Route
+            path="/app/customers/:customerId/detail"
+            exact
+            component={CustomerDetailPage}
+          />
+
+          <Route path="/app/jobs" exact component={JobsPage} />
+
           <Route path="/app/employees" exact component={EmployeesPage} />
+
           <Route path="/app/reports" exact component={ReportsPage} />
           <Redirect from="/" to="/app/dashboard" />
         </Switch>
