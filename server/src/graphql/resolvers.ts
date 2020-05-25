@@ -26,21 +26,21 @@ const resolvers: Partial<Resolvers> = {
       DB.findMany({
         target: DB.Job,
         input,
-        query: (qb) => qb.where({ clientId: parent.id }),
+        where: { clientId: parent.id },
         context,
       }),
     customers: (parent, { input }, context) =>
       DB.findMany({
         target: DB.Customer,
         input,
-        query: (qb) => qb.where({ clientId: parent.id }),
+        where: { clientId: parent.id },
         context,
       }),
     employees: (parent, { input }, context) =>
       DB.findMany({
         target: DB.Employee,
         input,
-        query: (qb) => qb.where({ clientId: parent.id }),
+        where: { clientId: parent.id },
         context,
       }),
   },
@@ -49,7 +49,7 @@ const resolvers: Partial<Resolvers> = {
       DB.findMany({
         target: DB.Job,
         input,
-        query: (qb) => qb.where({ customerId: parent.id }),
+        where: { customerId: parent.id },
         context,
       }),
   },
@@ -58,7 +58,7 @@ const resolvers: Partial<Resolvers> = {
       DB.findMany({
         target: DB.Job,
         input,
-        query: (qb) => qb.where({ finishedByEmployeeId: parent.id }),
+        where: { finishedByEmployeeId: parent.id },
         context,
       }),
     client: (parent, _args, context) =>

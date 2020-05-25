@@ -100,9 +100,9 @@ export class Job extends BaseEntity {
     const { clientId, userRole } = context.currentUser || {};
 
     if (userRole === UserRole.SuperAdmin) {
-      return (qb: SelectQueryBuilder<Job>) => qb;
+      return {};
     } else {
-      return (qb: SelectQueryBuilder<Job>) => qb.where({ clientId });
+      return { clientId };
     }
   }
 }

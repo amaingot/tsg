@@ -42,31 +42,29 @@ const getProtectedQuery = <Entity extends ApplicationEntity>(
   }
 };
 
-const defaultQuery = <Entity>() => (qb: SelectQueryBuilder<Entity>) => qb;
 
 interface FindManyArgs<Entity extends ApplicationEntity> {
   target: ObjectType<Entity>;
   input?: PaginationInput;
   context: GraphqlContext;
-  query?: (qb: SelectQueryBuilder<Entity>) => SelectQueryBuilder<Entity>;
+  where?: Partial<Entity>;
 }
 
 export const findMany = async <Entity extends ApplicationEntity>(
   args: FindManyArgs<Entity>
 ) => {
-  const { input = {}, context, target, query = defaultQuery<Entity>() } = args;
+  const { input = {}, context, target, where } = args;
 
-  const protectedQuery = getProtectedQuery<Entity>(target)(context);
+  const protectedWhere = getProtectedQuery<Entity>(target)(context);
 
   const limit = input.limit || 25;
   const order = input.order || "ASC";
   const { cursor: cursorKey, type } = input.cursor || {};
 
-  const queryBuilder = query(
-    protectedQuery(
-      getConnection().getRepository<Entity>(target).createQueryBuilder("ALIAS")
-    )
-  );
+  const queryBuilder = getConnection()
+    .getRepository<Entity>(target)
+    .createQueryBuilder("ALIAS")
+    .where({ ...where, ...protectedWhere });
 
   const paginator = buildPaginator<Entity>({
     entity: target,

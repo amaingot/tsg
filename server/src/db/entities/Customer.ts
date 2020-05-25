@@ -108,7 +108,7 @@ export class Customer extends BaseEntity {
     if (userRole === UserRole.SuperAdmin) {
       return (qb: SelectQueryBuilder<Customer>) => qb;
     } else {
-      return (qb: SelectQueryBuilder<Customer>) => qb.where({ clientId });
+      return { clientId };
     }
   }
 }
