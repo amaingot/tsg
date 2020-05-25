@@ -52,6 +52,9 @@ export class Customer extends BaseEntity {
   homePhone?: string;
 
   @Column({ nullable: true })
+  cellPhone?: string;
+
+  @Column({ nullable: true })
   workPhone?: string;
 
   @CreateDateColumn()

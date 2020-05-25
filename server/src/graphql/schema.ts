@@ -71,6 +71,7 @@ const schema = gql`
     city: String
     zip: String
     homePhone: String
+    cellPhone: String
     workPhone: String
     updatedAt: DateTime!
     createdAt: DateTime!
@@ -204,6 +205,7 @@ const schema = gql`
     address2: String
     city: String
     zip: String
+    cellPhone: String
     homePhone: String
     workPhone: String
   }
