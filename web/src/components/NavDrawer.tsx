@@ -1,7 +1,7 @@
 import React from "react";
-
-import { makeStyles } from "@material-ui/core/styles";
+import { useHistory } from "react-router-dom";
 import {
+  makeStyles,
   Drawer,
   List,
   ListItem,
@@ -10,11 +10,13 @@ import {
   Hidden,
 } from "@material-ui/core";
 
-import DashboardIcon from "@material-ui/icons/Dashboard";
-import GroupIcon from "@material-ui/icons/Group";
-import CustomersIcon from "@material-ui/icons/PermContactCalendar";
-import BarChartIcon from "@material-ui/icons/BarChart";
-import AssignmentIcon from "@material-ui/icons/Assignment";
+import {
+  Dashboard as DashboardIcon,
+  Group as EmployeesIcon,
+  PermContactCalendar as CustomersIcon,
+  BarChart as ReportsIcon,
+  Assignment as JobsIcon,
+} from "@material-ui/icons";
 
 export const DRAWER_WIDTH = 240;
 
@@ -33,38 +35,39 @@ const useStyles = makeStyles((theme) => ({
 
 const DrawerContents: React.FC = () => {
   const classes = useStyles();
+  const { push } = useHistory();
 
   return (
     <>
       <div className={classes.toolbar} />
       <List>
-        <ListItem button>
+        <ListItem button onClick={() => push("/app/dashboard")}>
           <ListItemIcon>
             <DashboardIcon />
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
         </ListItem>
-        <ListItem button>
+        <ListItem button onClick={() => push("/app/jobs")}>
           <ListItemIcon>
-            <AssignmentIcon />
+            <JobsIcon />
           </ListItemIcon>
           <ListItemText primary="Jobs" />
         </ListItem>
-        <ListItem button>
+        <ListItem button onClick={() => push("/app/customers")}>
           <ListItemIcon>
             <CustomersIcon />
           </ListItemIcon>
           <ListItemText primary="Customers" />
         </ListItem>
-        <ListItem button>
+        <ListItem button onClick={() => push("/app/employees")}>
           <ListItemIcon>
-            <GroupIcon />
+            <EmployeesIcon />
           </ListItemIcon>
           <ListItemText primary="Employees" />
         </ListItem>
-        <ListItem button>
+        <ListItem button onClick={() => push("/app/reports")}>
           <ListItemIcon>
-            <BarChartIcon />
+            <ReportsIcon />
           </ListItemIcon>
           <ListItemText primary="Reports" />
         </ListItem>
