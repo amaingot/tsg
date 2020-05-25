@@ -57,7 +57,7 @@ jobs:
       - run:
           name: Build docker image locally
           command: |
-            docker build -t ${PROJECT_NAME} . -f docker/Dockerfile \
+            docker build -t ${PROJECT_NAME} . -f k8/Dockerfile \
                 --build-arg SHA=${CIRCLE_SHA1}
 
       - run:
