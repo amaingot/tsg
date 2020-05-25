@@ -1,51 +1,38 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
-import { Role, GetMeQuery, useGetMeQuery } from "../graphql/hooks";
-import config from "../utils/config";
+import auth, { User } from "../utils/auth";
 
 interface AuthContextState {
   loggedIn: boolean;
-  currentPerson?: GetMeQuery["me"];
-  role?: Role;
-  refresh: () => void;
+  loading: boolean;
+  user?: User;
 }
 
 const AuthContext = React.createContext<AuthContextState>({
   loggedIn: false,
-  refresh: () => {},
+  loading: true,
 });
 
 export const useAuth = () => React.useContext(AuthContext);
 
 export const AuthContextProvider: React.FC = (props) => {
-  const [currentPerson, setCurrentPerson] = React.useState<GetMeQuery["me"]>();
-
-  const meResult = useGetMeQuery();
-
-  const loggedIn = currentPerson !== undefined;
-  const role = currentPerson?.role;
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const refresh = () => {
-    const cookie = document.cookie
-      .split(";")
-      .filter((c) => c.includes(config.COOKIE_KEY));
-    if (cookie) {
-      meResult.refetch();
-    } else {
-      setCurrentPerson(undefined);
-    }
-  };
+  const [user, setUser] = React.useState<User>();
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    const me = meResult.data?.me;
-    if (me && me.family) {
-      setCurrentPerson(me);
-    }
-  }, [meResult]);
+    auth.onAuthStateChanged((u) => {
+      if (u) {
+        setUser(u);
+      } else {
+        setUser(undefined);
+      }
+      setLoading(false);
+    });
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ currentPerson, loggedIn, role, refresh }}>
+    <AuthContext.Provider
+      value={{ loading, loggedIn: user !== undefined, user }}
+    >
       {props.children}
     </AuthContext.Provider>
   );
