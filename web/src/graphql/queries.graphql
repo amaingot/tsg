@@ -1,3 +1,37 @@
+query ListPlans {
+  plans {
+    id
+    active
+    amount
+    amountDecimal
+    billingScheme
+    created
+    currency
+    interval
+    intervalCount
+    livemode
+    nickname
+    productId
+    product {
+      id
+      active
+      created
+      description
+      images
+      livemode
+      name
+      statementDescriptor
+      type
+      unitLabel
+      updated
+    }
+    trialPeriodDays
+    usageType
+    description
+    features
+  }
+}
+
 query GetMe {
   me {
     id
