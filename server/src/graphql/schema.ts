@@ -223,8 +223,12 @@ const schema = gql`
   }
 
   input SignUpInput {
-    name: String!
-    stripeCustomerId: String!
+    firstName: String!
+    companyName: String!
+    lastName: String!
+    email: String!
+    password: String!
+    paymentMethodId: String
   }
 
   type Mutation {
