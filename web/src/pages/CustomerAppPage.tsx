@@ -1,13 +1,18 @@
 import React from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
-import Typography from "@material-ui/core/Typography";
+import {
+  Grid,
+  Card,
+  CardHeader,
+  CardContent,
+  Typography,
+  CircularProgress,
+} from "@material-ui/core";
 
 import Layout from "../components/Layout";
+import { useAuth } from "../contexts/AuthContext";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
   gridContainer: {
@@ -15,11 +20,28 @@ const useStyles = makeStyles({
   },
 });
 
-const DashboardPage: React.FC = () => {
+const CustomerAppPage: React.FC = () => {
   const classes = useStyles();
+  const history = useHistory();
+  const { loggedIn, loading } = useAuth();
+
+  React.useEffect(() => {
+    if (!loggedIn && !loading) {
+      history.push("/login");
+    }
+  }, [loading, loggedIn, history]);
+
+  if (loading) {
+    return (
+      <CircularProgress
+        size={64}
+        style={{ margin: "4rem auto", display: "block" }}
+      />
+    );
+  }
 
   return (
-    <Layout>
+    <Layout showDrawerNav>
       <Grid container spacing={4} className={classes.gridContainer}>
         <Grid item xs={12} md={6}>
           <Card>
@@ -42,4 +64,4 @@ const DashboardPage: React.FC = () => {
   );
 };
 
-export default DashboardPage;
+export default CustomerAppPage;
