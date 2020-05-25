@@ -4,6 +4,7 @@ import { UserInputError } from "apollo-server-express";
 import { Resolvers } from "./types";
 import * as DB from "../db";
 import Stripe from "../utils/stripe";
+import signUp from "./resolvers/signUp";
 
 const resolvers: Partial<Resolvers> = {
   DateTime: new GraphQLScalarType({
@@ -99,6 +100,7 @@ const resolvers: Partial<Resolvers> = {
     plans: () => Stripe.getPlans(),
   },
   Mutation: {
+    signUp: async (_, { input }) => signUp(input),
     createClient: async (_, { input }, context) =>
       DB.createOne({ target: DB.Client, item: input, context }),
     updateClient: async (_, { input, id }, context) =>
