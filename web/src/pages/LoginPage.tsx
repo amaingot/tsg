@@ -13,8 +13,8 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Layout from "../components/Layout";
-import { useLoginMutation } from "../graphql/hooks";
 import { useAuth } from "../contexts/AuthContext";
+import auth from "../utils/auth";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -39,40 +39,28 @@ const useStyles = makeStyles((theme) => ({
 const LoginPage: React.FC = () => {
   const history = useHistory();
   const classes = useStyles();
-  const [login, loginResult] = useLoginMutation();
-  const auth = useAuth();
+  const { loggedIn } = useAuth();
 
-  const [username, setUsername] = React.useState("");
+  const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [rememberMe, setRememberMe] = React.useState(false);
   const [error, setError] = React.useState<string>();
 
   const handleSubmit: React.FormEventHandler = (e) => {
     e.preventDefault();
-    console.log(e);
-    login({
-      variables: {
-        input: {
-          username,
-          password,
-          rememberMe,
-        },
-      },
-    })
-      .then(() => {
-        auth.refresh();
-      })
-      .catch((e) => {
-        // Do nothing
-      });
+
+    try {
+      auth.signInWithEmailAndPassword(email, password);
+    } catch (e) {
+      setError(JSON.stringify(e));
+    }
   };
 
   React.useEffect(() => {
-    if (loginResult.error?.graphQLErrors) {
-      const errors = loginResult.error.graphQLErrors[0].message;
-      setError(errors);
+    if (loggedIn) {
+      history.push("/");
     }
-  }, [loginResult]);
+  }, [loggedIn, history]);
 
   return (
     <Layout size="xs">
@@ -89,13 +77,13 @@ const LoginPage: React.FC = () => {
             margin="normal"
             required
             fullWidth
-            id="username"
+            id="email"
             label="Username"
-            name="username"
+            name="email"
             autoComplete="username"
             autoFocus
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
             variant="outlined"
