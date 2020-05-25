@@ -69,9 +69,6 @@ const stripeWrapper = (
       onBlur={() => onBlur && onBlur({} as any)}
       onFocus={() => onFocus && onFocus({} as any)}
       onChange={handleChange}
-      options={{
-        placeholder: "",
-      }}
     />
   );
 };
@@ -93,6 +90,28 @@ const SignUpPage: React.FC = () => {
   const [password, setPassword] = React.useState("");
   const [signUp, signUpResult] = useSignUpMutation();
 
+  const createCardNumberInput = React.useMemo(
+    () =>
+      stripeWrapper(CardNumberElement, (event) =>
+        setError(event.error?.message || undefined)
+      ),
+    [setError]
+  );
+  const createCardExpiryInput = React.useMemo(
+    () =>
+      stripeWrapper(CardExpiryElement, (event) =>
+        setError(event.error?.message || undefined)
+      ),
+    [setError]
+  );
+  const createCardCvcInput = React.useMemo(
+    () =>
+      stripeWrapper(CardCvcElement, (event) =>
+        setError(event.error?.message || undefined)
+      ),
+    [setError]
+  );
+
   React.useEffect(() => {
     if (loggedIn) {
       history.push("/app");
@@ -108,16 +127,6 @@ const SignUpPage: React.FC = () => {
   if (stripe === null || elements === null) {
     return <></>;
   }
-
-  // Handle real-time validation errors from the card Element.
-  const handleChange = (event: StripeElementChangeEvent) => {
-    if (event.error) {
-      setError(event.error.message);
-    } else {
-      setError(undefined);
-    }
-  };
-
   // Handle form submission.
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -248,13 +257,12 @@ const SignUpPage: React.FC = () => {
                   fullWidth
                   name="card-number"
                   label="Card Number"
-                  helperText="1234 1234 1234 1234"
                   id="card-number"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                   InputProps={{
-                    inputComponent: stripeWrapper(
-                      CardNumberElement,
-                      handleChange
-                    ),
+                    inputComponent: createCardNumberInput,
                   }}
                 />
               </Grid>
@@ -263,15 +271,14 @@ const SignUpPage: React.FC = () => {
                   variant="outlined"
                   required
                   fullWidth
-                  name="card-number"
+                  name="card-expiry"
                   label="Expiration"
-                  helperText="MM YY"
-                  id="card-number"
+                  id="card-expiry"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                   InputProps={{
-                    inputComponent: stripeWrapper(
-                      CardExpiryElement,
-                      handleChange
-                    ),
+                    inputComponent: createCardExpiryInput,
                   }}
                 />
               </Grid>
@@ -280,11 +287,14 @@ const SignUpPage: React.FC = () => {
                   variant="outlined"
                   required
                   fullWidth
-                  name="card-number"
+                  name="card-cvc"
                   label="CVC"
-                  id="card-number"
+                  id="card-cvc"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                   InputProps={{
-                    inputComponent: stripeWrapper(CardCvcElement, handleChange),
+                    inputComponent: createCardCvcInput,
                   }}
                 />
               </Grid>
