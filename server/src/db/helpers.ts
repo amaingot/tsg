@@ -79,6 +79,7 @@ export const findMany = async <Entity extends ApplicationEntity>(
     alias: "ALIAS",
   });
 
+  // TODO: Also return total count
   const { data, cursor } = await paginator.paginate(queryBuilder);
 
   return {
