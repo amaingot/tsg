@@ -62,7 +62,7 @@ const HomePage: React.FC = () => {
             color="textPrimary"
             gutterBottom
           >
-            Reward and encourage your family
+            Your shop, simplified.
           </Typography>
           <Typography
             variant="h5"
@@ -70,8 +70,8 @@ const HomePage: React.FC = () => {
             color="textSecondary"
             paragraph
           >
-            Gratitude and hard work are hard principles to teach your children,
-            we can help you!
+            TSG is a cloud based shop management system that organizes customer
+            string jobs and employee hours!
           </Typography>
           <div className={classes.heroButtons}>
             <Grid container spacing={2} justify="center">
