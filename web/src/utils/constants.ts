@@ -1,2 +1,2 @@
-export const APP_TITLE = "Chores App";
-export const COPYRIGHT_OWNERS = "Alex Maingot & Montana Manske";
+export const APP_TITLE = "Tennis Shop Guru";
+export const COPYRIGHT_OWNERS = "Alex Maingot";
