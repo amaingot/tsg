@@ -87,8 +87,8 @@ function Table<RowData extends object>(props: MaterialTableProps<RowData>) {
       style={{ minWidth: "100%" }}
       icons={tableIcons}
       options={{
-        pageSize: 30,
-        pageSizeOptions: [30, 60, 120],
+        pageSize: 15,
+        pageSizeOptions: [15, 30, 60],
         showTitle: typeof rest.title !== "undefined",
         ...options,
       }}
