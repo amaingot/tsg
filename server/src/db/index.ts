@@ -1,7 +1,7 @@
 export { Customer } from "./entities/Customer";
 export { Client } from "./entities/Client";
 export { Job } from "./entities/Job";
-export { Employee } from "./entities/Employee";
+export { Employee, UserRole } from "./entities/Employee";
 
 export { openConnection, closeConnection } from "./connection";
 

@@ -27,6 +27,9 @@ export class Employee extends BaseEntity {
   id: string;
 
   @Column()
+  firebaseId: string;
+
+  @Column()
   name: string;
 
   @Column()

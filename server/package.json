@@ -6,13 +6,15 @@
   "scripts": {
     "clean": "rm -rf node_modules",
     "start": "tsnd --respawn -r dotenv/config src/server.ts",
-    "typeorm": "ts-node -r tsconfig-paths/register -r dotenv/config node_modules/typeorm/cli.js",
+    "typeorm": "ts-node -r tsconfig-paths/register -r dotenv/config ../node_modules/typeorm/cli.js",
     "db:seed": "ts-node -r dotenv/config ./src/db/misc/seedDatabase.ts",
     "start:in-container": "NODE_ENV=production ts-node src/server.ts"
   },
   "dependencies": {
+    "@axelspringer/graphql-google-pubsub": "^2.1.0",
     "@google-cloud/bigquery": "^4.7.0",
     "@google-cloud/logging-winston": "^3.0.6",
+    "@google-cloud/pubsub": "^2.0.0",
     "@google-cloud/secret-manager": "^3.0.0",
     "@sendgrid/mail": "^7.1.1",
     "apollo-server-express": "^2.11.0",
