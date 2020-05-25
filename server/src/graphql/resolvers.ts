@@ -61,6 +61,8 @@ const resolvers: Partial<Resolvers> = {
         query: (qb) => qb.where({ finishedByEmployeeId: parent.id }),
         context,
       }),
+    client: (parent, _args, context) =>
+      DB.findOneOrFail({ target: DB.Client, id: parent.clientId, context }),
   },
   Job: {
     customer: ({ customerId }, _args, context) =>
@@ -71,6 +73,12 @@ const resolvers: Partial<Resolvers> = {
       DB.findOne({ target: DB.Employee, id: finishedByEmployeeId, context }),
   },
   Query: {
+    me: (_, _args, context) =>
+      DB.findOne({
+        target: DB.Employee,
+        id: context.currentUser.employeeId,
+        context,
+      }),
     clients: (_, { input }, context) =>
       DB.findMany({
         target: DB.Client,
