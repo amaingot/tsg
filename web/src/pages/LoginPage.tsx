@@ -46,6 +46,12 @@ const LoginPage: React.FC = () => {
   const [rememberMe, setRememberMe] = React.useState(false);
   const [error, setError] = React.useState<string>();
 
+  React.useEffect(() => {
+    if (loggedIn) {
+      history.push("/app");
+    }
+  }, [loggedIn, history]);
+
   const handleSubmit: React.FormEventHandler = (e) => {
     e.preventDefault();
 
@@ -55,12 +61,6 @@ const LoginPage: React.FC = () => {
       setError(JSON.stringify(e));
     }
   };
-
-  React.useEffect(() => {
-    if (loggedIn) {
-      history.push("/");
-    }
-  }, [loggedIn, history]);
 
   return (
     <Layout size="xs">
@@ -121,8 +121,12 @@ const LoginPage: React.FC = () => {
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
+              <Link
+                href="#"
+                variant="body2"
+                onClick={() => history.push("/forgot-password")}
+              >
+                {"Forgot password?"}
               </Link>
             </Grid>
             <Grid item>
@@ -131,7 +135,7 @@ const LoginPage: React.FC = () => {
                 variant="body2"
                 onClick={() => history.push("/sign-up")}
               >
-                {"Don't have an account? Sign Up"}
+                {"Don't have an account? Sign Up!"}
               </Link>
             </Grid>
           </Grid>

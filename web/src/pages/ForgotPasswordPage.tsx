@@ -1,16 +1,19 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import Link from "@material-ui/core/Link";
-import Grid from "@material-ui/core/Grid";
-import HelpIcon from "@material-ui/icons/Help";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+import {
+  Avatar,
+  Button,
+  TextField,
+  Link,
+  Grid,
+  Typography,
+  makeStyles,
+} from "@material-ui/core";
+import { Help as HelpIcon } from "@material-ui/icons";
 
 import Layout from "../components/Layout";
+import { useAuth } from "../contexts/AuthContext";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -35,6 +38,13 @@ const useStyles = makeStyles((theme) => ({
 const ForgotPasswordPage: React.FC = () => {
   const history = useHistory();
   const classes = useStyles();
+  const { loggedIn } = useAuth();
+
+  React.useEffect(() => {
+    if (loggedIn) {
+      history.push("/app");
+    }
+  }, [loggedIn, history]);
 
   return (
     <Layout size="xs">

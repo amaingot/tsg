@@ -1,18 +1,21 @@
 import React from "react";
-
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import Link from "@material-ui/core/Link";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import Container from "@material-ui/core/Container";
-
+import { useHistory } from "react-router-dom";
+import { StripeElementChangeEvent } from "@stripe/stripe-js";
+import {
+  makeStyles,
+  InputBaseComponentProps,
+  Grid,
+  Typography,
+  Avatar,
+  Button,
+  CssBaseline,
+  TextField,
+  FormControlLabel,
+  Checkbox,
+  Link,
+  Container,
+} from "@material-ui/core";
+import { LockOutlined as LockOutlinedIcon } from "@material-ui/icons";
 import {
   CardNumberElement,
   CardExpiryElement,
@@ -22,9 +25,9 @@ import {
 } from "@stripe/react-stripe-js";
 
 import Layout from "../components/Layout";
-import { StripeElementChangeEvent } from "@stripe/stripe-js";
 import { useSignUpMutation } from "../graphql/hooks";
-import { InputBaseComponentProps } from "@material-ui/core";
+import { useAuth } from "../contexts/AuthContext";
+import auth from "../utils/auth";
 
 const useStyles = makeStyles((theme) => ({
   gridContainer: {
@@ -75,9 +78,13 @@ const stripeWrapper = (
 
 const SignUpPage: React.FC = () => {
   const classes = useStyles();
-  const [error, setError] = React.useState<string>();
+  const { loggedIn } = useAuth();
+  const history = useHistory();
+
   const stripe = useStripe();
   const elements = useElements();
+
+  const [error, setError] = React.useState<string>();
   const [companyName, setCompanyName] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
@@ -85,6 +92,12 @@ const SignUpPage: React.FC = () => {
   const [zip, setZip] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [signUp, signUpResult] = useSignUpMutation();
+
+  React.useEffect(() => {
+    if (loggedIn) {
+      history.push("/app");
+    }
+  }, [loggedIn, history]);
 
   React.useEffect(() => {
     if (signUpResult.error) {
@@ -139,9 +152,13 @@ const SignUpPage: React.FC = () => {
             paymentMethodId: result.paymentMethod?.id,
           },
         },
-      }).catch((e) => {
-        setError(JSON.stringify(e));
-      });
+      })
+        .then(() => {
+          auth.signInWithEmailAndPassword(email, password);
+        })
+        .catch((e) => {
+          setError(JSON.stringify(e));
+        });
     }
   };
 
