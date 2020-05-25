@@ -50,7 +50,7 @@ const AppPage: React.FC = () => {
             component={CreateCustomerPage}
           />
           <Route
-            path="/app/customers/:customerId/detail"
+            path="/app/customers/:id/detail"
             exact
             component={CustomerDetailPage}
           />

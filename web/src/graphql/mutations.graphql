@@ -7,3 +7,45 @@ mutation SignUp($input: SignUpInput!) {
     createdAt
   }
 }
+
+mutation CreateCustomer($input: CreateOrUpdateCustomerInput!) {
+  createCustomer(input: $input) {
+    id
+    clientId
+    memNum
+    firstName
+    lastName
+    middleInitial
+    email
+    address
+    address2
+    city
+    zip
+    homePhone
+    workPhone
+    cellPhone
+    updatedAt
+    createdAt
+  }
+}
+
+mutation UpdateCustomer($id: ID!, $input: CreateOrUpdateCustomerInput!) {
+  updateCustomer(id: $id, input: $input) {
+    id
+    clientId
+    memNum
+    firstName
+    lastName
+    middleInitial
+    email
+    address
+    address2
+    city
+    zip
+    homePhone
+    workPhone
+    cellPhone
+    updatedAt
+    createdAt
+  }
+}

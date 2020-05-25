@@ -12,7 +12,9 @@ const CustomersPage: React.FC = () => {
   const customersResponse = useGetCustomersQuery();
   const history = useHistory();
 
-  const customerList = customersResponse.data?.customers.data || [];
+  const customerList = (
+    customersResponse.data?.customers.data || []
+  ).map((x) => ({ ...x }));
 
   const handleRowClick = (
     _event?: React.MouseEvent<Element, MouseEvent> | undefined,
@@ -39,7 +41,7 @@ const CustomersPage: React.FC = () => {
           {
             title: "Last Updated",
             field: "updatedAt",
-            render: (c) => moment(c.updatedAt).format("MMM dd, YY"),
+            render: (c) => moment(c.updatedAt).format("MMM d, y"),
             defaultSort: "desc",
           },
         ]}
