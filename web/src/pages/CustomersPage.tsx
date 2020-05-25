@@ -19,7 +19,7 @@ const CustomersPage: React.FC = () => {
     rowData?: { id: string }
   ) => {
     if (typeof rowData !== "undefined") {
-      history.push(`/app/customers/${rowData.id}`);
+      history.push(`/app/customers/${rowData.id}/detail`);
     }
   };
 
@@ -43,7 +43,7 @@ const CustomersPage: React.FC = () => {
             defaultSort: "desc",
           },
         ]}
-        // Implement remote data here
+        // TODO: Implement remote data here
         data={customerList}
         isLoading={customersResponse.loading}
         onRowClick={handleRowClick}
