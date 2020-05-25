@@ -255,6 +255,14 @@ const schema = gql`
     restartJob(id: ID!): Job!
     deleteJob(id: ID!): Boolean!
   }
+
+  type TextMessageEvent {
+    id: ID!
+  }
+
+  type Subscription {
+    onTextMessageEvent: TextMessageEvent!
+  }
 `;
 
 export default schema;
