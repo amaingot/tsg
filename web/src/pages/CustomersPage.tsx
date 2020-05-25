@@ -1,46 +1,43 @@
 import React from "react";
 
-import {
-  makeStyles,
-  Grid,
-  Card,
-  CardHeader,
-  CardContent,
-  Typography,
-} from "@material-ui/core";
+import { Typography } from "@material-ui/core";
+import Add from "@material-ui/icons/Add";
 
-const useStyles = makeStyles({
-  gridContainer: {
-    // marginTop: 16,
-  },
-});
+import { useGetCustomersQuery } from "../graphql/hooks";
+import Table from "../components/Table";
 
 const CustomersPage: React.FC = () => {
-  const classes = useStyles();
+  const customersResponse = useGetCustomersQuery();
+
+  const customerList = customersResponse.data?.customers.data || [];
+  //'clientId' | 'memNum' | 'firstName' | 'lastName' | 'middleInitial' | 'email' | 'address' | 'address2' | 'city' | 'zip' | 'homePhone' | 'workPhone' | 'updatedAt' | 'createdAt'
 
   return (
     <>
       <Typography variant="h5" gutterBottom>
         Customers
       </Typography>
-      <Grid container spacing={4} className={classes.gridContainer}>
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardHeader title="A Card" />
-            <CardContent>
-              <Typography>Some card content</Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardHeader title="Another Card" />
-            <CardContent>
-              <Typography>Some more card content</Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+      <Table
+        columns={[
+          { title: "First Name", field: "firstName" },
+          { title: "Last Name", field: "lastName" },
+          { title: "Cell Phone", field: "birthYear", type: "numeric" },
+          {
+            title: "Birth Place",
+            field: "birthCity",
+            lookup: { 34: "İstanbul", 63: "Şanlıurfa" },
+          },
+        ]}
+        data={customerList}
+        actions={[
+          {
+            icon: () => <Add />,
+            tooltip: "Add Customer",
+            isFreeAction: true,
+            onClick: () => alert("You want to add a new row"),
+          },
+        ]}
+      />
     </>
   );
 };
