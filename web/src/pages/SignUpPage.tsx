@@ -47,7 +47,7 @@ const SignUpPage: React.FC = () => {
   const [error, setError] = React.useState<string>();
   const stripe = useStripe();
   const elements = useElements();
-  const [familyName, setFamilyName] = React.useState("");
+  const [companyName, setCompanyName] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -97,7 +97,7 @@ const SignUpPage: React.FC = () => {
         variables: {
           input: {
             firstName,
-            familyName,
+            companyName,
             lastName,
             email,
             password,
@@ -105,7 +105,7 @@ const SignUpPage: React.FC = () => {
           },
         },
       }).catch((e) => {
-        // do nothing
+        setError(JSON.stringify(e));
       });
     }
   };
@@ -168,11 +168,11 @@ const SignUpPage: React.FC = () => {
                   variant="outlined"
                   required
                   fullWidth
-                  id="familyName"
-                  label="Family Name"
-                  value={familyName}
-                  onChange={(e) => setFamilyName(e.target.value)}
-                  name="familyName"
+                  id="companyName"
+                  label="Company"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                  name="companyName"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -186,7 +186,7 @@ const SignUpPage: React.FC = () => {
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                 />
               </Grid>
               <Grid item xs={12}>
