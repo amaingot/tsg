@@ -6,7 +6,7 @@ import PricingPage from "./pages/PricingPage";
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import DashboardPage from "./pages/DashboardPage";
+import CustomerAppPage from "./pages/CustomerAppPage";
 import TermsOfServicePage from "./pages/TermsOfServicePage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import ContactUsPage from "./pages/ContactUsPage";
@@ -23,10 +23,10 @@ export default function App() {
         <Route path="/privacy-policy" component={PrivacyPolicyPage} />
 
         <Route path="/sign-up" component={SignUpPage} />
-        <Route path="/login" component={LoginPage} />
-        <Route path="/forgot-password" component={ForgotPasswordPage} />
-        
-        <Route path="/dashboard" component={DashboardPage} />
+        <Route path="/login" exact component={LoginPage} />
+        <Route path="/login/forgot-password" component={ForgotPasswordPage} />
+
+        <Route path="/app" component={CustomerAppPage} />
       </Switch>
     </BrowserRouter>
   );
