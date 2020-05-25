@@ -30,9 +30,6 @@ export class Employee extends BaseEntity {
   firebaseId: string;
 
   @Column()
-  name: string;
-
-  @Column()
   firstName: string;
 
   @Column()
