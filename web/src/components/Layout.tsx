@@ -1,4 +1,5 @@
 import React from "react";
+import clsx from "clsx";
 
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -8,6 +9,8 @@ import Copyright from "./Copyright";
 import { APP_TITLE } from "../utils/constants";
 import TopNavBar from "./TopNavBar";
 import Footer from "./Footer";
+import NavDrawer, { DRAWER_WIDTH } from "./NavDrawer";
+import NavDrawerToggleButton from "./NavDrawerToggleButton";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -17,14 +20,22 @@ const useStyles = makeStyles((theme) => ({
   toolbar: {
     flexWrap: "wrap",
   },
+  toolbarPlaceholder: theme.mixins.toolbar,
   toolbarTitle: {
     flexGrow: 1,
     cursor: "pointer",
   },
   fullWidthLayout: {
-    width: "auth",
+    width: "auto",
+    maxWidth: "unset",
     margin: theme.spacing(0, 0, 2, 0),
     padding: theme.spacing(0, 0, 2, 0),
+  },
+  showDrawerLayout: {
+    [theme.breakpoints.up("sm")]: {
+      marginLeft: `${DRAWER_WIDTH}px !important`,
+      width: `calc(100% - ${DRAWER_WIDTH}px)`,
+    },
   },
   footer: {
     margin: theme.spacing(2),
@@ -45,16 +56,20 @@ interface Props {
   size?: "xs" | "sm" | "md" | "lg" | "xl";
   fullWidth?: boolean;
   showFooter?: boolean;
+  showDrawerNav?: boolean;
 }
 
 const Layout: React.FC<Props> = (props) => {
   const classes = useStyles();
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+
   const {
     title = "",
     showTopNav = true,
     size = "xl",
     fullWidth = false,
     showFooter = false,
+    showDrawerNav = false,
   } = props;
 
   const pageTitle = `${APP_TITLE} ${title && `| ${title}`}`;
@@ -63,18 +78,51 @@ const Layout: React.FC<Props> = (props) => {
     document.title = pageTitle;
   }, [pageTitle]);
 
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
   return (
     <React.Fragment>
       <CssBaseline />
-      {showTopNav && <TopNavBar title={pageTitle} />}
+      {(showTopNav || showDrawerNav) && (
+        <>
+          <TopNavBar
+            toggleDrawerButton={
+              showDrawerNav
+                ? () => (
+                    <NavDrawerToggleButton toggleDrawer={handleDrawerToggle} />
+                  )
+                : undefined
+            }
+            title={pageTitle}
+          />
+          <div className={classes.toolbarPlaceholder} />
+        </>
+      )}
+      {showDrawerNav && (
+        <NavDrawer
+          mobileOpen={mobileOpen}
+          onDrawerToggle={handleDrawerToggle}
+        />
+      )}
+
       <Container
-        maxWidth={size}
+        maxWidth={fullWidth ? undefined : size}
         component="main"
-        className={(fullWidth && classes.fullWidthLayout) || undefined}
+        className={clsx(
+          fullWidth && classes.fullWidthLayout,
+          showDrawerNav && classes.showDrawerLayout
+        )}
       >
         {props.children}
       </Container>
-      <footer className={classes.footer}>
+      <footer
+        className={clsx(
+          showDrawerNav && classes.showDrawerLayout,
+          classes.footer
+        )}
+      >
         {showFooter && <Footer />}
         <Copyright />
       </footer>
