@@ -14,6 +14,7 @@
     "@google-cloud/bigquery": "^4.7.0",
     "@google-cloud/logging-winston": "^3.0.6",
     "@google-cloud/secret-manager": "^3.0.0",
+    "@sendgrid/mail": "^7.1.1",
     "apollo-server-express": "^2.11.0",
     "axios": "^0.19.2",
     "convict": "^6.0.0",
@@ -26,6 +27,8 @@
     "mustache": "^4.0.1",
     "pg": "^8.2.1",
     "reflect-metadata": "^0.1.13",
+    "stripe": "^8.55.0",
+    "twilio": "^3.43.1",
     "typeorm": "^0.2.24",
     "typeorm-cursor-pagination": "^0.2.2",
     "winston": "^3.2.1"

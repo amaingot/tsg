@@ -9,6 +9,12 @@ const configurationSchema = {
     env: "ENVIRONMENT",
     format: ["prod", "staging", "local"],
   },
+  FIREBASE_APP_CONFIG: {
+    default: "",
+    doc: "Config for the Firebase App",
+    env: "FIREBASE_APP_CONFIG",
+    format: String,
+  },
   GCP_PROJECT_ID: {
     default: "hmm-dev",
     doc: "GCP Project ID for where this will run",
@@ -66,10 +72,51 @@ const configurationSchema = {
     env: "POSTGRES_USERNAME",
     format: String,
   },
+  SENDER_EMAIL: {
+    default: "no-reply@tsg.hmm.dev",
+    doc: "Email address to use with SendGrid",
+    env: "SENDER_EMAIL",
+    format: String,
+  },
+  SENDGRID_API_KEY: {
+    default: "",
+    doc: "API key for SendGrid",
+    env: "SENDGRID_API_KEY",
+    format: String,
+    sensitive: true,
+  },
+  STRIPE_PUBLIC_KEY: {
+    default: "",
+    doc: "Public key for Stripe",
+    env: "STRIPE_PUBLIC_KEY",
+    format: String,
+  },
+  STRIPE_SECRET_KEY: {
+    default: "",
+    doc: "Private key for Stripe",
+    env: "STRIPE_SECRET_KEY",
+    format: String,
+    sensitive: true,
+  },
   SHA: {
     default: "no-sha-provided",
     doc: "Specifies the sha of the current version of the application",
     env: "SHA",
+    format: String,
+  },
+  TWILIO_ACCOUNT_SID: {
+    default: "",
+    env: "TWILIO_ACCOUNT_SID",
+    format: String,
+  },
+  TWILIO_AUTH_TOKEN: {
+    default: "",
+    env: "TWILIO_AUTH_TOKEN",
+    format: String,
+  },
+  TWILIO_PHONE_NUMBER: {
+    default: "",
+    env: "TWILIO_PHONE_NUMBER",
     format: String,
   },
 };

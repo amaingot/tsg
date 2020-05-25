@@ -1,7 +1,43 @@
 import { gql } from "apollo-server-express";
 const schema = gql`
+  "Date time represented as an ISO String"
   scalar DateTime
+
   scalar Email
+
+  type StripeProduct {
+    id: ID!
+    active: Boolean!
+    created: DateTime!
+    description: String
+    images: [String!]!
+    livemode: Boolean!
+    name: String!
+    statementDescriptor: String
+    type: String
+    unitLabel: String
+    updated: DateTime!
+  }
+
+  type StripePlan {
+    id: ID!
+    active: Boolean!
+    amount: Int!
+    amountDecimal: String!
+    billingScheme: String!
+    created: DateTime!
+    currency: String!
+    interval: String!
+    intervalCount: Int!
+    livemode: Boolean!
+    nickname: String
+    productId: ID
+    product: StripeProduct
+    trialPeriodDays: Int
+    usageType: String!
+    features: [String!]!
+    description: String!
+  }
 
   enum UserRole {
     SuperAdmin
@@ -138,6 +174,9 @@ const schema = gql`
 
     customers(input: PaginationInput): Customers!
     customer(id: ID!): Customer
+
+    # Public
+    plans: [StripePlan!]!
   }
 
   input CreateOrUpdateClientInput {
