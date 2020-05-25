@@ -8,8 +8,8 @@ const client = new Stripe(config.get("STRIPE_SECRET_KEY"), {
 });
 
 interface CreateCustomerInputs {
-  familyId: string;
-  familyName: string;
+  clientId: string;
+  companyName: string;
   email: string;
   paymentMethodId?: string;
 }
@@ -17,13 +17,13 @@ interface CreateCustomerInputs {
 const createCustomer = async (
   inputs: CreateCustomerInputs
 ): Promise<Stripe.Customer> => {
-  const { familyId, email, familyName, paymentMethodId } = inputs;
+  const { clientId, email, companyName, paymentMethodId } = inputs;
   const customer = client.customers.create({
     email,
-    name: familyName,
+    name: companyName,
     payment_method: paymentMethodId,
     metadata: {
-      familyId,
+      clientId,
     },
   });
 
