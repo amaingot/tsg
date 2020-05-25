@@ -16,6 +16,7 @@ const signUp = async (input: SignUpInput) => {
   } = input;
 
   const user = await auth.createUser({
+    displayName: `${firstName} ${lastName} (${companyName})`,
     email: email,
     password: password,
     emailVerified: true,
@@ -57,6 +58,12 @@ const signUp = async (input: SignUpInput) => {
   });
 
   logger.info("Created new stripe customer", { stripeCustomer });
+
+  await auth.setCustomUserClaims(user.uid, {
+    clientId: client.id,
+    employeeId: employee.id,
+    userRole: DB.UserRole.AccountAdmin,
+  });
 
   const updatedClient = await DB.updateOne({
     target: DB.Client,

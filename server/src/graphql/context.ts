@@ -55,10 +55,12 @@ export class GraphqlContext {
 
     if (rawToken) {
       try {
-        this._decodedToken = await auth.verifyIdToken(rawToken);
+        this._decodedToken = await auth.verifyIdToken(rawToken, true);
         this._currentUser.firebaseId = this._decodedToken?.uid;
+        this._currentUser.clientId = this._decodedToken?.clientId;
+        this._currentUser.employeeId = this._decodedToken?.employeeId;
+        this._currentUser.userRole = this._decodedToken?.userRole;
 
-        // TODO: parse user claims for user role and client ID
       } catch (e) {
         logger.error("Invalid auth token", {
           req: this.req,
