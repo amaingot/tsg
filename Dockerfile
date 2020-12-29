@@ -4,7 +4,7 @@ RUN mkdir -p /usr/src/app/
 
 WORKDIR /usr/src/app
 
-COPY .
+COPY . .
 
 ARG COMMIT_SHA
 ENV SHA=${COMMIT_SHA}
