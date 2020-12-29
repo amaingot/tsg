@@ -4,13 +4,14 @@ RUN mkdir -p /usr/src/app/
 
 WORKDIR /usr/src/app
 
-COPY ./server .
-COPY ./web/build ./assets
+COPY .
 
-ARG SHA
-ENV SHA=${SHA}
+ARG COMMIT_SHA
+ENV SHA=${COMMIT_SHA}
 
 RUN yarn
+
+RUN REACT_APP_SHA=$SHA yarn build:web
 
 EXPOSE 8080
 

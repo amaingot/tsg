@@ -1,0 +1,199 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tsg
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tsg-secrets
+  namespace: tsg
+data:
+  # FIREBASE_APP_CONFIG: AgCjzuaWQRPgMby9QwJGY3rH2qXLdt4yF4Z6fuzWr1C8vGpziDgh+CmGM6Aou4sc/H2uqNgldSDUHW0iJH5VRTQAXSP9xgICCP/E27hidMOfaqSobrF1tW5WCbBB9buQBjFSQMpbpsKTBUgqewfEfrlpv+MwSwc+YrYy+evopIkaR0qshx1OVfOrOyK270uQ8As2YWdrcFwUPe4vp6orC56u59JoYIiTTEwTyyNWXm0/ldj3/YFoZjXt3bcPNa1vIi7aP+hbH+NcKPEMSF2fVJHF0J+se3K+mwFOYTKK6ooKlCK2qvy+Qcbcvz8fKdyUpT+d8jyx9RZJ6vRFDgu2O8HikzP9r76/OQ36uxeekfzAdbS7fN+zgJh2m1qW2aI1p7KmzLLW+EUFBcryMwYCm9Nm95HapCcsrQJbaBhw7PS1IDcqq70X+QAqljlxwk9y6sgjpCB0n9/y980m9dI6aVf2QDtB2spURHOhuK+RfFm5Ib66al7yGIYFQ+tOCyh2BUZ3RtE9oVzTJC18KOB5EFYONSfT1ZRMu6gXsaSSxOxrrVk8lT1lf53yTH7PPZmGKP2Bosou0ROnGT8q1kbbHLwz8YmTYTcM5P5/XypGR1JW7R3LoawWqk4sUGW3eKFp4hA+4SUsSILicY0052+93BabZnbi1IdgASz3yXXheJSPXMaCwKRGcnh2BmeFcTalVMgZA3BqK9ieDk59Nlc0+YRkouch5qPMq2243h2ZUyFlTc5UutbNY2cC4/p9h82gHPVnYul0tO3lvUk0eXH9QcFvQGkd/mzOSADBLgC6ShWUdMhPI9O0Ob3NAOQrhW6wZXrndyww6QFCoqd6ilbvx+d1TExUtUzxqKsF62QC/M3qCnZwxx1/MLx62wRBxShxs8QqmlaRFTovpr32CvxBNrrnPprilEWH5tOZcgqax+ZTW+czaxkFj2jhP4szo0svVChti46ABxozpawmwdy2M1IBVb+m+GdmUqSuo9pBy4wWRwtuhLcgAeSKOlFYtCLrgKBOaTytxJu2OgcfifTWo3V7TFWngF3WOB2sJHsJmY2lFydpbp30dFQd+FpwijDa0NUCmWuD6cKz1ZqhCg==
+  # GCP_SERVICE_ACCOUNT_KEY: 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
+  SENDGRID_API_KEY: U0cuYlZhMUhzWWxUMDZhdzd4WVJmOVVKZy5NMGhWa01NSmRoMU9LTDFQSm41X1RnOXRVMWZGUHlRZWRPT1dUc3NIYTY4
+  STRIPE_PUBLIC_KEY: cGtfbGl2ZV93azAyVUcyeUllU0xYZGljd0JBVkR5ejkwMHZuNG82c2V3
+  STRIPE_SECRET_KEY: c2tfbGl2ZV81MUdtaUc5R05BckV3cEZ4ZkpxbzZBemlFWXltZVU1cmVjWDhhVXBKYmNXZ1RZQU1CUGxCcHl5Uk00ekNFbm9XNzNBNG5wek9PTWo4ODFDcHpPSFlzQ3BsRzAwZjJ4VFRvU2I=
+  TWILIO_ACCOUNT_SID: QUMxYWY4NGU5NGJkNGE0ZTgzMmVmMGEzMzI4N2EzMmI4MQ==
+  TWILIO_AUTH_TOKEN: OTY5YzM0ZDZjZDFhODhlZmNhYmY2NzRmOWE4NWU3ZTg=
+  TWILIO_PHONE_NUMBER: KzEgNjUwIDMwMCAwMDk2
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tsg-config
+  namespace: tsg
+data:
+  ENVIRONMENT: prod
+  GCP_PROJECT_ID: hmm-dev
+  POSTGRES_DATABASE: tsg-prod
+  POSTGRES_USERNAME: postgres
+  POSTGRES_PASSWORD: supersecret
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tsg-postgres
+  namespace: tsg
+spec:
+  selector:
+    matchLabels:
+      app: tsg-postgres
+  serviceName: tsg-postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: tsg-postgres
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: tsg-postgres
+          image: postgres:12-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: tsg-config
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: tsg-config
+                  key: POSTGRES_DATABASE
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata/tsg_pgdata
+          volumeMounts:
+            - name: pgdata
+              mountPath: /var/lib/postgresql/data/pgdata
+  volumeClaimTemplates:
+    - metadata:
+        name: pgdata
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 10Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tsg-postgres
+  namespace: tsg
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+      protocol: TCP
+  selector:
+    app: tsg-postgres
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: tsg
+  namespace: tsg
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: tsg
+  template:
+    metadata:
+      labels:
+        app: tsg
+    spec:
+      containers:
+        - name: tsg
+          image: gcr.io/hmm-dev/tsg:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "0.5"
+          envFrom:
+            - configMapRef:
+                name: tsg-config
+            - secretRef:
+                name: tsg-secrets
+
+          readinessProbe:
+            httpGet:
+              path: /_health/ready
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            timeoutSeconds: 15
+
+          livenessProbe:
+            httpGet:
+              path: /_health/alive
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+
+          env:
+            - name: POSTGRES_HOST
+              value: tsg-postgres
+      #       - name: GOOGLE_APPLICATION_CREDENTIALS
+      #         value: "/config/GCP_SERVICE_ACCOUNT_KEY"
+      #     volumeMounts:
+      #       - name: gcp-key
+      #         mountPath: "/config"
+      #         readOnly: true
+      # volumes:
+      #   - name: gcp-key
+      #     secret:
+      #       secretName: tsg-secrets
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tsg-service
+  namespace: tsg
+  labels:
+    name: tsg
+spec:
+  ports:
+    - port: 8080
+  selector:
+    app: tsg
+
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: tsg-ingress
+  namespace: tsg
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  tls:
+    - hosts:
+        - "tsg.hmm.dev"
+      secretName: tsg-cert-secret
+  rules:
+    - host: "tsg.hmm.dev"
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: tsg-service
+              servicePort: 8080

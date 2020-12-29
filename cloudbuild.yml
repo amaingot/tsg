@@ -1,0 +1,30 @@
+steps:
+  # - name: "gcr.io/cloud-builders/docker"
+  #   entrypoint: "bash"
+  #   args: ["-c", "docker pull gcr.io/hmm-dev/tsg:latest || exit 0"]
+
+  - name: "gcr.io/cloud-builders/docker"
+    args: [
+        "build",
+        "-t",
+        "gcr.io/hmm-dev/tsg:$COMMIT_SHA",
+        "--build-arg COMMIT_SHA=${COMMIT_SHA}",
+        # "--cache-from=gcr.io/hmm-dev/tsg:latest",
+        ".",
+      ]
+
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/hmm-dev/tsg:$COMMIT_SHA"]
+
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      - "container"
+      - "images"
+      - "add-tag"
+      - "gcr.io/hmm-dev/tsg:$COMMIT_SHA"
+      - "gcr.io/hmm-dev/tsg:latest"
+      - "--quiet"
+
+images:
+  - "gcr.io/hmm-dev/tsg:$COMMIT_SHA"
+  - "gcr.io/hmm-dev/tsg:latest"
