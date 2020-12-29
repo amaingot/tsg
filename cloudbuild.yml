@@ -8,7 +8,8 @@ steps:
         "build",
         "-t",
         "gcr.io/hmm-dev/tsg:$COMMIT_SHA",
-        "--build-arg COMMIT_SHA=${COMMIT_SHA}",
+        "--build-arg",
+        "COMMIT_SHA=${COMMIT_SHA}",
         # "--cache-from=gcr.io/hmm-dev/tsg:latest",
         ".",
       ]
