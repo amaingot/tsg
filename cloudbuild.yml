@@ -1,7 +1,7 @@
 steps:
-  # - name: "gcr.io/cloud-builders/docker"
-  #   entrypoint: "bash"
-  #   args: ["-c", "docker pull gcr.io/hmm-dev/tsg:latest || exit 0"]
+  - name: "gcr.io/cloud-builders/docker"
+    entrypoint: "bash"
+    args: ["-c", "docker pull gcr.io/hmm-dev/tsg:latest || exit 0"]
 
   - name: "gcr.io/cloud-builders/docker"
     args: [
@@ -10,7 +10,7 @@ steps:
         "gcr.io/hmm-dev/tsg:$COMMIT_SHA",
         "--build-arg",
         "COMMIT_SHA=${COMMIT_SHA}",
-        # "--cache-from=gcr.io/hmm-dev/tsg:latest",
+        "--cache-from=gcr.io/hmm-dev/tsg:latest",
         ".",
       ]
 
@@ -28,4 +28,3 @@ steps:
 
 images:
   - "gcr.io/hmm-dev/tsg:$COMMIT_SHA"
-  - "gcr.io/hmm-dev/tsg:latest"
