@@ -5,12 +5,12 @@ import { logger } from "./logger";
 
 const graphqlPubSub = new GqlPubSub({
   projectId: config.get("GCP_PROJECT_ID"),
-  credentials: JSON.parse(config.get("GCP_SERVICE_ACCOUNT_KEY")),
+  // credentials: JSON.parse(config.get("GCP_SERVICE_ACCOUNT_KEY")),
 });
 
 const googlePubSub = new GooglePubSub({
   projectId: config.get("GCP_PROJECT_ID"),
-  credentials: JSON.parse(config.get("GCP_SERVICE_ACCOUNT_KEY")),
+  // credentials: JSON.parse(config.get("GCP_SERVICE_ACCOUNT_KEY")),
 });
 
 const SMS_TOPIC_NAME = `tsg-${config.get("ENVIRONMENT")}-sms`;
