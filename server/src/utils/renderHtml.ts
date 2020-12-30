@@ -6,10 +6,7 @@ import Mustache from "mustache";
 import config from "./config";
 
 const renderHtml = (app: Application) => {
-  const assetPath =
-    config.get("NODE_ENV") === "production"
-      ? path.join(__dirname, "../../assets")
-      : path.join(__dirname, "../../../web/build");
+  const assetPath = path.join(__dirname, "../../../web/build");
 
   app.use(express.static(assetPath, { index: false }));
 

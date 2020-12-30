@@ -28,6 +28,7 @@ metadata:
 data:
   ENVIRONMENT: prod
   GCP_PROJECT_ID: hmm-dev
+  GCP_IDP_TENANT_ID: tsguru-6prs8
   POSTGRES_DATABASE: tsg-prod
   POSTGRES_USERNAME: postgres
   POSTGRES_PASSWORD: supersecret
@@ -114,7 +115,7 @@ spec:
     spec:
       containers:
         - name: tsg
-          image: gcr.io/hmm-dev/tsg:latest
+          image: gcr.io/hmm-dev/tsg:a0223d2aebe5be5dc11ab5634c589c22ad4b8900
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -128,23 +129,23 @@ spec:
             - secretRef:
                 name: tsg-secrets
 
-          readinessProbe:
-            httpGet:
-              path: /_health/ready
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 15
-            periodSeconds: 30
-            timeoutSeconds: 15
+          # readinessProbe:
+          #   httpGet:
+          #     path: /_health/ready
+          #     port: 8080
+          #     scheme: HTTP
+          #   initialDelaySeconds: 15
+          #   periodSeconds: 30
+          #   timeoutSeconds: 15
 
-          livenessProbe:
-            httpGet:
-              path: /_health/alive
-              port: 8080
-              scheme: HTTP
-            initialDelaySeconds: 30
-            periodSeconds: 15
-            timeoutSeconds: 5
+          # livenessProbe:
+          #   httpGet:
+          #     path: /_health/alive
+          #     port: 8080
+          #     scheme: HTTP
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 15
+          #   timeoutSeconds: 5
 
           env:
             - name: POSTGRES_HOST
