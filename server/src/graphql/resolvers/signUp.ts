@@ -1,3 +1,4 @@
+import { getRepository } from "typeorm";
 import { SignUpInput } from "../types";
 import * as DB from "../../db";
 import Stripe from "../../utils/stripe";
@@ -24,14 +25,12 @@ const signUp = async (input: SignUpInput) => {
 
   logger.info("Created new user", { user });
 
-  const client = await DB.createOne({
-    target: DB.Client,
-    item: {
+  const client = await getRepository(DB.Client)
+    .create({
       name: companyName,
       stripeCustomerId: "not-created",
-    },
-    context: GraphqlContext.forServer(),
-  });
+    })
+    .save();
 
   logger.info("Created new client", { client });
 

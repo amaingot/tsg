@@ -8,35 +8,18 @@ import {
   UpdateDateColumn,
   ManyToOne,
   DeleteDateColumn,
-  SelectQueryBuilder,
 } from "typeorm";
-import { Client } from "./Client";
-import { Customer } from "./Customer";
-import { Employee, UserRole } from "./Employee";
-import { GraphqlContext } from "../../graphql/context";
+import Account from "./Account";
+import Customer from "./Customer";
+import Employee from "./Employee";
 
 @Entity()
-export class Job extends BaseEntity {
+export default class Job extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column()
-  finished: boolean;
-
-  @Column({ nullable: true })
-  name?: string;
-
-  @Column({ nullable: true })
-  stringName?: string;
-
-  @Column({ nullable: true })
-  racket?: string;
-
-  @Column({ nullable: true })
-  tension?: string;
-
-  @Column({ nullable: true })
-  gauge?: string;
+  @Column({ type: "string", nullable: false, default: "PENDING" })
+  status: "PENDING" | "FINISHED";
 
   @Column({ nullable: true })
   recievedAt?: Date;
@@ -59,9 +42,9 @@ export class Job extends BaseEntity {
   // Relationships
 
   @Column()
-  clientId: string;
-  @ManyToOne((type) => Client, (c) => c.jobs)
-  client: Client;
+  accountId: string;
+  @ManyToOne((type) => Account, (c) => c.jobs)
+  account: Account;
 
   @Column()
   customerId: string;
@@ -72,37 +55,4 @@ export class Job extends BaseEntity {
   finishedByEmployeeId?: string;
   @ManyToOne((type) => Employee, (e) => e.jobsFinished, { nullable: true })
   finishedByEmployee?: Employee;
-
-  // Auth
-
-  canAccess(context: GraphqlContext): boolean {
-    const { clientId, userRole } = context.currentUser || {};
-    return clientId === this.clientId || userRole === UserRole.SuperAdmin;
-  }
-
-  canUpdate(context: GraphqlContext): boolean {
-    return this.canAccess(context);
-  }
-
-  canDelete(context: GraphqlContext): boolean {
-    return this.canAccess(context);
-  }
-
-  canCreate(context: GraphqlContext): boolean {
-    const { clientId, userRole } = context.currentUser || {};
-    return (
-      (this.clientId && clientId === this.clientId) ||
-      userRole === UserRole.SuperAdmin
-    );
-  }
-
-  static protectedQuery(context: GraphqlContext) {
-    const { clientId, userRole } = context.currentUser || {};
-
-    if (userRole === UserRole.SuperAdmin) {
-      return {};
-    } else {
-      return { clientId };
-    }
-  }
 }

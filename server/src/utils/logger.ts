@@ -4,13 +4,6 @@ import config from "./config";
 
 const transports: any[] = [];
 
-// if (process.env.NODE_ENV === "production") {
-//   const { LoggingWinston } = require("@google-cloud/logging-winston");
-//   const loggingWinston = new LoggingWinston({
-//     level: "info"
-//   });
-//   transports.push(loggingWinston);
-// }
 transports.push(new winston.transports.Console());
 
 export const logger = winston.createLogger({

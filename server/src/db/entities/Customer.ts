@@ -8,21 +8,15 @@ import {
   ManyToOne,
   OneToMany,
   DeleteDateColumn,
-  SelectQueryBuilder,
   BaseEntity,
 } from "typeorm";
-import { Client } from "./Client";
-import { Job } from "./Job";
-import { GraphqlContext } from "../../graphql/context";
-import { UserRole } from "./Employee";
+import Account from "./Account";
+import Job from "./Job";
 
 @Entity()
-export class Customer extends BaseEntity {
+export default class Customer extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
-
-  @Column({ nullable: true })
-  memNum?: string;
 
   @Column({ nullable: true })
   firstName?: string;
@@ -31,31 +25,7 @@ export class Customer extends BaseEntity {
   lastName?: string;
 
   @Column({ nullable: true })
-  middleInitial?: string;
-
-  @Column({ nullable: true })
-  email: string;
-
-  @Column({ nullable: true })
-  address?: string;
-
-  @Column({ nullable: true })
-  address2?: string;
-
-  @Column({ nullable: true })
-  city?: string;
-
-  @Column({ nullable: true })
-  zip?: string;
-
-  @Column({ nullable: true })
-  homePhone?: string;
-
-  @Column({ nullable: true })
-  cellPhone?: string;
-
-  @Column({ nullable: true })
-  workPhone?: string;
+  companyName?: string;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -70,45 +40,11 @@ export class Customer extends BaseEntity {
   deletedDate?: Date;
 
   // Relationships
-
   @Column()
-  clientId: string;
-  @ManyToOne((type) => Client, (c) => c.customers)
-  client: Client;
+  accountId: string;
+  @ManyToOne((type) => Account, (c) => c.customers)
+  account: Account;
 
   @OneToMany((type) => Job, (j) => j.customer)
   jobs: Job[];
-
-  // Auth
-
-  canAccess(context: GraphqlContext): boolean {
-    const { clientId, userRole } = context.currentUser || {};
-    return clientId === this.clientId || userRole === UserRole.SuperAdmin;
-  }
-
-  canUpdate(context: GraphqlContext): boolean {
-    return this.canAccess(context);
-  }
-
-  canDelete(context: GraphqlContext): boolean {
-    return this.canAccess(context);
-  }
-
-  canCreate(context: GraphqlContext): boolean {
-    const { clientId, userRole } = context.currentUser || {};
-    return (
-      (this.clientId && clientId === this.clientId) ||
-      userRole === UserRole.SuperAdmin
-    );
-  }
-
-  static protectedQuery(context: GraphqlContext) {
-    const { clientId, userRole } = context.currentUser || {};
-
-    if (userRole === UserRole.SuperAdmin) {
-      return (qb: SelectQueryBuilder<Customer>) => qb;
-    } else {
-      return { clientId };
-    }
-  }
 }

@@ -1,11 +1,12 @@
 overwrite: true
-schema: server/src/graphql/schema.ts
+schema: server/src/graphql/schema.graphql
 config:
   declarationKind: "interface"
   maybeValue: T | undefined
   scalars:
     DateTime: Date
     Email: string
+    PhoneNumber: string
 
 generates:
   server/src/graphql/types.ts:
@@ -16,11 +17,6 @@ generates:
       useIndexSignature: true
       contextType: ./context#GraphqlContext
       noSchemaStitching: true
-      mappers:
-        Client: "../db#Client as ClientModel"
-        Job: "../db#Job as JobModel"
-        Employee: "../db#Employee as EmployeeModel"
-        Customer: "../db#Customer as CustomerModel"
 
   web/src/graphql/hooks.tsx:
     documents: web/src/graphql/*.graphql

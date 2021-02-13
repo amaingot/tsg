@@ -8,12 +8,10 @@ import {
   OneToMany,
   ManyToOne,
   DeleteDateColumn,
-  SelectQueryBuilder,
   BaseEntity,
 } from "typeorm";
-import { Client } from "./Client";
-import { Job } from "./Job";
-import { GraphqlContext } from "../../graphql/context";
+import Account from "./Account";
+import Job from "./Job";
 
 export enum UserRole {
   SuperAdmin = "SuperAdmin",
@@ -22,7 +20,7 @@ export enum UserRole {
 }
 
 @Entity()
-export class Employee extends BaseEntity {
+export default class Employee extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -63,54 +61,10 @@ export class Employee extends BaseEntity {
   // Relationships
 
   @Column()
-  clientId: string;
-  @ManyToOne((type) => Client, (c) => c.employees)
-  client: Client;
+  accountId: string;
+  @ManyToOne((type) => Account, (c) => c.employees)
+  account: Account;
 
   @OneToMany((type) => Job, (j) => j.finishedByEmployee)
   jobsFinished: Job[];
-
-  // Auth
-
-  canAccess(context: GraphqlContext): boolean {
-    const { clientId, userRole } = context.currentUser || {};
-    return clientId === this.clientId || userRole === UserRole.SuperAdmin;
-  }
-
-  canUpdate(context: GraphqlContext): boolean {
-    const { clientId, userRole, employeeId } = context.currentUser || {};
-    return (
-      employeeId === this.id ||
-      (clientId === this.clientId && userRole === UserRole.AccountAdmin) ||
-      userRole === UserRole.SuperAdmin
-    );
-  }
-
-  canDelete(context: GraphqlContext): boolean {
-    const { clientId, userRole } = context.currentUser || {};
-    return (
-      (clientId === this.clientId && userRole === UserRole.AccountAdmin) ||
-      userRole === UserRole.SuperAdmin
-    );
-  }
-
-  canCreate(context: GraphqlContext): boolean {
-    const { clientId, userRole } = context.currentUser || {};
-    return (
-      (this.clientId &&
-        clientId === this.clientId &&
-        userRole === UserRole.AccountAdmin) ||
-      userRole === UserRole.SuperAdmin
-    );
-  }
-
-  static protectedQuery(context: GraphqlContext) {
-    const { clientId, userRole } = context.currentUser || {};
-
-    if (userRole === UserRole.SuperAdmin) {
-      return {};
-    } else {
-      return { clientId };
-    }
-  }
 }
