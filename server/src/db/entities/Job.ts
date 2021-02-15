@@ -1,67 +1,33 @@
-import {
-  BaseEntity,
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  VersionColumn,
-  UpdateDateColumn,
-  ManyToOne,
-  DeleteDateColumn,
-  SelectQueryBuilder,
-} from "typeorm";
-import { Client } from "./Client";
-import { Customer } from "./Customer";
-import { Employee, UserRole } from "./Employee";
-import { GraphqlContext } from "../../graphql/context";
+import { Entity, Column, ManyToOne, OneToMany } from "typeorm";
+
+import BaseEntity from "./BaseEntity";
+import Account from "./Account";
+import Customer from "./Customer";
+import Employee from "./Employee";
+import JobDetail from "./JobDetail";
+import JobHistory from "./JobHistory";
+
+type JobType = "STRINGING_BASIC" | "STRINGING_HYBRID";
+
+type JobStatus = "PENDING" | "FINISHED";
 
 @Entity()
-export class Job extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
+export default class Job extends BaseEntity {
+  @Column({ type: "text", nullable: false, default: "PENDING" })
+  status: JobStatus;
 
-  @Column()
-  finished: boolean;
+  @Column({ type: "text", nullable: false })
+  type: JobType;
 
-  @Column({ nullable: true })
-  name?: string;
-
-  @Column({ nullable: true })
-  stringName?: string;
-
-  @Column({ nullable: true })
-  racket?: string;
-
-  @Column({ nullable: true })
-  tension?: string;
-
-  @Column({ nullable: true })
-  gauge?: string;
-
-  @Column({ nullable: true })
-  recievedAt?: Date;
-
-  @Column({ nullable: true })
-  finishedAt?: Date;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @VersionColumn()
-  version: number;
-
-  @DeleteDateColumn()
-  deletedDate?: Date;
+  @Column({ type: "timestamptz", nullable: true })
+  completedAt?: Date;
 
   // Relationships
 
   @Column()
-  clientId: string;
-  @ManyToOne((type) => Client, (c) => c.jobs)
-  client: Client;
+  accountId: string;
+  @ManyToOne((type) => Account, (c) => c.jobs)
+  account: Account;
 
   @Column()
   customerId: string;
@@ -69,40 +35,13 @@ export class Job extends BaseEntity {
   customer: Customer;
 
   @Column({ nullable: true })
-  finishedByEmployeeId?: string;
-  @ManyToOne((type) => Employee, (e) => e.jobsFinished, { nullable: true })
-  finishedByEmployee?: Employee;
+  completedByEmployeeId?: string;
+  @ManyToOne((type) => Employee, (e) => e.jobsCompleted, { nullable: true })
+  completedByEmployee?: Employee;
 
-  // Auth
+  @OneToMany((type) => JobHistory, (j) => j.job)
+  history: JobHistory[];
 
-  canAccess(context: GraphqlContext): boolean {
-    const { clientId, userRole } = context.currentUser || {};
-    return clientId === this.clientId || userRole === UserRole.SuperAdmin;
-  }
-
-  canUpdate(context: GraphqlContext): boolean {
-    return this.canAccess(context);
-  }
-
-  canDelete(context: GraphqlContext): boolean {
-    return this.canAccess(context);
-  }
-
-  canCreate(context: GraphqlContext): boolean {
-    const { clientId, userRole } = context.currentUser || {};
-    return (
-      (this.clientId && clientId === this.clientId) ||
-      userRole === UserRole.SuperAdmin
-    );
-  }
-
-  static protectedQuery(context: GraphqlContext) {
-    const { clientId, userRole } = context.currentUser || {};
-
-    if (userRole === UserRole.SuperAdmin) {
-      return {};
-    } else {
-      return { clientId };
-    }
-  }
+  @OneToMany((type) => JobDetail, (j) => j.job)
+  details: JobDetail[];
 }

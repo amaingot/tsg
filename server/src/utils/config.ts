@@ -3,17 +3,24 @@ import convict from "convict";
 // Let's try to keep this list alphabetized for readability
 /* eslint sort-keys: "error" */
 const configurationSchema = {
+  COOKIE_KEY: {
+    default: "TsgCookie",
+    doc: "The cookie key used for auth tokens",
+    env: "COOKIE_KEY",
+    format: String,
+  },
+  COOKIE_SECRET: {
+    default: "SuperSecretCookie",
+    doc: "The cookie secret used for auth tokens",
+    env: "COOKIE_SECRET",
+    format: String,
+    sensitive: true,
+  },
   ENVIRONMENT: {
     default: "local",
     doc: "The current environment",
     env: "ENVIRONMENT",
     format: ["prod", "staging", "local"],
-  },
-  FIREBASE_APP_CONFIG: {
-    default: "",
-    doc: "Config for the Firebase App",
-    env: "FIREBASE_APP_CONFIG",
-    format: String,
   },
   GCP_PROJECT_ID: {
     default: "hmm-dev",
@@ -34,11 +41,12 @@ const configurationSchema = {
     format: String,
     sensitive: true,
   },
-  GCP_IDP_TENANT_ID: {
-    default: "",
-    doc: "Tenant id for GCP Identity Provider",
-    env: "GCP_IDP_TENANT_ID",
+  JWT_SECRET: {
+    default: "SuperSecret",
+    doc: "JSON Web Token secret",
+    env: "JWT_SECRET",
     format: String,
+    sensitive: true,
   },
   NODE_ENV: {
     // ref: http://expressjs.com/en/advanced/best-practice-performance.html#set-node_env-to-production
@@ -48,7 +56,7 @@ const configurationSchema = {
     format: ["development", "production"],
   },
   POSTGRES_DATABASE: {
-    default: "austin-data-local",
+    default: "tsg_local",
     doc: "Name of the postgres database for the sink job",
     env: "POSTGRES_DATABASE",
     format: String,

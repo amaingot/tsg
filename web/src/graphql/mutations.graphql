@@ -8,44 +8,150 @@ mutation SignUp($input: SignUpInput!) {
   }
 }
 
-mutation CreateCustomer($input: CreateOrUpdateCustomerInput!) {
-  createCustomer(input: $input) {
-    id
-    clientId
-    memNum
-    firstName
-    lastName
-    middleInitial
-    email
-    address
-    address2
-    city
-    zip
-    homePhone
-    workPhone
-    cellPhone
-    updatedAt
-    createdAt
+mutation Login($input: LoginInput!) {
+  login(input: $input) {
+    token
+    employee {
+      id
+      accountId
+      firstName
+      lastName
+      email
+      cellPhone
+      type
+      updatedAt
+      createdAt
+    }
   }
 }
 
-mutation UpdateCustomer($id: ID!, $input: CreateOrUpdateCustomerInput!) {
-  updateCustomer(id: $id, input: $input) {
+mutation ForgotPassword($input: ForgotPasswordInput!) {
+  forgotPassword(input: $input) {
+    success
+    error {
+      code
+      message
+    }
+  }
+}
+
+mutation ResetPassword($input: ResetPasswordInput!) {
+  resetPassword(input: $input) {
+    token
+    employee {
+      id
+      accountId
+      firstName
+      lastName
+      email
+      cellPhone
+      type
+      updatedAt
+      createdAt
+    }
+  }
+}
+
+mutation CreateCustomer($input: CustomerInput!) {
+  createCustomer(input: $input) {
     id
-    clientId
-    memNum
     firstName
     lastName
-    middleInitial
-    email
-    address
-    address2
-    city
-    zip
-    homePhone
-    workPhone
-    cellPhone
+    companyName
     updatedAt
     createdAt
+    archived
+    details {
+      id
+      key
+      value
+    }
+    relationships {
+      id
+      type
+      customerId
+      customer {
+        firstName
+        lastName
+      }
+      relatedCustomerId
+      relatedCustomer {
+        firstName
+        lastName
+      }
+    }
+  }
+}
+
+mutation UpdateCustomer($id: ID!, $input: CustomerInput!) {
+  updateCustomer(id: $id, input: $input) {
+    id
+    firstName
+    lastName
+    companyName
+    updatedAt
+    createdAt
+    archived
+    details {
+      id
+      key
+      value
+    }
+    relationships {
+      id
+      type
+      customerId
+      customer {
+        firstName
+        lastName
+      }
+      relatedCustomerId
+      relatedCustomer {
+        firstName
+        lastName
+      }
+    }
+  }
+}
+
+mutation ArchiveCustomer($id: ID!) {
+  archiveCustomer(id: $id) {
+    id
+    firstName
+    lastName
+    companyName
+    updatedAt
+    createdAt
+    archived
+  }
+}
+
+mutation RelateCustomer($input: RelateCustomerInput!) {
+  relateCustomers(input: $input) {
+    id
+    firstName
+    lastName
+    companyName
+    updatedAt
+    createdAt
+    details {
+      id
+      key
+      value
+    }
+    relationships {
+      id
+      type
+      customerId
+      customer {
+        firstName
+        lastName
+      }
+      relatedCustomerId
+      relatedCustomer {
+        firstName
+        lastName
+      }
+    }
   }
 }

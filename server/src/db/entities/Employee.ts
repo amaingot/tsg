@@ -1,34 +1,14 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  VersionColumn,
-  UpdateDateColumn,
-  OneToMany,
-  ManyToOne,
-  DeleteDateColumn,
-  SelectQueryBuilder,
-  BaseEntity,
-} from "typeorm";
-import { Client } from "./Client";
-import { Job } from "./Job";
-import { GraphqlContext } from "../../graphql/context";
+import { Entity, Column, OneToMany, ManyToOne } from "typeorm";
 
-export enum UserRole {
-  SuperAdmin = "SuperAdmin",
-  AccountAdmin = "AccountAdmin",
-  Employee = "Employee",
-}
+import BaseEntity from "./BaseEntity";
+import Account from "./Account";
+import Job from "./Job";
+import CustomerHistory from "./CustomerHistory";
+import JobHistory from "./JobHistory";
+import TimeSheetEntry from "./TimeSheetEntry";
 
 @Entity()
-export class Employee extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
-
-  @Column()
-  firebaseId: string;
-
+export default class Employee extends BaseEntity {
   @Column()
   firstName: string;
 
@@ -41,76 +21,24 @@ export class Employee extends BaseEntity {
   @Column({ nullable: true })
   cellPhone?: string;
 
-  @Column({
-    type: "enum",
-    enum: UserRole,
-    default: UserRole.Employee,
-  })
-  userRole: UserRole;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @VersionColumn()
-  version: number;
-
-  @DeleteDateColumn()
-  deletedDate?: Date;
+  @Column()
+  type: "ACCOUNT_OWNER" | "EMPLOYEE";
 
   // Relationships
-
   @Column()
-  clientId: string;
-  @ManyToOne((type) => Client, (c) => c.employees)
-  client: Client;
+  accountId: string;
+  @ManyToOne((type) => Account, (c) => c.employees)
+  account: Account;
 
-  @OneToMany((type) => Job, (j) => j.finishedByEmployee)
-  jobsFinished: Job[];
+  @OneToMany((type) => Job, (j) => j.completedByEmployee)
+  jobsCompleted: Job[];
 
-  // Auth
+  @OneToMany((type) => JobHistory, (j) => j.createdBy)
+  jobUpdates: JobHistory[];
 
-  canAccess(context: GraphqlContext): boolean {
-    const { clientId, userRole } = context.currentUser || {};
-    return clientId === this.clientId || userRole === UserRole.SuperAdmin;
-  }
+  @OneToMany((type) => CustomerHistory, (j) => j.createdBy)
+  customerUpdates: CustomerHistory[];
 
-  canUpdate(context: GraphqlContext): boolean {
-    const { clientId, userRole, employeeId } = context.currentUser || {};
-    return (
-      employeeId === this.id ||
-      (clientId === this.clientId && userRole === UserRole.AccountAdmin) ||
-      userRole === UserRole.SuperAdmin
-    );
-  }
-
-  canDelete(context: GraphqlContext): boolean {
-    const { clientId, userRole } = context.currentUser || {};
-    return (
-      (clientId === this.clientId && userRole === UserRole.AccountAdmin) ||
-      userRole === UserRole.SuperAdmin
-    );
-  }
-
-  canCreate(context: GraphqlContext): boolean {
-    const { clientId, userRole } = context.currentUser || {};
-    return (
-      (this.clientId &&
-        clientId === this.clientId &&
-        userRole === UserRole.AccountAdmin) ||
-      userRole === UserRole.SuperAdmin
-    );
-  }
-
-  static protectedQuery(context: GraphqlContext) {
-    const { clientId, userRole } = context.currentUser || {};
-
-    if (userRole === UserRole.SuperAdmin) {
-      return {};
-    } else {
-      return { clientId };
-    }
-  }
+  @OneToMany((type) => TimeSheetEntry, (j) => j.employee)
+  timeSheetEntries: TimeSheetEntry[];
 }

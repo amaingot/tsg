@@ -1,29 +1,14 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  VersionColumn,
-  UpdateDateColumn,
-  ManyToOne,
-  OneToMany,
-  DeleteDateColumn,
-  SelectQueryBuilder,
-  BaseEntity,
-} from "typeorm";
-import { Client } from "./Client";
-import { Job } from "./Job";
-import { GraphqlContext } from "../../graphql/context";
-import { UserRole } from "./Employee";
+import { Entity, Column, ManyToOne, OneToMany } from "typeorm";
+
+import BaseEntity from "./BaseEntity";
+import Account from "./Account";
+import CustomerDetail from "./CustomerDetail";
+import CustomerHistory from "./CustomerHistory";
+import CustomerRelationship from "./CustomerRelationship";
+import Job from "./Job";
 
 @Entity()
-export class Customer extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
-
-  @Column({ nullable: true })
-  memNum?: string;
-
+export default class Customer extends BaseEntity {
   @Column({ nullable: true })
   firstName?: string;
 
@@ -31,84 +16,28 @@ export class Customer extends BaseEntity {
   lastName?: string;
 
   @Column({ nullable: true })
-  middleInitial?: string;
-
-  @Column({ nullable: true })
-  email: string;
-
-  @Column({ nullable: true })
-  address?: string;
-
-  @Column({ nullable: true })
-  address2?: string;
-
-  @Column({ nullable: true })
-  city?: string;
-
-  @Column({ nullable: true })
-  zip?: string;
-
-  @Column({ nullable: true })
-  homePhone?: string;
-
-  @Column({ nullable: true })
-  cellPhone?: string;
-
-  @Column({ nullable: true })
-  workPhone?: string;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @VersionColumn()
-  version: number;
-
-  @DeleteDateColumn()
-  deletedDate?: Date;
+  companyName?: string;
 
   // Relationships
-
   @Column()
-  clientId: string;
-  @ManyToOne((type) => Client, (c) => c.customers)
-  client: Client;
+  accountId: string;
+  @ManyToOne((type) => Account, (c) => c.customers)
+  account: Account;
 
   @OneToMany((type) => Job, (j) => j.customer)
   jobs: Job[];
 
-  // Auth
+  @OneToMany((type) => CustomerDetail, (j) => j.customer, { eager: true })
+  details: CustomerDetail[];
 
-  canAccess(context: GraphqlContext): boolean {
-    const { clientId, userRole } = context.currentUser || {};
-    return clientId === this.clientId || userRole === UserRole.SuperAdmin;
-  }
+  @OneToMany((type) => CustomerRelationship, (j) => j.customer, { eager: true })
+  relationships: CustomerRelationship[];
 
-  canUpdate(context: GraphqlContext): boolean {
-    return this.canAccess(context);
-  }
+  @OneToMany((type) => CustomerRelationship, (j) => j.relatedCustomer, {
+    eager: true,
+  })
+  relatedRelationships: CustomerRelationship[];
 
-  canDelete(context: GraphqlContext): boolean {
-    return this.canAccess(context);
-  }
-
-  canCreate(context: GraphqlContext): boolean {
-    const { clientId, userRole } = context.currentUser || {};
-    return (
-      (this.clientId && clientId === this.clientId) ||
-      userRole === UserRole.SuperAdmin
-    );
-  }
-
-  static protectedQuery(context: GraphqlContext) {
-    const { clientId, userRole } = context.currentUser || {};
-
-    if (userRole === UserRole.SuperAdmin) {
-      return (qb: SelectQueryBuilder<Customer>) => qb;
-    } else {
-      return { clientId };
-    }
-  }
+  @OneToMany((type) => CustomerHistory, (j) => j.customer, { eager: true })
+  history: CustomerHistory[];
 }

@@ -1,11 +1,14 @@
 overwrite: true
-schema: server/src/graphql/schema.ts
+schema: server/src/graphql/schema.graphql
 config:
   declarationKind: "interface"
   maybeValue: T | undefined
+  enumsAsTypes: true
   scalars:
     DateTime: Date
     Email: string
+    PhoneNumber: string
+    Password: string
 
 generates:
   server/src/graphql/types.ts:
@@ -17,10 +20,21 @@ generates:
       contextType: ./context#GraphqlContext
       noSchemaStitching: true
       mappers:
-        Client: "../db#Client as ClientModel"
-        Job: "../db#Job as JobModel"
-        Employee: "../db#Employee as EmployeeModel"
-        Customer: "../db#Customer as CustomerModel"
+        User: Omit<User, "employee">
+        Employee: Omit<Employee, "jobsCompleted" | "account">
+        LoginResult: Omit<LoginResult, "employee" | "user">
+        Customer: Omit<Customer, "jobs" | "history" | "relationships" | "details">
+        CustomerRelationship: Omit<CustomerRelationship, "relatedCustomer" | "customer">
+        CustomerHistory: Omit<CustomerHistory, "createdBy">
+        Job: Omit<Job, "customer" | "completedBy" | "history">
+        JobHistory: Omit<JobHistory, "createdBy">
+        TimeSheetEntry: Omit<TimeSheetEntry, "employee" | "report">
+        TimeSheetReport: Omit<TimeSheetReport, "entries">
+        Account: Omit<Account, "facilities" | "courts" | "employees">
+        Message: Omit<Message, "provider">
+        Facility: Omit<Facility, "courts">
+        Court: Omit<Court, "facility" | "account">
+        Reservation: Omit<Reservation, "court" | "customer" | "createdBy" | "account">
 
   web/src/graphql/hooks.tsx:
     documents: web/src/graphql/*.graphql
