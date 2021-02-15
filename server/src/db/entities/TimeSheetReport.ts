@@ -11,7 +11,7 @@ type TimeSheetEntryStatus =
 
 @Entity()
 export default class TimeSheetReport extends BaseEntity {
-  @Column({ type: "string", nullable: false, default: "PENDING" })
+  @Column({ type: "text", nullable: false, default: "PENDING" })
   status: TimeSheetEntryStatus;
 
   @Column({ type: "timestamptz" })

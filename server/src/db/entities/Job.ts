@@ -13,10 +13,10 @@ type JobStatus = "PENDING" | "FINISHED";
 
 @Entity()
 export default class Job extends BaseEntity {
-  @Column({ type: "string", nullable: false, default: "PENDING" })
+  @Column({ type: "text", nullable: false, default: "PENDING" })
   status: JobStatus;
 
-  @Column({ type: "string", nullable: false })
+  @Column({ type: "text", nullable: false })
   type: JobType;
 
   @Column({ type: "timestamptz", nullable: true })

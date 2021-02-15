@@ -25,7 +25,7 @@ export default class User extends BaseEntity {
   @Column()
   passwordHash: string;
 
-  @Column({ nullable: true, type: "number" })
+  @Column({ nullable: true, type: "int" })
   passwordResetCode?: number;
 
   @Column({ type: "timestamptz", nullable: true })
