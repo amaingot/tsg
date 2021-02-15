@@ -6,8 +6,11 @@ import * as DB from "../../db";
 
 export const login: Required<MutationResolvers>["login"] = async (
   _parent,
-  { input }
+  { input },
+  context
 ) => {
+  context.isAnonymous();
+
   const { email, password } = input;
 
   const user = await getRepository(DB.User).findOne({ email });
@@ -29,8 +32,10 @@ export const login: Required<MutationResolvers>["login"] = async (
 
 export const forgotPassword: Required<MutationResolvers>["forgotPassword"] = async (
   _parent,
-  { input }
+  { input },
+  context
 ) => {
+  context.isAnonymous();
   const { email } = input;
 
   const user = await getRepository(DB.User).findOne({ email });
@@ -55,8 +60,10 @@ export const forgotPassword: Required<MutationResolvers>["forgotPassword"] = asy
 
 export const resetPassword: Required<MutationResolvers>["resetPassword"] = async (
   _parent,
-  { input }
+  { input },
+  context
 ) => {
+  context.isAnonymous();
   const { email, code, newPassword } = input;
 
   const user = await getRepository(DB.User).findOne({ email });

@@ -8,8 +8,10 @@ import * as DB from "../../db";
 
 export const users: Required<QueryResolvers>["users"] = async (
   _parent,
-  { input }
+  { input },
+  context
 ) => {
+  await context.isSuperAdmin();
   const { limit, order } = input || {};
   const { value: cursorKey, type } = input?.cursor || {};
 
@@ -42,8 +44,10 @@ export const users: Required<QueryResolvers>["users"] = async (
 
 export const createUser: Required<MutationResolvers>["createUser"] = async (
   _parent,
-  { input }
+  { input },
+  context
 ) => {
+  await context.isSuperAdmin();
   const { email, password, cellPhone, type } = input;
 
   const user = getRepository(DB.User).create({ email, cellPhone, type });
@@ -55,8 +59,10 @@ export const createUser: Required<MutationResolvers>["createUser"] = async (
 
 export const updateUser: Required<MutationResolvers>["updateUser"] = async (
   _parent,
-  { id, input }
+  { id, input },
+  context
 ) => {
+  await context.isSuperAdmin();
   const { email, password, cellPhone, type } = input;
   const user = await getRepository(DB.User).findOne({ id });
 
@@ -76,8 +82,10 @@ export const updateUser: Required<MutationResolvers>["updateUser"] = async (
 
 export const archiveUser: Required<MutationResolvers>["archiveUser"] = async (
   _parent,
-  { id }
+  { id },
+  context
 ) => {
+  await context.isSuperAdmin();
   const user = await getRepository(DB.User).findOne({ id });
 
   if (!user) {
@@ -92,8 +100,10 @@ export const archiveUser: Required<MutationResolvers>["archiveUser"] = async (
 
 export const unarchiveUser: Required<MutationResolvers>["unarchiveUser"] = async (
   _parent,
-  { id }
+  { id },
+  context
 ) => {
+  await context.isSuperAdmin();
   const user = await getRepository(DB.User).findOne({ id });
 
   if (!user) {
@@ -105,8 +115,10 @@ export const unarchiveUser: Required<MutationResolvers>["unarchiveUser"] = async
 
 export const impersonateEmployee: Required<MutationResolvers>["impersonateEmployee"] = async (
   _parent,
-  { id }
+  { id },
+  context
 ) => {
+  await context.isSuperAdmin();
   const employee = await getRepository(DB.Employee).findOne({ id });
   const user =
     employee &&

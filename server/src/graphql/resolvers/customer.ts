@@ -16,22 +16,24 @@ export const customer: Required<QueryResolvers>["customer"] = async (
     throw new UserInputError("Cannot find customer");
   }
 
-  if (customer.accountId !== context.claims?.accountId) {
-    throw new ForbiddenError("You do not have access to that customer");
-  }
+  await context.isInAccount(customer.accountId);
 
   return customer;
 };
 
 export const customers: Required<QueryResolvers>["customers"] = async (
   _parent,
-  { input }
+  { input },
+  context
 ) => {
   const { limit, order } = input || {};
   const { value: cursorKey, type } = input?.cursor || {};
+  const { id: accountId } = await context.getCurrentAccount();
 
   const alias = "c";
-  const query = getRepository(DB.Customer).createQueryBuilder(alias);
+  const query = getRepository(DB.Customer)
+    .createQueryBuilder(alias)
+    .where({ accountId });
 
   const count = await query.getCount();
 
@@ -75,18 +77,13 @@ export const updateCustomer: Required<MutationResolvers>["updateCustomer"] = asy
   { id, input },
   context
 ) => {
-  const currentAccount = await context.getCurrentAccount();
   const customer = await getRepository(DB.Customer).findOne(id);
 
   if (!customer) {
     throw new UserInputError("Cannot find customer");
   }
 
-  if (customer.accountId !== currentAccount.id) {
-    throw new ForbiddenError(
-      "You do not have permissions to update this customer"
-    );
-  }
+  await context.isInAccount(customer.accountId);
 
   await getRepository(DB.Customer).update(id, input);
   await customer.reload();
@@ -94,24 +91,18 @@ export const updateCustomer: Required<MutationResolvers>["updateCustomer"] = asy
   return customer;
 };
 
-
 export const archiveCustomer: Required<MutationResolvers>["archiveCustomer"] = async (
   _parent,
   { id },
   context
 ) => {
-  const currentAccount = await context.getCurrentAccount();
   const customer = await getRepository(DB.Customer).findOne({ id });
 
   if (!customer) {
     throw new UserInputError("Customer not found");
   }
 
-  if (customer.accountId !== currentAccount.id) {
-    throw new ForbiddenError(
-      "You do not have permissions to archive this customer"
-    );
-  }
+  await context.isInAccount(customer.accountId);
 
   await customer.softRemove();
   await customer.reload();
@@ -124,18 +115,13 @@ export const unarchiveCustomer: Required<MutationResolvers>["unarchiveCustomer"]
   { id },
   context
 ) => {
-  const currentAccount = await context.getCurrentAccount();
   const customer = await getRepository(DB.Customer).findOne({ id });
 
   if (!customer) {
     throw new UserInputError("Customer not found");
   }
 
-  if (customer.accountId !== currentAccount.id) {
-    throw new ForbiddenError(
-      "You do not have permissions to unarchive this customer"
-    );
-  }
+  await context.isInAccount(customer.accountId);
 
   return customer.recover();
 };

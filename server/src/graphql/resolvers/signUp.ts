@@ -6,8 +6,10 @@ import { logger } from "../../utils/logger";
 
 export const signUp: Required<MutationResolvers>["signUp"] = async (
   _parent,
-  { input }
+  { input },
+  context
 ) => {
+  context.isAnonymous();
   const {
     firstName,
     companyName,
