@@ -1,12 +1,13 @@
 import { getRepository } from "typeorm";
-import { SignUpInput } from "../types";
+import { MutationResolvers } from "../types";
 import * as DB from "../../db";
 import Stripe from "../../utils/stripe";
-import { GraphqlContext } from "../context";
-import auth from "../../utils/auth";
 import { logger } from "../../utils/logger";
 
-const signUp = async (input: SignUpInput) => {
+export const signUp: Required<MutationResolvers>["signUp"] = async (
+  _parent,
+  { input }
+) => {
   const {
     firstName,
     companyName,
@@ -16,65 +17,50 @@ const signUp = async (input: SignUpInput) => {
     paymentMethodId,
   } = input;
 
-  const user = await auth.createUser({
-    displayName: `${firstName} ${lastName} (${companyName})`,
-    email: email,
-    password: password,
-    emailVerified: true,
-  });
+  const user = getRepository(DB.User).create({ email });
+  user.encryptPassword(password);
+  await user.save();
 
   logger.info("Created new user", { user });
 
-  const client = await getRepository(DB.Client)
+  const account = await getRepository(DB.Account)
     .create({
+      workspace: "boom",
       name: companyName,
-      stripeCustomerId: "not-created",
+      address: "",
+      businessPhone: "",
+      status: "ACTIVE",
+      type: "CUSTOMER",
     })
     .save();
 
-  logger.info("Created new client", { client });
+  logger.info("Created new account", { account });
 
-  const employee = await DB.createOne({
-    target: DB.Employee,
-    item: {
+  const employee = await getRepository(DB.Employee)
+    .create({
       firstName,
       lastName,
       email,
-      clientId: client.id,
-      firebaseId: user.uid,
-      userRole: DB.UserRole.AccountAdmin,
-    },
-    context: GraphqlContext.forServer(),
-  });
+      accountId: account.id,
+      type: "ACCOUNT_OWNER",
+    })
+    .save();
 
   logger.info("Created new employee", { employee });
 
   const stripeCustomer = await Stripe.createCustomer({
-    clientId: client.id,
-    companyName: client.name,
+    clientId: account.id,
+    companyName: account.name,
     email: email,
     paymentMethodId,
   });
 
   logger.info("Created new stripe customer", { stripeCustomer });
 
-  await auth.setCustomUserClaims(user.uid, {
-    clientId: client.id,
-    employeeId: employee.id,
-    userRole: DB.UserRole.AccountAdmin,
+  await getRepository(DB.Account).update(account.id, {
+    stripeCustomerId: stripeCustomer.id,
   });
 
-  const updatedClient = await DB.updateOne({
-    target: DB.Client,
-    id: client.id,
-    updatedItem: {
-      ...client,
-      stripeCustomerId: stripeCustomer.id,
-    },
-    context: GraphqlContext.forServer(),
-  });
-
-  return updatedClient;
+  await account.reload();
+  return account;
 };
-
-export default signUp;

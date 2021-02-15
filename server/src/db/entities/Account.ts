@@ -1,23 +1,18 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  VersionColumn,
-  UpdateDateColumn,
-  OneToMany,
-  DeleteDateColumn,
-  BaseEntity,
-} from "typeorm";
+import { Entity, Column, OneToMany } from "typeorm";
+
+import BaseEntity from "./BaseEntity";
 import Customer from "./Customer";
 import Job from "./Job";
 import Employee from "./Employee";
+import TimeSheetEntry from "./TimeSheetEntry";
+import AccountPermission from "./AccountPermission";
+
+type AccountStatus = "ACTIVE" | "PAYMENT_FAILED" | "CANCELED" | "PAUSED";
+
+type AccountType = "CUSTOMER" | "DEMO" | "TRIAL";
 
 @Entity()
 export default class Account extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
-
   @Column({ nullable: false })
   workspace: string;
 
@@ -25,21 +20,27 @@ export default class Account extends BaseEntity {
   name: string;
 
   @Column()
-  stripeCustomerId: string;
+  stripeCustomerId?: string;
 
-  @CreateDateColumn()
-  createdAt: Date;
+  @Column({ nullable: false })
+  address: string;
 
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @Column()
+  addressSecondary?: string;
 
-  @VersionColumn()
-  version: number;
+  @Column({ nullable: false })
+  businessPhone: string;
 
-  @DeleteDateColumn()
-  deletedDate?: Date;
+  @Column({ nullable: false, default: "ACTIVE" })
+  status: AccountStatus;
+
+  @Column({ nullable: false, default: "CUSTOMER" })
+  type: AccountType;
 
   // Relationships
+
+  @OneToMany((type) => AccountPermission, (c) => c.account, { cascade: true })
+  permissions: AccountPermission[];
 
   @OneToMany((type) => Customer, (c) => c.account, { cascade: true })
   customers: Customer[];
@@ -49,4 +50,7 @@ export default class Account extends BaseEntity {
 
   @OneToMany((type) => Employee, (e) => e.account, { cascade: true })
   employees: Employee[];
+
+  @OneToMany((type) => TimeSheetEntry, (e) => e.account, { cascade: true })
+  timeSheetEntries: TimeSheetEntry[];
 }

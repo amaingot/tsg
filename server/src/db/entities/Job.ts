@@ -1,43 +1,26 @@
-import {
-  BaseEntity,
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  VersionColumn,
-  UpdateDateColumn,
-  ManyToOne,
-  DeleteDateColumn,
-} from "typeorm";
+import { Entity, Column, ManyToOne, OneToMany } from "typeorm";
+
+import BaseEntity from "./BaseEntity";
 import Account from "./Account";
 import Customer from "./Customer";
 import Employee from "./Employee";
+import JobDetail from "./JobDetail";
+import JobHistory from "./JobHistory";
+
+type JobType = "STINGING_BASIC" | "STRINGING_HYBRID";
+
+type JobStatus = "PENDING" | "FINISHED";
 
 @Entity()
 export default class Job extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
-
   @Column({ type: "string", nullable: false, default: "PENDING" })
-  status: "PENDING" | "FINISHED";
+  status: JobStatus;
 
-  @Column({ nullable: true })
-  recievedAt?: Date;
+  @Column({ type: "string", nullable: false })
+  type: JobType;
 
-  @Column({ nullable: true })
-  finishedAt?: Date;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @VersionColumn()
-  version: number;
-
-  @DeleteDateColumn()
-  deletedDate?: Date;
+  @Column({ type: "timestamptz", nullable: true })
+  completedAt?: Date;
 
   // Relationships
 
@@ -52,7 +35,13 @@ export default class Job extends BaseEntity {
   customer: Customer;
 
   @Column({ nullable: true })
-  finishedByEmployeeId?: string;
-  @ManyToOne((type) => Employee, (e) => e.jobsFinished, { nullable: true })
-  finishedByEmployee?: Employee;
+  completedByEmployeeId?: string;
+  @ManyToOne((type) => Employee, (e) => e.jobsCompleted, { nullable: true })
+  completedByEmployee?: Employee;
+
+  @OneToMany((type) => JobHistory, (j) => j.job)
+  history: JobHistory[];
+
+  @OneToMany((type) => JobDetail, (j) => j.job)
+  details: JobDetail[];
 }

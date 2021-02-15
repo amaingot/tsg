@@ -1,7 +1,53 @@
-"Date time represented as an ISO String"
+################
+# SHARED TYPES #
+################
 scalar DateTime
 scalar Email
 scalar PhoneNumber
+scalar Password
+
+type Error {
+  code: String!
+  message: String!
+}
+
+type CursorResponse {
+  count: Int!
+  beforeCursor: String
+  afterCursor: String
+}
+
+enum CursorType {
+  AFTER
+  BEFORE
+}
+
+input CursorInput {
+  value: String!
+  type: CursorType!
+}
+
+enum PaginationOrder {
+  ASC
+  DESC
+}
+
+input PaginationInput {
+  limit: Int
+  cursor: CursorInput
+  order: PaginationOrder
+}
+
+##############
+# ONBOARDING #
+##############
+type Query {
+  plans: [Plan!]!
+}
+
+type Mutation {
+  signUp(input: SignUpInput!): Account!
+}
 
 type Product {
   id: ID!
@@ -29,7 +75,7 @@ type Plan {
   intervalCount: Int!
   livemode: Boolean!
   nickname: String
-  productId: ID
+  productId: String
   product: Product
   trialPeriodDays: Int
   usageType: String!
@@ -37,122 +83,134 @@ type Plan {
   description: String!
 }
 
-enum UserRole {
-  SuperAdmin
-  AccountAdmin
-  Employee
+input SignUpInput {
+  firstName: String!
+  companyName: String!
+  lastName: String!
+  email: Email!
+  password: Password!
+  paymentMethodId: String
 }
 
-type Account {
-  id: ID!
-  name: String!
-  stripeCustomerId: String!
-  updatedAt: DateTime!
-  createdAt: DateTime!
+########
+# AUTH #
+########
+type Query {
+  users(input: PaginationInput): Users!
+}
 
-  employees(input: PaginationInput): Employees!
-  accounts(input: PaginationInput): Accounts!
-  jobs(input: PaginationInput): Jobs!
+type Mutation {
+  login(input: LoginInput!): LoginResult!
+  forgotPassword(input: ForgotPasswordInput!): ForgotPasswordResult!
+  resetPassword(input: ResetPasswordInput!): LoginResult!
+
+  changePassword(input: ChangePasswordInput!): ChangePasswordResult!
+
+  createUser(input: UserInput!): User!
+  updateUser(id: ID!, input: UserInput!): User!
+  archiveUser(id: ID!): User!
+  unarchiveUser(id: ID!): User!
+  impersonateEmployee(id: ID!): LoginResult!
+}
+
+input LoginInput {
+  email: Email!
+  password: Password!
+}
+
+type LoginResult {
+  token: String!
+  employeeId: String
+  employee: Employee
+  userId: String!
+  user: User!
+}
+
+enum UserType {
+  SUPERADMIN
+  USER
+}
+
+type User {
+  id: ID!
+  email: Email!
+  cellPhone: PhoneNumber
+  type: UserType!
+  employeeId: String
+  employee: Employee
+  archived: Boolean!
+}
+
+type Users {
+  data: [User!]!
+  cursor: CursorResponse!
+}
+
+input UserInput {
+  email: Email!
+  password: Password
+  cellPhone: PhoneNumber
+  type: UserType!
+}
+
+input ForgotPasswordInput {
+  email: Email!
+}
+
+type ForgotPasswordResult {
+  success: Boolean!
+  error: Error
+}
+
+input ResetPasswordInput {
+  email: Email!
+  code: Int!
+  newPassword: Password!
+}
+
+input ChangePasswordInput {
+  currentPassword: Password!
+  newPassword: Password!
+}
+
+type ChangePasswordResult {
+  success: Boolean!
+  error: Error
+}
+
+#############
+# CUSTOMERS #
+#############
+type Query {
   customers(input: PaginationInput): Customers!
+  customer(id: ID!): Customer!
+}
+
+type Mutation {
+  createCustomer(input: CustomerInput!): Customer!
+  updateCustomer(id: ID!, input: CustomerInput!): Customer!
+  archiveCustomer(id: ID!): Customer!
+  unarchiveCustomer(id: ID!): Customer!
+  relateCustomers(input: RelateCustomerInput!): Customer!
+  deleteCustomerRelationship(id: ID!): Customer!
 }
 
 type Customer {
   id: ID!
-  accountId: ID!
-  memNum: String
   firstName: String
   lastName: String
-  middleInitial: String
-  email: Email
-  address: String
-  address2: String
-  city: String
-  zip: String
-  homePhone: String
-  cellPhone: String
-  workPhone: String
+  companyName: String
   updatedAt: DateTime!
   createdAt: DateTime!
+  archived: Boolean!
 
-  account: Account!
+  details: [CustomerDetail!]!
+  relationships: [CustomerRelationship!]!
+  history: [CustomerHistory!]!
+
   jobs(input: PaginationInput): Jobs!
-}
-
-type Job {
-  id: ID!
-  customerId: String!
-  accountId: ID!
-  finished: Boolean!
-  updatedAt: DateTime!
-  createdAt: DateTime!
-  name: String
-  stringName: String
-  racket: String
-  tension: String
-  gauge: String
-  recievedAt: DateTime
-  finishedAt: DateTime
-  finishedByEmployeeId: ID
-
-  finishedByEmployee: Employee
-  customer: Customer!
-  account: Account!
-}
-
-type Employee {
-  id: ID!
-  accountId: ID!
-  firstName: String!
-  lastName: String!
-  email: String!
-  cellPhone: String
-  userRole: UserRole!
-  updatedAt: DateTime!
-  createdAt: DateTime!
-
-  account: Account!
-  jobsFinished(input: PaginationInput): Jobs!
-}
-
-type CursorResponse {
-  beforeCursor: String
-  afterCursor: String
-}
-
-enum CursorType {
-  AFTER
-  BEFORE
-}
-
-input CursorInput {
-  cursor: String!
-  type: CursorType!
-}
-
-enum PaginationOrder {
-  ASC
-  DESC
-}
-
-input PaginationInput {
-  limit: Int
-  cursor: CursorInput
-  order: PaginationOrder
-}
-
-type Employees {
-  data: [Employee!]!
-  cursor: CursorResponse!
-}
-
-type Accounts {
-  data: [Account!]!
-  cursor: CursorResponse!
-}
-
-type Jobs {
-  data: [Job!]!
-  cursor: CursorResponse!
+  # reservations(input: PaginationInput): Reservations!
+  # messages(input: PaginationInput): Messages!
 }
 
 type Customers {
@@ -160,106 +218,589 @@ type Customers {
   cursor: CursorResponse!
 }
 
-type Query {
-  me: Employee
-  employees(input: PaginationInput): Employees!
-  employee(id: ID!): Employee
-
-  accounts(input: PaginationInput): Accounts!
-  account(id: ID!): Account
-
-  jobs(input: PaginationInput): Jobs!
-  job(id: ID!): Job
-
-  customers(input: PaginationInput): Customers!
-  customer(id: ID!): Customer
-
-  # Public
-  plans: [Plan!]!
+enum CustomerDetailKey {
+  EMAIL
+  CELL_PHONE
+  HOME_PHONE
+  WORK_PHONE
+  DATE_OF_BIRTH
+  ADDRESS
+  ADDRESS_SECONDARY
+  CITY
+  ZIP_CODE
+  STATE
+  MEMBER_NUMBER
+  MIDDLE_INITIAL
 }
 
-input CreateOrUpdateAccountInput {
-  name: String!
-  stripeCustomerId: String!
+type CustomerDetail {
+  id: ID!
+  key: CustomerDetailKey!
+  value: String
+  updatedAt: DateTime!
+  createdAt: DateTime!
 }
 
-input CreateOrUpdateEmployeeInput {
-  accountId: ID!
-  firstName: String!
-  lastName: String!
-  email: String!
-  cellPhone: String
-  userRole: UserRole!
+enum CustomerRelationshipType {
+  PARENT
+  SPOUSE
 }
 
-input CreateOrUpdateCustomerInput {
-  accountId: ID!
-  memNum: String
+type CustomerRelationship {
+  id: ID!
+  type: CustomerRelationshipType!
+  customerId: String!
+  customer: Customer!
+  relatedCustomerId: String!
+  relatedCustomer: Customer!
+  updatedAt: DateTime!
+  createdAt: DateTime!
+}
+
+type CustomerHistory {
+  id: ID!
+  snapshot: Customer!
+  createdAt: DateTime!
+  createdByEmployeeId: String!
+  createdBy: Employee!
+}
+
+input CustomerInput {
   firstName: String
   lastName: String
-  middleInitial: String
-  email: Email
-  address: String
-  address2: String
-  city: String
-  zip: String
-  cellPhone: String
-  homePhone: String
-  workPhone: String
+  companyName: String
+  details: [CustomerDetailInput!]!
 }
 
-input CreateOrUpdateJobInput {
-  accountId: ID!
-  customerId: ID!
-  finished: Boolean!
-  name: String
-  stringName: String
-  racket: String
-  tension: String
-  gauge: String
-  recievedAt: DateTime
-  finishedAt: DateTime
-  finishedByEmployeeId: ID
+input CustomerDetailInput {
+  key: CustomerDetailKey!
+  value: String
 }
 
-input SignUpInput {
-  firstName: String!
-  companyName: String!
-  lastName: String!
-  email: String!
-  password: String!
-  paymentMethodId: String
+input RelateCustomerInput {
+  type: CustomerRelationshipType!
+  customerId: String!
+  relatesToCustomerId: String!
+}
+
+########
+# JOBS #
+########
+type Query {
+  jobs(input: PaginationInput): Jobs!
+  job(id: ID!): Job!
 }
 
 type Mutation {
-  signUp(input: SignUpInput!): Account!
-  forgotPassword(email: Email!): String!
-  resetPassword: String!
-  acceptInvitation: Employee!
-
-  createAccount(input: CreateOrUpdateAccountInput!): Account!
-  updateAccount(id: ID!, input: CreateOrUpdateAccountInput!): Account!
-  deleteAccount(id: ID!): Boolean!
-
-  createEmployee(input: CreateOrUpdateEmployeeInput!): Employee!
-  updateEmployee(id: ID!, input: CreateOrUpdateEmployeeInput!): Employee!
-  deleteEmployee(id: ID!): Boolean!
-
-  createCustomer(input: CreateOrUpdateCustomerInput!): Customer!
-  updateCustomer(id: ID!, input: CreateOrUpdateCustomerInput!): Customer!
-  deleteCustomer(id: ID!): Boolean!
-
-  createJob(input: CreateOrUpdateJobInput!): Job!
-  updateJob(id: ID!, input: CreateOrUpdateJobInput!): Job!
-  finishJob(id: ID!): Job!
-  restartJob(id: ID!): Job!
-  deleteJob(id: ID!): Boolean!
+  createJob(input: JobDetailInput!): Job!
+  updateJob(id: ID!, input: JobDetailInput!): Job!
+  completeJob(id: ID!): Job!
+  archiveJob(id: ID!): Job!
 }
 
-type TextMessageEvent {
+enum JobType {
+  STRINGING_BASIC
+  STRINGING_HYBRID
+}
+
+enum JobStatus {
+  PENDING
+  FINISHED
+}
+
+type Job {
   id: ID!
+  type: JobType!
+  status: JobStatus!
+  completedAt: DateTime
+  updatedAt: DateTime!
+  createdAt: DateTime!
+  archived: Boolean!
+
+  details: [JobDetail!]!
+  history: [JobHistory!]!
+
+  customerId: String
+  customer: Customer
+  completedByEmployeeId: String
+  completedBy: Employee
 }
 
-type Subscription {
-  onTextMessageEvent: TextMessageEvent!
+type Jobs {
+  data: [Job!]!
+  cursor: CursorResponse!
+}
+
+enum JobDetailKey {
+  RACKET_BRAND
+  RACKET_NAME
+  RACKET_SIZE
+  RACKET_SKU
+  STRINGS_BRAND
+  STRINGS_NAME
+  STRINGS_TENSION
+  STRINGS_SKU
+  MAIN_STRINGS_BRAND
+  MAIN_STRINGS_NAME
+  MAIN_STRINGS_TENSION
+  MAIN_STRINGS_SKU
+  CROSS_STRINGS_BRAND
+  CROSS_STRINGS_NAME
+  CROSS_STRINGS_TENSION
+  CROSS_STRINGS_SKU
+}
+
+type JobDetail {
+  id: ID!
+  key: JobDetailKey!
+  value: String!
+  updatedAt: DateTime!
+  createdAt: DateTime!
+}
+
+type JobHistory {
+  id: ID!
+  jobId: String!
+  jobSnapshot: Job!
+  createdAt: DateTime!
+  createdByEmployeeId: String!
+  createdBy: Employee!
+}
+
+input JobInput {
+  type: JobType!
+  status: JobStatus!
+  customerId: String
+  completedByEmployeeId: String
+  details: [JobDetailInput!]!
+}
+
+input JobDetailInput {
+  key: JobDetailKey!
+  value: String!
+}
+
+#############
+# EMPLOYEES #
+#############
+type Query {
+  me: Employee!
+  employees(input: PaginationInput): Employees!
+  employee(id: ID!): Employee!
+}
+
+type Mutation {
+  createEmployee(input: EmployeeInput!): Employee!
+  updateEmployee(id: ID!, input: EmployeeInput!): Employee!
+  archiveEmployee(id: ID!): Employee!
+  unarchiveEmployee(id: ID!): Employee!
+}
+
+enum EmployeeType {
+  SUPERADMIN
+  ACCOUNT_OWNER
+  EMPLOYEE
+}
+
+type Employee {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  cellPhone: PhoneNumber!
+  email: Email!
+  type: EmployeeType!
+  updatedAt: DateTime!
+  createdAt: DateTime!
+  archived: Boolean!
+
+  accountId: String!
+  account: Account!
+
+  jobsCompleted(input: PaginationInput): Jobs!
+}
+
+type Employees {
+  data: [Employee!]!
+  cursor: CursorResponse!
+}
+
+input EmployeeInput {
+  firstName: String!
+  lastName: String!
+  cellPhone: PhoneNumber!
+  email: Email!
+  externalAuthId: String!
+  type: EmployeeType!
+}
+
+###############
+# TIME SHEETS #
+###############
+type Query {
+  timeSheetEntries(input: PaginationInput): TimeSheetEntries!
+  timeSheetReports(input: PaginationInput): TimeSheetReports!
+}
+
+type Mutation {
+  clockIn(input: ClockInOrOutInput!): TimeSheetEntry!
+  clockOut(input: ClockInOrOutInput!): TimeSheetEntry!
+
+  createTimeSheetEntry(input: TimeSheetEntryInput!): TimeSheetEntry!
+  updateTimeSheetEntry(id: ID!, input: TimeSheetEntryInput!): TimeSheetEntry!
+  archiveTimeSheetEntry(id: ID!): TimeSheetEntry!
+
+  createTimeSheetReport(input: TimeSheetReportInput!): TimeSheetReport!
+  updateTimeSheetReport(id: ID!, input: TimeSheetReportInput!): TimeSheetReport!
+  archiveTimeSheetReport(id: ID!): TimeSheetReport!
+}
+
+enum TimeSheetEntryStatus {
+  IN_PROGRESS
+  COMPLETED
+  NEEDS_APPROVAL
+  PAID
+}
+
+type TimeSheetEntry {
+  id: ID!
+  clockedInAt: DateTime!
+  clockedOutAt: DateTime
+  status: TimeSheetEntryStatus!
+  archived: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  employeeId: String!
+  employee: Employee!
+
+  reportId: String
+  report: TimeSheetReport
+}
+
+type TimeSheetEntries {
+  data: [TimeSheetEntry!]!
+  cursor: CursorResponse!
+}
+
+input TimeSheetEntryInput {
+  start: DateTime!
+  end: DateTime
+  status: TimeSheetEntryStatus!
+  employeeId: String!
+}
+
+input ClockInOrOutInput {
+  actualTime: DateTime!
+}
+
+type TimeSheetReport {
+  id: ID!
+  payPeriodStart: DateTime!
+  payPeriodEnd: DateTime!
+
+  entries: [TimeSheetEntry!]!
+}
+
+type TimeSheetReports {
+  data: [TimeSheetReport!]!
+  cursor: CursorResponse!
+}
+
+input TimeSheetReportInput {
+  payPeriodStart: DateTime!
+  payPeriodEnd: DateTime!
+}
+
+###########
+# ACCOUNT #
+###########
+type Query {
+  myAccount: Account!
+  accounts(input: PaginationInput): Accounts!
+  account(id: ID!): Account!
+}
+
+type Mutation {
+  createAccount(workspace: String!, input: AccountInput!): Account!
+  updateAccount(id: ID!, input: AccountInput!): Account!
+  changeAccountWorkspace(id: ID!, newWorkspace: String!): Account!
+  archiveAccount(id: ID!): Account!
+  unarchiveAccount(id: ID!): Account!
+}
+
+enum AccountStatus {
+  ACTIVE
+  PAYMENT_FAILED
+  CANCELED
+  PAUSED
+}
+
+enum AccountType {
+  CUSTOMER
+  DEMO
+  TRIAL
+}
+
+type Account {
+  id: ID!
+  workspace: String!
+  name: String!
+  stripeCustomerId: String
+  address: String!
+  addressSecondary: String
+  businessPhone: PhoneNumber!
+  status: AccountStatus!
+  type: AccountType!
+  permissions: [AccountPermission!]!
+  updatedAt: DateTime!
+  createdAt: DateTime!
+  archived: Boolean!
+
+  facilities: [Facility!]!
+  courts: [Court!]!
+
+  employees(input: PaginationInput): Employees!
+}
+
+type Accounts {
+  data: [Account!]!
+  cursor: CursorResponse!
+}
+
+enum AccountPermissionType {
+  SMS_ENABLED
+  TIMESHEETS_ENABLED
+  RESERVATIONS_ENABLED
+}
+
+type AccountPermission {
+  id: ID!
+  type: AccountPermissionType!
+  value: Boolean!
+}
+
+input AccountInput {
+  name: String!
+  address: String!
+  address2: String
+  businessPhone: PhoneNumber!
+  status: AccountStatus!
+  stripeCustomerId: String
+  type: AccountType!
+  permissions: [AccountPermissionInput!]!
+}
+
+input AccountPermissionInput {
+  type: AccountPermissionType!
+  value: Boolean!
+}
+
+############
+# MESSAGES #
+############
+type Query {
+  messages(input: PaginationInput): Messages!
+  message(id: ID!): Message!
+}
+
+type Mutation {
+  sendMessage(input: SendMessageInput!): Message!
+  createMessageProvider: MessageProvider!
+  archiveMessageProvider: MessageProvider!
+}
+
+enum MessageStatus {
+  RECEIVED
+  SENT
+  PENDING_SEND
+  ERROR
+}
+
+type Message {
+  id: ID!
+  provider: MessageProvider!
+  timestamp: DateTime!
+  content: String!
+  from: String!
+  to: String!
+}
+
+type Messages {
+  data: [Employee!]!
+  cursor: CursorResponse!
+}
+
+enum MessageProviderType {
+  SMS
+}
+
+enum MessageProviderStatus {
+  ACTIVE
+  ERROR
+}
+
+type MessageProvider {
+  id: ID!
+  type: MessageProviderType!
+  providerUniqueIdentifier: String!
+  status: MessageProviderStatus!
+  updatedAt: DateTime!
+  createdAt: DateTime!
+  archived: Boolean!
+}
+
+input SendMessageInput {
+  providerId: String!
+  content: String!
+  to: String!
+}
+
+################
+# RESERVATIONS #
+################
+type Query {
+  facility(id: ID!): Facility!
+  facilities(input: PaginationInput): Facilities!
+
+  court(id: ID!): Court!
+  courts(input: PaginationInput): Courts!
+
+  reservation(id: ID!): Reservation!
+  reservations(input: PaginationInput): Reservations!
+}
+
+type Mutation {
+  createFacility(input: FacilityInput!): Facility!
+  updateFacility(id: ID!, input: FacilityInput!): Facility!
+  archiveFacility(id: ID!): Facility!
+  unarchiveFacility(id: ID!): Facility!
+
+  createCourt(input: CourtInput!): Court!
+  updateCourt(id: ID!, input: CourtInput!): Court!
+  archiveCourt(id: ID!): Court!
+  unarchiveCourt(id: ID!): Court!
+
+  createReservation(input: ReservationInput!): Reservation!
+  updateReservation(id: ID!, input: ReservationInput!): Reservation!
+  confirmReservation(id: ID!): Reservation!
+  noShowReservation(id: ID!): Reservation!
+  archiveReservation(id: ID!): Reservation!
+  unarchiveReservation(id: ID!): Reservation!
+}
+
+enum FacilityStatus {
+  ACTIVE
+  DISABLED
+}
+
+type Facility {
+  id: ID!
+  name: String!
+  status: FacilityStatus!
+  updatedAt: DateTime!
+  createdAt: DateTime!
+  archived: Boolean!
+
+  accountId: String!
+  account: Account!
+
+  courts: [Court!]!
+}
+
+type Facilities {
+  data: [Facility!]!
+  cursor: CursorResponse!
+}
+
+input FacilityInput {
+  name: String!
+  status: FacilityStatus!
+}
+
+enum CourtStatus {
+  ACTIVE
+  DISABLED
+}
+
+type Court {
+  id: ID!
+  name: String!
+  orderingInt: Int!
+  status: CourtStatus!
+  updatedAt: DateTime!
+  createdAt: DateTime!
+  archived: Boolean!
+
+  facilityId: String
+  facility: Facility
+  accountId: String!
+  account: Account!
+}
+
+type Courts {
+  data: [Court!]!
+  cursor: CursorResponse!
+}
+
+input CourtInput {
+  name: String!
+  orderingInt: Int!
+  status: CourtStatus!
+  facilityId: String
+}
+
+enum ReservationStatus {
+  RESERVED
+  CONFIRMED
+  CANCELED
+  NO_SHOW
+  COMPLETED
+}
+
+enum ReservationType {
+  CUSTOMER
+  PRIVATE_LESSON
+  GROUP_LESSON
+}
+
+type Reservation {
+  id: ID!
+  description: String
+  notes: String
+  start: DateTime!
+  durationMinutes: Int!
+  type: ReservationType!
+  status: ReservationStatus!
+  archived: Boolean!
+
+  updatedAt: DateTime!
+  createdAt: DateTime!
+
+  courtId: String!
+  court: Court!
+
+  customerId: String
+  customer: Customer
+
+  createdByEmployeeId: String!
+  createdBy: Employee!
+
+  accountId: String!
+  account: Account!
+}
+
+type Reservations {
+  data: [Reservation!]!
+  cursor: CursorResponse!
+}
+
+input ReservationInput {
+  courtId: String!
+  description: String
+  start: DateTime!
+  durationMinutes: Int!
+  customerId: String
+  type: ReservationType!
+  status: ReservationStatus!
+  notes: String
 }

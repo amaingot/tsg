@@ -1,32 +1,14 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  VersionColumn,
-  UpdateDateColumn,
-  OneToMany,
-  ManyToOne,
-  DeleteDateColumn,
-  BaseEntity,
-} from "typeorm";
+import { Entity, Column, OneToMany, ManyToOne } from "typeorm";
+
+import BaseEntity from "./BaseEntity";
 import Account from "./Account";
 import Job from "./Job";
-
-export enum UserRole {
-  SuperAdmin = "SuperAdmin",
-  AccountAdmin = "AccountAdmin",
-  Employee = "Employee",
-}
+import CustomerHistory from "./CustomerHistory";
+import JobHistory from "./JobHistory";
+import TimeSheetEntry from "./TimeSheetEntry";
 
 @Entity()
 export default class Employee extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
-
-  @Column()
-  firebaseId: string;
-
   @Column()
   firstName: string;
 
@@ -39,32 +21,24 @@ export default class Employee extends BaseEntity {
   @Column({ nullable: true })
   cellPhone?: string;
 
-  @Column({
-    type: "enum",
-    enum: UserRole,
-    default: UserRole.Employee,
-  })
-  userRole: UserRole;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @VersionColumn()
-  version: number;
-
-  @DeleteDateColumn()
-  deletedDate?: Date;
+  @Column()
+  type: "ACCOUNT_OWNER" | "EMPLOYEE";
 
   // Relationships
-
   @Column()
   accountId: string;
   @ManyToOne((type) => Account, (c) => c.employees)
   account: Account;
 
-  @OneToMany((type) => Job, (j) => j.finishedByEmployee)
-  jobsFinished: Job[];
+  @OneToMany((type) => Job, (j) => j.completedByEmployee)
+  jobsCompleted: Job[];
+
+  @OneToMany((type) => JobHistory, (j) => j.createdByEmployee)
+  jobUpdates: JobHistory[];
+
+  @OneToMany((type) => CustomerHistory, (j) => j.createdByEmployee)
+  customerUpdates: CustomerHistory[];
+
+  @OneToMany((type) => TimeSheetEntry, (j) => j.employee)
+  timeSheetEntries: TimeSheetEntry[];
 }

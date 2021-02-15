@@ -1,79 +1,119 @@
 import WebSocket from "ws";
+import Cookie from "cookie";
 import { Request, Response } from "express";
-import admin from "firebase-admin";
 import { ExpressContext } from "apollo-server-express/dist/ApolloServer";
+import { ForbiddenError } from "apollo-server-express";
+import { getRepository } from "typeorm";
 
-import auth from "../utils/auth";
-import { logger } from "../utils/logger";
-import { UserRole } from "../db";
-
-interface CurrentUser {
-  clientId?: string;
-  userRole?: UserRole;
-  employeeId?: string;
-  firebaseId?: string;
-}
+import * as DB from "../db";
+import config from "../utils/config";
+import { Claims, createToken, decodeToken } from "../utils/jwt";
 
 interface GraphqlContextParams {
   expressContext?: ExpressContext;
-  webSocket?: WebSocket;
-  authToken?: string;
+  websocket?: WebSocket;
+  claims?: Claims;
 }
 
 export class GraphqlContext {
-  public readonly req: Request | undefined;
-  public readonly res: Response | undefined;
-  public readonly webSocket: WebSocket | undefined;
+  public readonly req?: Request;
+  public readonly res?: Response;
+  public readonly websocket?: WebSocket;
 
-  private readonly _authToken: string | undefined;
-  private _decodedToken: admin.auth.DecodedIdToken | undefined;
-  private _currentUser: CurrentUser;
+  public readonly claims?: Claims;
 
   constructor(params: GraphqlContextParams) {
     const { req, res } = params.expressContext || {};
-    this.req = req;
-    this.res = res;
-    this._currentUser = {};
-    this._authToken = params.authToken;
-    this.webSocket = params.webSocket;
+    this.req = req as any;
+    this.res = res as any;
+    this.websocket = params.websocket;
+    this.claims = params.claims;
   }
 
-  private get rawToken() {
-    return this.req?.header("Authorization") || this._authToken || undefined;
-  }
+  public async getCurrentUser() {
+    const user =
+      this.claims && (await getRepository(DB.User).findOne(this.claims.userId));
 
-  public get token() {
-    return this._decodedToken;
-  }
-
-  public get currentUser() {
-    return this._currentUser;
-  }
-
-  async parseToken() {
-    const rawToken = this.rawToken;
-
-    if (rawToken) {
-      try {
-        this._decodedToken = await auth.verifyIdToken(rawToken, true);
-        this._currentUser.firebaseId = this._decodedToken?.uid;
-        this._currentUser.clientId = this._decodedToken?.clientId;
-        this._currentUser.employeeId = this._decodedToken?.employeeId;
-        this._currentUser.userRole = this._decodedToken?.userRole;
-
-      } catch (e) {
-        logger.error("Invalid auth token", {
-          req: this.req,
-          res: this.res,
-          rawToken,
-        });
-      }
+    if (!user) {
+      throw new ForbiddenError("Not logged in");
     }
+
+    return user;
   }
 
-  static forServer() {
-    const context = new GraphqlContext({});
-    context._currentUser.userRole = UserRole.SuperAdmin;
-    return context;
+  public async getCurrentEmployee() {
+    const employee =
+      this.claims?.employeeId &&
+      (await getRepository(DB.Employee).findOne(this.claims.employeeId));
+
+    if (!employee) {
+      throw new ForbiddenError("No employee present");
+    }
+
+    return employee;
+  }
+
+  public async getCurrentAccount() {
+    const account =
+      this.claims?.accountId &&
+      (await getRepository(DB.Account).findOne(this.claims.accountId));
+
+    if (!account) {
+      throw new ForbiddenError("No account present");
+    }
+
+    return account;
+  }
+
+  public async setCookie(claims: Claims) {
+    const token = await createToken(claims);
+
+    this.res?.cookie(config.get("COOKIE_KEY"), token, {
+      signed: true,
+      path: "/",
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+      sameSite: "strict",
+    });
+  }
+
+  static async fromHttpRequest(args: ExpressContext) {
+    const authHeader = args.req.header("authorization");
+    if (typeof authHeader === "string") {
+      const decodedToken = await decodeToken(authHeader);
+      return new GraphqlContext({
+        expressContext: args,
+        claims: decodedToken?.claims,
+      });
+    }
+
+    const cookies = Cookie.parse(args.req.cookies);
+    const cookie = cookies[config.get("COOKIE_KEY")];
+    if (typeof cookie === "string") {
+      const decodedToken = await decodeToken(cookie);
+      return new GraphqlContext({
+        expressContext: args,
+        claims: decodedToken?.claims,
+      });
+    }
+
+    return new GraphqlContext({
+      expressContext: args,
+    });
+  }
+
+  static async fromWebSocket(connectionParams: any, websocket: WebSocket) {
+    // TODO: Correctly type connectionParams
+    if (
+      typeof connectionParams !== "object" ||
+      typeof connectionParams["authToken"] !== "string"
+    ) {
+      throw new ForbiddenError("No auth token provided");
+    }
+
+    const decodedToken = await decodeToken(connectionParams["authToken"]);
+    return new GraphqlContext({
+      websocket,
+      claims: decodedToken?.claims,
+    });
   }
 }

@@ -1,9 +1,9 @@
 import Stripe from "stripe";
-import { StripeProduct, StripePlan } from "../graphql/types";
+import { Product, Plan } from "../graphql/types";
 import config from "./config";
 
 const client = new Stripe(config.get("STRIPE_SECRET_KEY"), {
-  apiVersion: "2020-03-02",
+  apiVersion: "2020-08-27",
   typescript: true,
 });
 
@@ -40,7 +40,7 @@ const getProducts = async () => {
   return client.products.list().autoPagingToArray({ limit: 100 });
 };
 
-const getProduct = async (productId: string): Promise<StripeProduct> => {
+const getProduct = async (productId: string): Promise<Product> => {
   const {
     updated,
     created,
@@ -61,7 +61,7 @@ const getProduct = async (productId: string): Promise<StripeProduct> => {
   };
 };
 
-type PartialPlan = Omit<StripePlan, "product">;
+type PartialPlan = Omit<Plan, "product">;
 
 const getPlans = async (): Promise<PartialPlan[]> => {
   const plans = await client.plans.list().autoPagingToArray({ limit: 100 });
@@ -80,8 +80,8 @@ const getPlans = async (): Promise<PartialPlan[]> => {
       ...rest
     } = p;
 
-    const description = metadata["description"] || "";
-    const features = (metadata["features"] || "").split(",");
+    const description = metadata && metadata["description"] || "";
+    const features = (metadata && metadata["features"] || "").split(",");
 
     return {
       ...rest,
