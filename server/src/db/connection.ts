@@ -25,7 +25,7 @@ export const CONNECTION_CONFIG: ConnectionOptions = {
   logging: "all",
   logger: {
     logQuery: (query, params) =>
-      logger.info("[DB] Queried the DB", {
+      logger.debug("[DB] Queried the DB", {
         query,
         params,
       }),
