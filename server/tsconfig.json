@@ -3,6 +3,7 @@
     "target": "ES2018",
     "module": "commonjs",
     "strict": true,
+    "skipLibCheck": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "rootDir": "src",

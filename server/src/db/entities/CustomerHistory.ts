@@ -14,8 +14,8 @@ export default class CustomerHistory extends BaseEntity {
   @ManyToOne((type) => Customer, (c) => c.history)
   customer: Customer;
 
-  @Column({ nullable: true })
-  createdByEmployeeId?: string;
-  @ManyToOne((type) => Employee, (e) => e.customerUpdates, { nullable: true })
-  createdByEmployee?: Employee;
+  @Column()
+  createdByEmployeeId: string;
+  @ManyToOne((type) => Employee, (e) => e.customerUpdates)
+  createdBy?: Employee;
 }

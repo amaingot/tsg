@@ -4,23 +4,11 @@ import { UserInputError } from "apollo-server-express";
 import { Resolvers } from "../types";
 import Stripe from "../../utils/stripe";
 import { signUp } from "./signUp";
-import { forgotPassword, login, resetPassword } from "./auth";
-import {
-  users,
-  createUser,
-  updateUser,
-  archiveUser,
-  unarchiveUser,
-  impersonateEmployee,
-} from "./user";
-import {
-  customers,
-  customer,
-  createCustomer,
-  updateCustomer,
-  archiveCustomer,
-  unarchiveCustomer,
-} from "./customer";
+import * as Customers from "./customer";
+import * as Users from "./user";
+import * as Employees from "./employee";
+import * as Jobs from "./job";
+import * as Auth from "./auth";
 
 const resolvers: Partial<Resolvers> = {
   DateTime: new GraphQLScalarType({
@@ -38,39 +26,63 @@ const resolvers: Partial<Resolvers> = {
     },
   }),
   Account: {},
-  Customer: {},
+  Customer: {
+    history: Customers.getHistory,
+    details: Customers.getDetails,
+    relationships: Customers.getRelationships,
+  },
   Employee: {},
   Job: {},
   Query: {
-    plans: () => Stripe.getPlans(),
+    plans: Stripe.getPlans,
 
     // Users
-    users,
+    users: Users.list,
 
     // Customers
-    customer,
-    customers,
+    customer: Customers.get,
+    customers: Customers.list,
+
+    // Employees
+    employee: Employees.get,
+    employees: Employees.list,
+
+    // Jobs
+    job: Jobs.get,
+    jobs: Jobs.list,
   },
   Mutation: {
     signUp,
 
     // Auth
-    login,
-    forgotPassword,
-    resetPassword,
+    login: Auth.login,
+    forgotPassword: Auth.forgotPassword,
+    resetPassword: Auth.resetPassword,
+    impersonateEmployee: Users.impersonate,
 
     // Users
-    createUser,
-    updateUser,
-    archiveUser,
-    unarchiveUser,
-    impersonateEmployee,
+    createUser: Users.create,
+    updateUser: Users.update,
+    archiveUser: Users.archive,
+    unarchiveUser: Users.unarchive,
 
     // Customers
-    createCustomer,
-    updateCustomer,
-    archiveCustomer,
-    unarchiveCustomer,
+    createCustomer: Customers.create,
+    updateCustomer: Customers.update,
+    archiveCustomer: Customers.archive,
+    unarchiveCustomer: Customers.unarchive,
+
+    // Employees
+    createEmployee: Employees.create,
+    updateEmployee: Employees.update,
+    archiveEmployee: Employees.archive,
+    unarchiveEmployee: Employees.unarchive,
+
+    // Jobs
+    createJob: Jobs.create,
+    updateJob: Jobs.update,
+    archiveJob: Jobs.archive,
+    unarchiveJob: Jobs.unarchive,
   },
 };
 

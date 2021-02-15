@@ -292,10 +292,11 @@ type Query {
 }
 
 type Mutation {
-  createJob(input: JobDetailInput!): Job!
-  updateJob(id: ID!, input: JobDetailInput!): Job!
+  createJob(input: JobInput!): Job!
+  updateJob(id: ID!, input: JobInput!): Job!
   completeJob(id: ID!): Job!
   archiveJob(id: ID!): Job!
+  unarchiveJob(id: ID!): Job!
 }
 
 enum JobType {
@@ -361,7 +362,7 @@ type JobDetail {
 type JobHistory {
   id: ID!
   jobId: String!
-  jobSnapshot: Job!
+  snapshot: Job!
   createdAt: DateTime!
   createdByEmployeeId: String!
   createdBy: Employee!
@@ -397,7 +398,6 @@ type Mutation {
 }
 
 enum EmployeeType {
-  SUPERADMIN
   ACCOUNT_OWNER
   EMPLOYEE
 }
@@ -406,7 +406,7 @@ type Employee {
   id: ID!
   firstName: String!
   lastName: String!
-  cellPhone: PhoneNumber!
+  cellPhone: PhoneNumber
   email: Email!
   type: EmployeeType!
   updatedAt: DateTime!

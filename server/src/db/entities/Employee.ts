@@ -33,10 +33,10 @@ export default class Employee extends BaseEntity {
   @OneToMany((type) => Job, (j) => j.completedByEmployee)
   jobsCompleted: Job[];
 
-  @OneToMany((type) => JobHistory, (j) => j.createdByEmployee)
+  @OneToMany((type) => JobHistory, (j) => j.createdBy)
   jobUpdates: JobHistory[];
 
-  @OneToMany((type) => CustomerHistory, (j) => j.createdByEmployee)
+  @OneToMany((type) => CustomerHistory, (j) => j.createdBy)
   customerUpdates: CustomerHistory[];
 
   @OneToMany((type) => TimeSheetEntry, (j) => j.employee)

@@ -6,7 +6,7 @@ import { UserInputError } from "apollo-server-express";
 import { MutationResolvers, QueryResolvers } from "../types";
 import * as DB from "../../db";
 
-export const users: Required<QueryResolvers>["users"] = async (
+export const list: Required<QueryResolvers>["users"] = async (
   _parent,
   { input },
   context
@@ -42,7 +42,7 @@ export const users: Required<QueryResolvers>["users"] = async (
   };
 };
 
-export const createUser: Required<MutationResolvers>["createUser"] = async (
+export const create: Required<MutationResolvers>["createUser"] = async (
   _parent,
   { input },
   context
@@ -57,7 +57,7 @@ export const createUser: Required<MutationResolvers>["createUser"] = async (
   return user;
 };
 
-export const updateUser: Required<MutationResolvers>["updateUser"] = async (
+export const update: Required<MutationResolvers>["updateUser"] = async (
   _parent,
   { id, input },
   context
@@ -80,7 +80,7 @@ export const updateUser: Required<MutationResolvers>["updateUser"] = async (
   return user;
 };
 
-export const archiveUser: Required<MutationResolvers>["archiveUser"] = async (
+export const archive: Required<MutationResolvers>["archiveUser"] = async (
   _parent,
   { id },
   context
@@ -98,7 +98,7 @@ export const archiveUser: Required<MutationResolvers>["archiveUser"] = async (
   return user;
 };
 
-export const unarchiveUser: Required<MutationResolvers>["unarchiveUser"] = async (
+export const unarchive: Required<MutationResolvers>["unarchiveUser"] = async (
   _parent,
   { id },
   context
@@ -113,7 +113,7 @@ export const unarchiveUser: Required<MutationResolvers>["unarchiveUser"] = async
   return user.recover();
 };
 
-export const impersonateEmployee: Required<MutationResolvers>["impersonateEmployee"] = async (
+export const impersonate: Required<MutationResolvers>["impersonateEmployee"] = async (
   _parent,
   { id },
   context

@@ -7,7 +7,7 @@ import Employee from "./Employee";
 import JobDetail from "./JobDetail";
 import JobHistory from "./JobHistory";
 
-type JobType = "STINGING_BASIC" | "STRINGING_HYBRID";
+type JobType = "STRINGING_BASIC" | "STRINGING_HYBRID";
 
 type JobStatus = "PENDING" | "FINISHED";
 

@@ -15,8 +15,8 @@ export default class JobHistory extends BaseEntity {
   @ManyToOne((type) => Job, (c) => c.history)
   job: Job;
 
-  @Column({ nullable: true })
-  createdByEmployeeId?: string;
-  @ManyToOne((type) => Employee, (e) => e.jobUpdates, { nullable: true })
-  createdByEmployee?: Employee;
+  @Column()
+  createdByEmployeeId: string;
+  @ManyToOne((type) => Employee, (e) => e.jobUpdates)
+  createdBy: Employee;
 }

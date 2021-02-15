@@ -1,11 +1,11 @@
 import { getRepository } from "typeorm";
 import { buildPaginator } from "typeorm-cursor-pagination";
-import { ForbiddenError, UserInputError } from "apollo-server-express";
+import { UserInputError } from "apollo-server-express";
 
-import { MutationResolvers, QueryResolvers } from "../types";
+import { CustomerResolvers, MutationResolvers, QueryResolvers } from "../types";
 import * as DB from "../../db";
 
-export const customer: Required<QueryResolvers>["customer"] = async (
+export const get: Required<QueryResolvers>["customer"] = async (
   _parent,
   { id },
   context
@@ -21,7 +21,47 @@ export const customer: Required<QueryResolvers>["customer"] = async (
   return customer;
 };
 
-export const customers: Required<QueryResolvers>["customers"] = async (
+export const getDetails: Required<CustomerResolvers>["details"] = async (
+  parent
+) => {
+  const { id: customerId } = parent;
+  return getRepository(DB.CustomerDetail).find({
+    customerId,
+  });
+};
+
+export const getHistory: Required<CustomerResolvers>["history"] = async (
+  parent
+) => {
+  const { id: customerId } = parent;
+  const histories = await getRepository(DB.CustomerHistory).find({
+    customerId,
+  });
+
+  return histories.map((h) => ({
+    ...h,
+    snapshot: JSON.parse(h.snapshot) as any,
+  }));
+};
+
+export const getRelationships: Required<CustomerResolvers>["relationships"] = async (
+  parent
+) => {
+  const { id: customerId } = parent;
+  const primaryRelationships = await getRepository(
+    DB.CustomerRelationship
+  ).find({
+    customerId,
+  });
+  const secondaryRelationships = await getRepository(
+    DB.CustomerRelationship
+  ).find({
+    relatedCustomerId: customerId,
+  });
+  return [...primaryRelationships, ...secondaryRelationships];
+};
+
+export const list: Required<QueryResolvers>["customers"] = async (
   _parent,
   { input },
   context
@@ -59,24 +99,34 @@ export const customers: Required<QueryResolvers>["customers"] = async (
   };
 };
 
-export const createCustomer: Required<MutationResolvers>["createCustomer"] = async (
+export const create: Required<MutationResolvers>["createCustomer"] = async (
   _parent,
   { input },
   context
 ) => {
+  const currentEmployee = await context.getCurrentEmployee();
   const currentAccount = await context.getCurrentAccount();
   const customer = await getRepository(DB.Customer)
     .create({ ...input, accountId: currentAccount.id })
     .save();
 
+  await getRepository(DB.CustomerHistory)
+    .create({
+      customerId: customer.id,
+      snapshot: JSON.stringify(customer),
+      createdByEmployeeId: currentEmployee.id,
+    })
+    .save();
+
   return customer;
 };
 
-export const updateCustomer: Required<MutationResolvers>["updateCustomer"] = async (
+export const update: Required<MutationResolvers>["updateCustomer"] = async (
   _parent,
   { id, input },
   context
 ) => {
+  const currentEmployee = await context.getCurrentEmployee();
   const customer = await getRepository(DB.Customer).findOne(id);
 
   if (!customer) {
@@ -88,14 +138,23 @@ export const updateCustomer: Required<MutationResolvers>["updateCustomer"] = asy
   await getRepository(DB.Customer).update(id, input);
   await customer.reload();
 
+  await getRepository(DB.CustomerHistory)
+    .create({
+      customerId: customer.id,
+      snapshot: JSON.stringify(customer),
+      createdByEmployeeId: currentEmployee.id,
+    })
+    .save();
+
   return customer;
 };
 
-export const archiveCustomer: Required<MutationResolvers>["archiveCustomer"] = async (
+export const archive: Required<MutationResolvers>["archiveCustomer"] = async (
   _parent,
   { id },
   context
 ) => {
+  const currentEmployee = await context.getCurrentEmployee();
   const customer = await getRepository(DB.Customer).findOne({ id });
 
   if (!customer) {
@@ -107,14 +166,23 @@ export const archiveCustomer: Required<MutationResolvers>["archiveCustomer"] = a
   await customer.softRemove();
   await customer.reload();
 
+  await getRepository(DB.CustomerHistory)
+    .create({
+      customerId: customer.id,
+      snapshot: JSON.stringify(customer),
+      createdByEmployeeId: currentEmployee.id,
+    })
+    .save();
+
   return customer;
 };
 
-export const unarchiveCustomer: Required<MutationResolvers>["unarchiveCustomer"] = async (
+export const unarchive: Required<MutationResolvers>["unarchiveCustomer"] = async (
   _parent,
   { id },
   context
 ) => {
+  const currentEmployee = await context.getCurrentEmployee();
   const customer = await getRepository(DB.Customer).findOne({ id });
 
   if (!customer) {
@@ -123,5 +191,15 @@ export const unarchiveCustomer: Required<MutationResolvers>["unarchiveCustomer"]
 
   await context.isInAccount(customer.accountId);
 
-  return customer.recover();
+  const recoveredCustomer = customer.recover();
+
+  await getRepository(DB.CustomerHistory)
+    .create({
+      customerId: customer.id,
+      snapshot: JSON.stringify(recoveredCustomer),
+      createdByEmployeeId: currentEmployee.id,
+    })
+    .save();
+
+  return recoveredCustomer;
 };

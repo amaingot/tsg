@@ -21,12 +21,12 @@ generates:
       noSchemaStitching: true
       mappers:
         User: Omit<User, "employee">
-        Employee: Omit<Employee, "jobsCompleted">
+        Employee: Omit<Employee, "jobsCompleted" | "account">
         LoginResult: Omit<LoginResult, "employee" | "user">
         Customer: Omit<Customer, "jobs" | "history" | "relationships" | "details">
         CustomerRelationship: Omit<CustomerRelationship, "relatedCustomer" | "customer">
         CustomerHistory: Omit<CustomerHistory, "createdBy">
-        Job: Omit<Job, "customer" | "completedBy">
+        Job: Omit<Job, "customer" | "completedBy" | "history">
         JobHistory: Omit<JobHistory, "createdBy">
         TimeSheetEntry: Omit<TimeSheetEntry, "employee" | "report">
         TimeSheetReport: Omit<TimeSheetReport, "entries">

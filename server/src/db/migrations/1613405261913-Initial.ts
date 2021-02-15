@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Initial1613367778224 implements MigrationInterface {
-  name = "Initial1613367778224";
+export class Initial1613405261913 implements MigrationInterface {
+  name = "Initial1613405261913";
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -11,7 +11,7 @@ export class Initial1613367778224 implements MigrationInterface {
       `CREATE TABLE "job_detail" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "version" integer NOT NULL, "deletedDate" TIMESTAMP WITH TIME ZONE, "key" character varying NOT NULL, "value" character varying NOT NULL, "jobId" uuid NOT NULL, CONSTRAINT "PK_790a9952312914517029a30a6ea" PRIMARY KEY ("id"))`
     );
     await queryRunner.query(
-      `CREATE TABLE "job_history" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "version" integer NOT NULL, "deletedDate" TIMESTAMP WITH TIME ZONE, "snapshot" character varying NOT NULL, "jobId" uuid NOT NULL, "createdByEmployeeId" uuid, CONSTRAINT "PK_688f25ad49557eed88dbaaf5a96" PRIMARY KEY ("id"))`
+      `CREATE TABLE "job_history" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "version" integer NOT NULL, "deletedDate" TIMESTAMP WITH TIME ZONE, "snapshot" character varying NOT NULL, "jobId" uuid NOT NULL, "createdByEmployeeId" character varying NOT NULL, "createdById" uuid, CONSTRAINT "PK_688f25ad49557eed88dbaaf5a96" PRIMARY KEY ("id"))`
     );
     await queryRunner.query(
       `CREATE TABLE "job" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "version" integer NOT NULL, "deletedDate" TIMESTAMP WITH TIME ZONE, "status" text NOT NULL DEFAULT 'PENDING', "type" text NOT NULL, "completedAt" TIMESTAMP WITH TIME ZONE, "accountId" uuid NOT NULL, "customerId" uuid NOT NULL, "completedByEmployeeId" uuid, CONSTRAINT "PK_98ab1c14ff8d1cf80d18703b92f" PRIMARY KEY ("id"))`
@@ -26,7 +26,7 @@ export class Initial1613367778224 implements MigrationInterface {
       `CREATE TABLE "employee" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "version" integer NOT NULL, "deletedDate" TIMESTAMP WITH TIME ZONE, "firstName" character varying NOT NULL, "lastName" character varying NOT NULL, "email" character varying NOT NULL, "cellPhone" character varying, "type" character varying NOT NULL, "accountId" uuid NOT NULL, CONSTRAINT "PK_3c2bc72f03fd5abbbc5ac169498" PRIMARY KEY ("id"))`
     );
     await queryRunner.query(
-      `CREATE TABLE "customer_history" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "version" integer NOT NULL, "deletedDate" TIMESTAMP WITH TIME ZONE, "snapshot" character varying NOT NULL, "customerId" uuid NOT NULL, "createdByEmployeeId" uuid, CONSTRAINT "PK_d79bb8dd2e9d589bf0c3cc0c7f2" PRIMARY KEY ("id"))`
+      `CREATE TABLE "customer_history" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "version" integer NOT NULL, "deletedDate" TIMESTAMP WITH TIME ZONE, "snapshot" character varying NOT NULL, "customerId" uuid NOT NULL, "createdByEmployeeId" character varying NOT NULL, "createdById" uuid, CONSTRAINT "PK_d79bb8dd2e9d589bf0c3cc0c7f2" PRIMARY KEY ("id"))`
     );
     await queryRunner.query(
       `CREATE TABLE "customer_relationship" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "version" integer NOT NULL, "deletedDate" TIMESTAMP WITH TIME ZONE, "type" character varying NOT NULL, "customerId" uuid NOT NULL, "relatedCustomerId" uuid NOT NULL, CONSTRAINT "PK_14992378a605ca5fb6f78c56734" PRIMARY KEY ("id"))`
@@ -53,7 +53,7 @@ export class Initial1613367778224 implements MigrationInterface {
       `ALTER TABLE "job_history" ADD CONSTRAINT "FK_87ef223d4ba488f368a1cc2bdde" FOREIGN KEY ("jobId") REFERENCES "job"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
     );
     await queryRunner.query(
-      `ALTER TABLE "job_history" ADD CONSTRAINT "FK_27a44fa8ea107749150d7e3266d" FOREIGN KEY ("createdByEmployeeId") REFERENCES "employee"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
+      `ALTER TABLE "job_history" ADD CONSTRAINT "FK_b85020112d6246c251bcf3733cd" FOREIGN KEY ("createdById") REFERENCES "employee"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
     );
     await queryRunner.query(
       `ALTER TABLE "job" ADD CONSTRAINT "FK_ebaddc2a0b7c1aa23d6fc97b67b" FOREIGN KEY ("accountId") REFERENCES "account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
@@ -80,7 +80,7 @@ export class Initial1613367778224 implements MigrationInterface {
       `ALTER TABLE "customer_history" ADD CONSTRAINT "FK_1fc3ae2a80546dd05e94243b20b" FOREIGN KEY ("customerId") REFERENCES "customer"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
     );
     await queryRunner.query(
-      `ALTER TABLE "customer_history" ADD CONSTRAINT "FK_fd2e7640582f469cdd18d934a49" FOREIGN KEY ("createdByEmployeeId") REFERENCES "employee"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
+      `ALTER TABLE "customer_history" ADD CONSTRAINT "FK_e36485ea0e20fe57e03cfc3b04b" FOREIGN KEY ("createdById") REFERENCES "employee"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
     );
     await queryRunner.query(
       `ALTER TABLE "customer_relationship" ADD CONSTRAINT "FK_da9400296f5b4b090df9d2a6d41" FOREIGN KEY ("customerId") REFERENCES "customer"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`
@@ -110,7 +110,7 @@ export class Initial1613367778224 implements MigrationInterface {
       `ALTER TABLE "customer_relationship" DROP CONSTRAINT "FK_da9400296f5b4b090df9d2a6d41"`
     );
     await queryRunner.query(
-      `ALTER TABLE "customer_history" DROP CONSTRAINT "FK_fd2e7640582f469cdd18d934a49"`
+      `ALTER TABLE "customer_history" DROP CONSTRAINT "FK_e36485ea0e20fe57e03cfc3b04b"`
     );
     await queryRunner.query(
       `ALTER TABLE "customer_history" DROP CONSTRAINT "FK_1fc3ae2a80546dd05e94243b20b"`
@@ -137,7 +137,7 @@ export class Initial1613367778224 implements MigrationInterface {
       `ALTER TABLE "job" DROP CONSTRAINT "FK_ebaddc2a0b7c1aa23d6fc97b67b"`
     );
     await queryRunner.query(
-      `ALTER TABLE "job_history" DROP CONSTRAINT "FK_27a44fa8ea107749150d7e3266d"`
+      `ALTER TABLE "job_history" DROP CONSTRAINT "FK_b85020112d6246c251bcf3733cd"`
     );
     await queryRunner.query(
       `ALTER TABLE "job_history" DROP CONSTRAINT "FK_87ef223d4ba488f368a1cc2bdde"`

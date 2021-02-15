@@ -27,15 +27,17 @@ export default class Customer extends BaseEntity {
   @OneToMany((type) => Job, (j) => j.customer)
   jobs: Job[];
 
-  @OneToMany((type) => CustomerDetail, (j) => j.customer)
+  @OneToMany((type) => CustomerDetail, (j) => j.customer, { eager: true })
   details: CustomerDetail[];
 
-  @OneToMany((type) => CustomerRelationship, (j) => j.customer)
+  @OneToMany((type) => CustomerRelationship, (j) => j.customer, { eager: true })
   relationships: CustomerRelationship[];
 
-  @OneToMany((type) => CustomerRelationship, (j) => j.relatedCustomer)
+  @OneToMany((type) => CustomerRelationship, (j) => j.relatedCustomer, {
+    eager: true,
+  })
   relatedRelationships: CustomerRelationship[];
 
-  @OneToMany((type) => CustomerHistory, (j) => j.customer)
+  @OneToMany((type) => CustomerHistory, (j) => j.customer, { eager: true })
   history: CustomerHistory[];
 }
