@@ -18,8 +18,8 @@ export const serveHtml: RequestHandler = async (_req, res) => {
 
   const html = Mustache.render(rawHtml, {
     STRIPE_KEY: config.get("STRIPE_PUBLIC_KEY"),
+    COOKIE_KEY: config.get("COOKIE_KEY"),
   });
 
   res.status(200).send(html);
 };
-

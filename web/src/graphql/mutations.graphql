@@ -1,26 +1,22 @@
 mutation SignUp($input: SignUpInput!) {
   signUp(input: $input) {
-    id
-    name
-    stripeCustomerId
-    updatedAt
-    createdAt
+    ...AccountFragment
   }
 }
 
 mutation Login($input: LoginInput!) {
   login(input: $input) {
     token
-    employee {
-      id
-      accountId
-      firstName
-      lastName
-      email
-      cellPhone
-      type
-      updatedAt
-      createdAt
+    me {
+      user {
+        ...UserFragment
+      }
+      employee {
+        ...EmployeeFragment
+      }
+      account {
+        ...AccountFragment
+      }
     }
   }
 }
@@ -38,120 +34,32 @@ mutation ForgotPassword($input: ForgotPasswordInput!) {
 mutation ResetPassword($input: ResetPasswordInput!) {
   resetPassword(input: $input) {
     token
-    employee {
-      id
-      accountId
-      firstName
-      lastName
-      email
-      cellPhone
-      type
-      updatedAt
-      createdAt
+    me {
+      ...MeFragment
     }
   }
 }
 
 mutation CreateCustomer($input: CustomerInput!) {
   createCustomer(input: $input) {
-    id
-    firstName
-    lastName
-    companyName
-    updatedAt
-    createdAt
-    archived
-    details {
-      id
-      key
-      value
-    }
-    relationships {
-      id
-      type
-      customerId
-      customer {
-        firstName
-        lastName
-      }
-      relatedCustomerId
-      relatedCustomer {
-        firstName
-        lastName
-      }
-    }
+    ...CustomerFragment
   }
 }
 
 mutation UpdateCustomer($id: ID!, $input: CustomerInput!) {
   updateCustomer(id: $id, input: $input) {
-    id
-    firstName
-    lastName
-    companyName
-    updatedAt
-    createdAt
-    archived
-    details {
-      id
-      key
-      value
-    }
-    relationships {
-      id
-      type
-      customerId
-      customer {
-        firstName
-        lastName
-      }
-      relatedCustomerId
-      relatedCustomer {
-        firstName
-        lastName
-      }
-    }
+    ...CustomerFragment
   }
 }
 
 mutation ArchiveCustomer($id: ID!) {
   archiveCustomer(id: $id) {
-    id
-    firstName
-    lastName
-    companyName
-    updatedAt
-    createdAt
-    archived
+    ...CustomerFragment
   }
 }
 
 mutation RelateCustomer($input: RelateCustomerInput!) {
   relateCustomers(input: $input) {
-    id
-    firstName
-    lastName
-    companyName
-    updatedAt
-    createdAt
-    details {
-      id
-      key
-      value
-    }
-    relationships {
-      id
-      type
-      customerId
-      customer {
-        firstName
-        lastName
-      }
-      relatedCustomerId
-      relatedCustomer {
-        firstName
-        lastName
-      }
-    }
+    ...CustomerFragment
   }
 }

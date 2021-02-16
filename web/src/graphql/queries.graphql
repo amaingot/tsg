@@ -1,85 +1,25 @@
 query ListPlans {
   plans {
-    id
-    active
-    amount
-    amountDecimal
-    billingScheme
-    created
-    currency
-    interval
-    intervalCount
-    livemode
-    nickname
-    productId
-    product {
-      id
-      active
-      created
-      description
-      images
-      livemode
-      name
-      statementDescriptor
-      type
-      unitLabel
-      updated
-    }
-    trialPeriodDays
-    usageType
-    description
-    features
+    ...PlanFragment
   }
 }
 
 query GetMe {
   me {
-    id
-    accountId
-    firstName
-    lastName
-    email
-    cellPhone
-    type
-    updatedAt
-    createdAt
-
-    account {
-      id
-      name
-      stripeCustomerId
-      type
-      updatedAt
-      createdAt
-    }
+    ...MeFragment
   }
 }
 
 query GetEmployee($id: ID!) {
   employee(id: $id) {
-    id
-    accountId
-    firstName
-    lastName
-    email
-    cellPhone
-    type
-    updatedAt
-    createdAt
+    ...EmployeeFragment
   }
 }
 
 query GetEmployees($input: PaginationInput) {
   employees(input: $input) {
     data {
-      id
-      firstName
-      lastName
-      email
-      cellPhone
-      type
-      updatedAt
-      createdAt
+      ...EmployeeFragment
     }
     cursor {
       beforeCursor
@@ -91,17 +31,7 @@ query GetEmployees($input: PaginationInput) {
 query GetCustomers($input: PaginationInput) {
   customers(input: $input) {
     data {
-      id
-      firstName
-      lastName
-      companyName
-      updatedAt
-      createdAt
-      details {
-        id
-        key
-        value
-      }
+      ...CustomerFragment
     }
     cursor {
       beforeCursor
@@ -112,52 +42,20 @@ query GetCustomers($input: PaginationInput) {
 
 query GetCustomerDetails($id: ID!, $jobsPagination: PaginationInput) {
   customer(id: $id) {
-    id
-    firstName
-    lastName
-    companyName
-    updatedAt
-    createdAt
-    details {
-      id
-      key
-      value
+    ...CustomerFragment
+    history {
+      ...CustomerHistoryFragment
     }
     relationships {
-      id
-      type
-      customerId
-      customer {
-        firstName
-        lastName
-      }
-      relatedCustomerId
-      relatedCustomer {
-        firstName
-        lastName
-      }
+      ...CustomerRelationshipFragment
     }
 
     jobs(input: $jobsPagination) {
       data {
-        id
-        type
-        status
-        completedAt
-        completedBy {
-          firstName
-          lastName
-        }
-        createdAt
-        details {
-          id
-          key
-          value
-        }
+        ...JobFragment
       }
       cursor {
-        beforeCursor
-        afterCursor
+        ...CursorFragment
       }
     }
   }

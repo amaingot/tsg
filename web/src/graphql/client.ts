@@ -1,3 +1,4 @@
+import cookies from "browser-cookies";
 import { WebSocketLink } from "apollo-link-ws";
 import { ApolloClient } from "apollo-client";
 import { InMemoryCache } from "apollo-cache-inmemory";
@@ -7,8 +8,6 @@ import { ApolloLink, split } from "apollo-link";
 import { getMainDefinition } from "apollo-utilities";
 import { setContext } from "apollo-link-context";
 
-import auth from "../utils/auth";
-
 import config from "../utils/config";
 
 const httpLink = new HttpLink({
@@ -16,13 +15,12 @@ const httpLink = new HttpLink({
 });
 
 const authLink = setContext(async (_, { headers }) => {
-  // get the authentication token from local storage if it exists
-  const token = await auth.currentUser?.getIdToken();
-  // return the headers to the context so httpLink can read them
+  const { COOKIE_KEY } = window.App;
+  const token = cookies.get(COOKIE_KEY);
   return {
     headers: {
+      Authorization: token !== null ? token : undefined,
       ...headers,
-      authorization: token ? token : "",
     },
   };
 });
@@ -36,7 +34,8 @@ const wsLink = new WebSocketLink({
     reconnect: true,
     lazy: true,
     connectionParams: async () => {
-      const token = await auth.currentUser?.getIdToken();
+      const { COOKIE_KEY } = window.App;
+      const token = cookies.get(COOKIE_KEY);
       return {
         authToken: token,
       };

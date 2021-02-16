@@ -1,31 +1,12 @@
 import React from "react";
-import auth, { User } from "../utils/auth";
-import { Employee, Client, useGetMeLazyQuery } from "../graphql/hooks";
+import cookies from "browser-cookies";
 
-type EmployeeRecord = Pick<
-  Employee,
-  | "id"
-  | "clientId"
-  | "firstName"
-  | "lastName"
-  | "email"
-  | "cellPhone"
-  | "userRole"
-  | "updatedAt"
-  | "createdAt"
->;
-
-type ClientRecord = Pick<
-  Client,
-  "id" | "updatedAt" | "createdAt" | "name" | "stripeCustomerId"
->;
+import { GetMeQueryResult, useGetMeLazyQuery } from "../graphql/hooks";
 
 interface AuthContextState {
   loggedIn: boolean;
   loading: boolean;
-  user?: User;
-  employee?: EmployeeRecord;
-  client?: ClientRecord;
+  me?: GetMeQueryResult;
 }
 
 const AuthContext = React.createContext<AuthContextState>({
@@ -36,39 +17,24 @@ const AuthContext = React.createContext<AuthContextState>({
 export const useAuth = () => React.useContext(AuthContext);
 
 export const AuthContextProvider: React.FC = (props) => {
-  const [getMe, meResult] = useGetMeLazyQuery();
-
-  const [user, setUser] = React.useState<User>();
-  const [employee, setEmployee] = React.useState<EmployeeRecord>();
-  const [client, setClient] = React.useState<ClientRecord>();
-  const [authLoading, setAuthLoading] = React.useState(true);
+  const [getMe, { data, loading, called }] = useGetMeLazyQuery({
+    onError: (e) => console.log(`User is not logged in: ${JSON.stringify(e)}`),
+  });
+  const token = cookies.get(window.App.COOKIE_KEY);
 
   React.useEffect(() => {
-    auth.onAuthStateChanged((u) => {
-      if (u) {
-        setUser(u);
-        getMe();
-      } else {
-        setUser(undefined);
-        setEmployee(undefined);
-        setClient(undefined);
-      }
-      setAuthLoading(false);
-    });
-  }, [getMe]);
-
-  React.useEffect(() => {
-    if (meResult.data?.me?.client) {
-      setEmployee(meResult.data.me);
-      setClient(meResult.data.me.client);
+    if (token && !called) {
+      getMe();
     }
-  }, [meResult]);
-
-  const loading = authLoading || meResult.loading;
+  }, [token, called, getMe]);
 
   return (
     <AuthContext.Provider
-      value={{ loading, loggedIn: user !== undefined, user, employee, client }}
+      value={{
+        loading,
+        loggedIn: data?.me !== undefined,
+        me: data?.me,
+      }}
     >
       {props.children}
     </AuthContext.Provider>

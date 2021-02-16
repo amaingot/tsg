@@ -92,10 +92,12 @@ input SignUpInput {
   paymentMethodId: String
 }
 
-########
-# AUTH #
-########
+#########
+# USERS #
+#########
 type Query {
+  me: Me!
+  user(id: ID!): User!
   users(input: PaginationInput): Users!
 }
 
@@ -113,6 +115,15 @@ type Mutation {
   impersonateEmployee(id: ID!): LoginResult!
 }
 
+type Me {
+  employeeId: String!
+  employee: Employee!
+  userId: String!
+  user: User!
+  accountId: String!
+  account: Account!
+}
+
 input LoginInput {
   email: Email!
   password: Password!
@@ -120,10 +131,7 @@ input LoginInput {
 
 type LoginResult {
   token: String!
-  employeeId: String
-  employee: Employee
-  userId: String!
-  user: User!
+  me: Me!
 }
 
 enum UserType {
@@ -136,8 +144,6 @@ type User {
   email: Email!
   cellPhone: PhoneNumber
   type: UserType!
-  employeeId: String
-  employee: Employee
   archived: Boolean!
 }
 
@@ -385,7 +391,6 @@ input JobDetailInput {
 # EMPLOYEES #
 #############
 type Query {
-  me: Employee!
   employees(input: PaginationInput): Employees!
   employee(id: ID!): Employee!
 }

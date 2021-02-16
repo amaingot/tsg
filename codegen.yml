@@ -20,6 +20,7 @@ generates:
       contextType: ./context#GraphqlContext
       noSchemaStitching: true
       mappers:
+        Me: Omit<Me, "employee" | "user" | "account">
         User: Omit<User, "employee">
         Employee: Omit<Employee, "jobsCompleted" | "account">
         LoginResult: Omit<LoginResult, "employee" | "user">
