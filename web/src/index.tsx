@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom";
 import { ApolloProvider } from "@apollo/react-hooks";
 import { Elements } from "@stripe/react-stripe-js";
@@ -13,7 +12,7 @@ import client from "./graphql/client";
 const stripePromise = loadStripe(config.STRIPE_KEY);
 
 ReactDOM.render(
-  <ApolloProvider client={client}>
+  <ApolloProvider client={client as any}>
     <Elements stripe={stripePromise}>
       <AuthContextProvider>
         <App />

@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { useHistory } from "react-router-dom";
 import { StripeElementChangeEvent } from "@stripe/stripe-js";
 import {
@@ -27,7 +27,6 @@ import {
 import Layout from "../components/Layout";
 import { useSignUpMutation } from "../graphql/hooks";
 import { useAuth } from "../contexts/AuthContext";
-import auth from "../utils/auth";
 
 const useStyles = makeStyles((theme) => ({
   gridContainer: {
@@ -161,13 +160,9 @@ const SignUpPage: React.FC = () => {
             paymentMethodId: result.paymentMethod?.id,
           },
         },
-      })
-        .then(() => {
-          auth.signInWithEmailAndPassword(email, password);
-        })
-        .catch((e) => {
-          setError(JSON.stringify(e));
-        });
+      }).catch((e) => {
+        setError(JSON.stringify(e));
+      });
     }
   };
 

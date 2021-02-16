@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import cookies from "browser-cookies";
 
 import { GetMeQueryResult, useGetMeLazyQuery } from "../graphql/hooks";
