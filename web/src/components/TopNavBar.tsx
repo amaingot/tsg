@@ -8,7 +8,6 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 
 import { useAuth } from "../contexts/AuthContext";
-import auth from "../utils/auth";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -98,7 +97,7 @@ const CustomerMenu: React.FC = () => {
       <Button
         className={classes.navButton}
         color="inherit"
-        onClick={() => auth.signOut()}
+        onClick={() => console.log("Logout button not implemented")}
       >
         Logout
       </Button>

@@ -4,13 +4,8 @@ import { useHistory } from "react-router-dom";
 import { makeStyles, Grid, Typography, Fab, Paper } from "@material-ui/core";
 import SaveIcon from "@material-ui/icons/Save";
 
-import { phoneNumberIsValid } from "../components/PhoneTextMask";
 import TextField from "../components/TextField";
-import {
-  useCreateCustomerMutation,
-  CreateOrUpdateCustomerInput,
-} from "../graphql/hooks";
-import { useAuth } from "../contexts/AuthContext";
+import { useCreateCustomerMutation, CustomerInput } from "../graphql/hooks";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -34,8 +29,11 @@ const useStyles = makeStyles((theme) => ({
 const CreateCustomerPage: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
-  const [createCustomer, result] = useCreateCustomerMutation();
-  const auth = useAuth();
+  const [createCustomer, result] = useCreateCustomerMutation({
+    onCompleted: () =>
+      history.push(`/app/customers/${result.data?.createCustomer.id}/detail`),
+  });
+  const { loading, error } = result;
 
   const [memNum, setMemNumber] = React.useState("");
   const [lastName, setLastName] = React.useState("");
@@ -50,55 +48,14 @@ const CreateCustomerPage: React.FC = () => {
   const [cellPhone, setCellPhone] = React.useState("");
   const [workPhone, setWorkPhone] = React.useState("");
 
-  const [error, setError] = React.useState<string>();
-  const loading = result.loading;
-
-  React.useEffect(() => {
-    if (result.data?.createCustomer.id) {
-      history.push(`/app/customers/${result.data?.createCustomer.id}/detail`);
-    }
-  }, [result, history]);
-
   const handleSubmit: React.FormEventHandler = async (e) => {
     e.preventDefault();
 
-    const input: CreateOrUpdateCustomerInput = {
-      memNum,
+    const input: CustomerInput = {
       lastName,
       firstName,
-      middleInitial,
-      email,
-      address,
-      address2,
-      city,
-      zip,
-      clientId: auth.client?.id || "",
+      details: [],
     };
-
-    if (homePhone.indexOf(" ") !== 1) {
-      if (phoneNumberIsValid(homePhone)) {
-        input.homePhone = homePhone;
-      } else {
-        setError("The home phone is not formatted correctly");
-        return;
-      }
-    }
-    if (cellPhone.indexOf(" ") !== 1) {
-      if (phoneNumberIsValid(cellPhone)) {
-        input.cellPhone = cellPhone;
-      } else {
-        setError("The cell phone is not formatted correctly");
-        return;
-      }
-    }
-    if (workPhone.indexOf(" ") !== 1) {
-      if (phoneNumberIsValid(workPhone)) {
-        input.workPhone = workPhone;
-      } else {
-        setError("The work phone is not formatted correctly");
-        return;
-      }
-    }
 
     createCustomer({ variables: { input } });
   };

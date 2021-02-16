@@ -9,12 +9,10 @@ import { useGetCustomersQuery } from "../graphql/hooks";
 import Table from "../components/Table";
 
 const CustomersPage: React.FC = () => {
-  const customersResponse = useGetCustomersQuery();
+  const { data, loading } = useGetCustomersQuery();
   const history = useHistory();
 
-  const customerList = (
-    customersResponse.data?.customers.data || []
-  ).map((x) => ({ ...x }));
+  const customerList = (data?.customers.data || []).map((x) => ({ ...x }));
 
   const handleRowClick = (
     _event?: React.MouseEvent<Element, MouseEvent> | undefined,
@@ -47,7 +45,7 @@ const CustomersPage: React.FC = () => {
         ]}
         // TODO: Implement remote data here
         data={customerList}
-        isLoading={customersResponse.loading}
+        isLoading={loading}
         onRowClick={handleRowClick}
         actions={[
           {

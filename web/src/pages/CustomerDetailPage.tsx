@@ -13,12 +13,12 @@ import AddIcon from "@material-ui/icons/Add";
 import CancelIcon from "@material-ui/icons/Close";
 import yellow from "@material-ui/core/colors/yellow";
 
-import { phoneNumberIsValid } from "../components/PhoneTextMask";
+// import { phoneNumberIsValid } from "../components/PhoneTextMask";
 import TextField from "../components/TextField";
 import {
   useGetCustomerDetailsQuery,
   useUpdateCustomerMutation,
-  CreateOrUpdateCustomerInput,
+  CustomerInput,
 } from "../graphql/hooks";
 
 const useStyles = makeStyles((theme) => ({
@@ -116,56 +116,12 @@ const CustomerDetailPage: React.FC<RouteComponentProps<{ id: string }>> = (
       return;
     }
 
-    const input: CreateOrUpdateCustomerInput = {
-      clientId: customer.clientId,
-      memNum: customer.memNum,
+    const input: CustomerInput = {
       firstName: customer.firstName,
       lastName: customer.lastName,
-      middleInitial: customer.middleInitial,
-      email: customer.email,
-      address: customer.address,
-      address2: customer.address2,
-      city: customer.city,
-      zip: customer.zip,
-      cellPhone: customer.cellPhone,
-      homePhone: customer.homePhone,
-      workPhone: customer.workPhone,
+      details: [],
     };
 
-    if (memNum !== undefined) input.memNum = memNum;
-    if (lastName !== undefined) input.lastName = lastName;
-    if (firstName !== undefined) input.firstName = firstName;
-    if (middleInitial !== undefined) input.middleInitial = middleInitial;
-    if (email !== undefined) input.email = email;
-    if (address !== undefined) input.address = address;
-    if (address2 !== undefined) input.address2 = address2;
-    if (city !== undefined) input.city = city;
-    if (zip !== undefined) input.zip = zip;
-
-    if (homePhone && homePhone.indexOf(" ") !== 1) {
-      if (phoneNumberIsValid(homePhone)) {
-        input.homePhone = homePhone;
-      } else {
-        setError("The home phone is not formatted correctly");
-        return;
-      }
-    }
-    if (cellPhone && cellPhone.indexOf(" ") !== 1) {
-      if (phoneNumberIsValid(cellPhone)) {
-        input.cellPhone = cellPhone;
-      } else {
-        setError("The cell phone is not formatted correctly");
-        return;
-      }
-    }
-    if (workPhone && workPhone.indexOf(" ") !== 1) {
-      if (phoneNumberIsValid(workPhone)) {
-        input.workPhone = workPhone;
-      } else {
-        setError("The work phone is not formatted correctly");
-        return;
-      }
-    }
     updateCustomer({
       variables: { id, input },
       refetchQueries: ["ListTodos"],
@@ -248,13 +204,13 @@ const CustomerDetailPage: React.FC<RouteComponentProps<{ id: string }>> = (
               className={classes.textField}
               id="middleInitial"
               label="Middle Initial"
-              defaultValue={customer.middleInitial}
+              // defaultValue={customer.middleInitial}
               value={middleInitial}
               onChange={(e) => setMiddleInitial(e.target.value)}
               InputProps={{
                 readOnly: !editMode,
               }}
-              hide={loading || (!customer.middleInitial && !editMode)}
+              // hide={loading || (!customer.middleInitial && !editMode)}
             />
             <TextField
               className={classes.textField}
@@ -274,13 +230,13 @@ const CustomerDetailPage: React.FC<RouteComponentProps<{ id: string }>> = (
               className={classes.textField}
               id="memNum"
               label="Member Number"
-              defaultValue={customer.memNum}
+              // defaultValue={customer.memNum}
               value={memNum}
               onChange={(e) => setMemNumber(e.target.value)}
               InputProps={{
                 readOnly: !editMode,
               }}
-              hide={loading || (!customer.memNum && !editMode)}
+              // hide={loading || (!customer.memNum && !editMode)}
             />
           </Paper>
         </Grid>
@@ -294,52 +250,52 @@ const CustomerDetailPage: React.FC<RouteComponentProps<{ id: string }>> = (
               id="email"
               label="Email Address"
               autoComplete="email"
-              defaultValue={customer.email}
+              // defaultValue={customer.email}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               InputProps={{
                 readOnly: !editMode,
               }}
-              hide={loading || (!customer.email && !editMode)}
+              // hide={loading || (!customer.email && !editMode)}
             />
             <TextField
               className={classes.textField}
               id="cell-phone"
               label="Cell Phone"
               type="tel"
-              defaultValue={customer.cellPhone}
+              // defaultValue={customer.cellPhone}
               value={cellPhone}
               onChange={(e) => setCellPhone(e.target.value)}
               InputProps={{
                 readOnly: !editMode,
               }}
-              hide={loading || (!customer.cellPhone && !editMode)}
+              // hide={loading || (!customer.cellPhone && !editMode)}
             />
             <TextField
               className={classes.textField}
               id="home-phone"
               label="Home Phone"
               type="tel"
-              defaultValue={customer.homePhone}
+              // defaultValue={customer.homePhone}
               value={homePhone}
               onChange={(e) => setHomePhone(e.target.value)}
               InputProps={{
                 readOnly: !editMode,
               }}
-              hide={loading || (!customer.homePhone && !editMode)}
+              // hide={loading || (!customer.homePhone && !editMode)}
             />
             <TextField
               className={classes.textField}
               id="work-phone"
               label="Work Phone"
               type="tel"
-              defaultValue={customer.workPhone}
+              // defaultValue={customer.workPhone}
               value={workPhone}
               onChange={(e) => setWorkPhone(e.target.value)}
               InputProps={{
                 readOnly: !editMode,
               }}
-              hide={loading || (!customer.workPhone && !editMode)}
+              // hide={loading || (!customer.workPhone && !editMode)}
             />
           </Paper>
         </Grid>
@@ -352,49 +308,49 @@ const CustomerDetailPage: React.FC<RouteComponentProps<{ id: string }>> = (
               className={classes.textField}
               id="address"
               label="Address"
-              defaultValue={customer.address}
+              // defaultValue={customer.address}
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               InputProps={{
                 readOnly: !editMode,
               }}
-              hide={loading || (!customer.address && !editMode)}
+              // hide={loading || (!customer.address && !editMode)}
             />
             <TextField
               className={classes.textField}
               id="address2"
               label="Address (cont.)"
-              defaultValue={customer.address2}
+              // defaultValue={customer.address2}
               value={address2}
               onChange={(e) => setAddress2(e.target.value)}
               InputProps={{
                 readOnly: !editMode,
               }}
-              hide={loading || (!customer.address2 && !editMode)}
+              // hide={loading || (!customer.address2 && !editMode)}
             />
             <TextField
               className={classes.textField}
               id="city"
               label="City"
-              defaultValue={customer.city}
+              // defaultValue={customer.city}
               value={city}
               onChange={(e) => setCity(e.target.value)}
               InputProps={{
                 readOnly: !editMode,
               }}
-              hide={loading || (!customer.city && !editMode)}
+              // hide={loading || (!customer.city && !editMode)}
             />
             <TextField
               className={classes.textField}
               id="zip"
               label="Postal Code"
-              defaultValue={customer.zip}
+              // defaultValue={customer.zip}
               value={zip}
               onChange={(e) => setZip(e.target.value)}
               InputProps={{
                 readOnly: !editMode,
               }}
-              hide={loading || (!customer.zip && !editMode)}
+              // hide={loading || (!customer.zip && !editMode)}
             />
           </Paper>
         </Grid>

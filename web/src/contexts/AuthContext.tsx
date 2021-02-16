@@ -1,12 +1,21 @@
 import * as React from "react";
 import cookies from "browser-cookies";
 
-import { GetMeQueryResult, useGetMeLazyQuery } from "../graphql/hooks";
+import {
+  AccountFragmentFragment,
+  EmployeeFragmentFragment,
+  useGetMeLazyQuery,
+  UserFragmentFragment,
+} from "../graphql/hooks";
 
 interface AuthContextState {
   loggedIn: boolean;
   loading: boolean;
-  me?: GetMeQueryResult;
+  me?: {
+    user: UserFragmentFragment;
+    account: AccountFragmentFragment;
+    employee: EmployeeFragmentFragment;
+  };
 }
 
 const AuthContext = React.createContext<AuthContextState>({

@@ -14,7 +14,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import Layout from "../components/Layout";
 import { useAuth } from "../contexts/AuthContext";
-import auth from "../utils/auth";
+import { useLoginMutation } from "../graphql/hooks";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -40,11 +40,11 @@ const LoginPage: React.FC = () => {
   const history = useHistory();
   const classes = useStyles();
   const { loggedIn } = useAuth();
+  const [login, { error }] = useLoginMutation();
 
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [rememberMe, setRememberMe] = React.useState(false);
-  const [error, setError] = React.useState<string>();
 
   React.useEffect(() => {
     if (loggedIn) {
@@ -55,11 +55,7 @@ const LoginPage: React.FC = () => {
   const handleSubmit: React.FormEventHandler = (e) => {
     e.preventDefault();
 
-    try {
-      auth.signInWithEmailAndPassword(email, password);
-    } catch (e) {
-      setError(JSON.stringify(e));
-    }
+    login({ variables: { input: { email, password } } });
   };
 
   return (

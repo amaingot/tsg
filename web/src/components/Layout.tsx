@@ -115,7 +115,7 @@ const Layout: React.FC<Props> = (props) => {
           showDrawerNav && classes.showDrawerLayout
         )}
       >
-        {props.children}
+        {props.children || <></>}
       </Container>
       <footer
         className={clsx(
