@@ -40,4 +40,4 @@ steps:
 images:
   - "gcr.io/hmm-dev/tsg:$COMMIT_SHA"
   - "gcr.io/hmm-dev/tsg:latest"
-timeout: 720s
+timeout: 3600s
