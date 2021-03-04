@@ -4,7 +4,8 @@ steps:
     args: ["-c", "docker pull gcr.io/hmm-dev/tsg:latest || exit 0"]
 
   - name: "gcr.io/cloud-builders/docker"
-    args: [
+    args:
+      [
         "build",
         "-t",
         "gcr.io/hmm-dev/tsg:latest",
@@ -26,16 +27,19 @@ steps:
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "gcr.io/hmm-dev/tsg:latest"]
 
-  - name: 'gcr.io/cloud-builders/kubectl'
+  # Deploy container image to Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
     args:
-      - 'set'
-      - 'image'
-      - 'deployment/tsg'
-      - '--namespace=tsg'
-      - 'tsg=gcr.io/hmm-dev/tsg:$COMMIT_SHA'
-    env:
-      - "CLOUDSDK_COMPUTE_ZONE=us-central1-a"
-      - "CLOUDSDK_CONTAINER_CLUSTER=hmm"
+      - "run"
+      - "deploy"
+      - "tsg"
+      - "--image"
+      - "gcr.io/hmm-dev/tsg:$COMMIT_SHA"
+      - "--region"
+      - "us-central1"
+      - "--platform"
+      - "managed"
 
 images:
   - "gcr.io/hmm-dev/tsg:$COMMIT_SHA"
