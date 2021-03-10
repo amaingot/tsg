@@ -3,7 +3,7 @@ import express from "express";
 
 import { openConnection } from "./db";
 import { appLogger, appErrorLogger, logger } from "./utils/logger";
-import { initPubSub } from "./utils/pubsub";
+// import { initPubSub } from "./utils/pubsub";
 import { mountEndpoints } from "./endpoints";
 import { mountGraphql } from "./graphql";
 
@@ -14,7 +14,7 @@ const httpServer = http.createServer(app);
 app.use(appLogger());
 
 openConnection();
-initPubSub();
+// initPubSub();
 mountEndpoints(app);
 mountGraphql(app, httpServer);
 

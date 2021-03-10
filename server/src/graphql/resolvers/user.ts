@@ -113,27 +113,27 @@ export const unarchive: Required<MutationResolvers>["unarchiveUser"] = async (
   return user.recover();
 };
 
-export const impersonate: Required<MutationResolvers>["impersonateEmployee"] = async (
-  _parent,
-  { id },
-  context
-) => {
-  await context.isSuperAdmin();
-  const employee = await getRepository(DB.Employee).findOne({ id });
-  const user =
-    employee &&
-    (await getRepository(DB.User).findOne({ email: employee.email }));
+// export const impersonate: Required<MutationResolvers>["impersonateEmployee"] = async (
+//   _parent,
+//   { id },
+//   context
+// ) => {
+//   await context.isSuperAdmin();
+//   const employee = await getRepository(DB.Employee).findOne({ id });
+//   const user =
+//     employee &&
+//     (await getRepository(DB.User).findOne({ email: employee.email }));
 
-  if (!employee || !user) {
-    throw new UserInputError("Unknown employee");
-  }
+//   if (!employee || !user) {
+//     throw new UserInputError("Unknown employee");
+//   }
 
-  const token = user.createUserToken();
-  // TODO: Set user token with res.cookie(token, {...tokenOptions})
+//   const token = user.createUserToken();
+//   // TODO: Set user token with res.cookie(token, {...tokenOptions})
 
-  return {
-    token,
-    employeeId: employee.id,
-    userId: user.id, // TODO: Replace with current logged in user
-  };
-};
+//   return {
+//     token,
+//     employeeId: employee.id,
+//     userId: user.id, // TODO: Replace with current logged in user
+//   };
+// };

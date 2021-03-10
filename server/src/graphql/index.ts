@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { ApolloServer } from "apollo-server-express";
+import { ApolloServer, makeExecutableSchema } from "apollo-server-express";
 
 import resolvers from "./resolvers";
 import { GraphqlContext } from "./context";
@@ -11,9 +11,10 @@ const typeDefs = fs
   .readFileSync(path.join(__dirname, "schema.graphql"), "utf8")
   .toString();
 
+const schema = makeExecutableSchema({ typeDefs, resolvers });
+
 const graphqlServer = new ApolloServer({
-  typeDefs,
-  resolvers,
+  schema,
   debug: true,
   introspection: true,
   playground: true,

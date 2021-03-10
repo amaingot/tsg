@@ -21,9 +21,9 @@ generates:
       noSchemaStitching: true
       mappers:
         Me: Omit<Me, "employee" | "user" | "account">
-        User: Omit<User, "employee">
+        # User: Omit<User, "employee">
         Employee: Omit<Employee, "jobsCompleted" | "account">
-        LoginResult: Omit<LoginResult, "employee" | "user">
+        # LoginResult: Omit<LoginResult, "employee" | "user">
         Customer: Omit<Customer, "jobs" | "history" | "relationships" | "details">
         CustomerRelationship: Omit<CustomerRelationship, "relatedCustomer" | "customer">
         CustomerHistory: Omit<CustomerHistory, "createdBy">

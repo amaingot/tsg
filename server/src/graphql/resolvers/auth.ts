@@ -23,10 +23,17 @@ export const login: Required<MutationResolvers>["login"] = async (
   const token = user.createUserToken();
   const employee = await getRepository(DB.Employee).findOne({ email });
 
+  if (!employee) {
+    throw new Error("User is not linked to an employee");
+  }
+
   return {
     token,
-    employeeId: employee?.id,
-    userId: user.id,
+    me: {
+      employeeId: employee.id,
+      userId: user.id,
+      accountId: employee.accountId,
+    },
   };
 };
 
@@ -85,9 +92,16 @@ export const resetPassword: Required<MutationResolvers>["resetPassword"] = async
 
   const employee = await getRepository(DB.Employee).findOne({ email });
 
+  if (!employee) {
+    throw new Error("User is not linked to an employee");
+  }
+
   return {
     token,
-    employeeId: employee?.id,
-    userId: user.id,
+    me: {
+      employeeId: employee.id,
+      userId: user.id,
+      accountId: employee.accountId,
+    },
   };
 };

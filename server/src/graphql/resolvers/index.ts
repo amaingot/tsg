@@ -58,7 +58,7 @@ const resolvers: Partial<Resolvers> = {
     login: Auth.login,
     forgotPassword: Auth.forgotPassword,
     resetPassword: Auth.resetPassword,
-    impersonateEmployee: Users.impersonate,
+    // impersonateEmployee: Users.impersonate,
 
     // Users
     createUser: Users.create,

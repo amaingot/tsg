@@ -95,13 +95,13 @@ input SignUpInput {
 #########
 # USERS #
 #########
-type Query {
+extend type Query {
   me: Me!
   user(id: ID!): User!
   users(input: PaginationInput): Users!
 }
 
-type Mutation {
+extend type Mutation {
   login(input: LoginInput!): LoginResult!
   forgotPassword(input: ForgotPasswordInput!): ForgotPasswordResult!
   resetPassword(input: ResetPasswordInput!): LoginResult!
@@ -187,12 +187,12 @@ type ChangePasswordResult {
 #############
 # CUSTOMERS #
 #############
-type Query {
+extend type Query {
   customers(input: PaginationInput): Customers!
   customer(id: ID!): Customer!
 }
 
-type Mutation {
+extend type Mutation {
   createCustomer(input: CustomerInput!): Customer!
   updateCustomer(id: ID!, input: CustomerInput!): Customer!
   archiveCustomer(id: ID!): Customer!
@@ -292,12 +292,12 @@ input RelateCustomerInput {
 ########
 # JOBS #
 ########
-type Query {
+extend type Query {
   jobs(input: PaginationInput): Jobs!
   job(id: ID!): Job!
 }
 
-type Mutation {
+extend type Mutation {
   createJob(input: JobInput!): Job!
   updateJob(id: ID!, input: JobInput!): Job!
   completeJob(id: ID!): Job!
@@ -390,12 +390,12 @@ input JobDetailInput {
 #############
 # EMPLOYEES #
 #############
-type Query {
+extend type Query {
   employees(input: PaginationInput): Employees!
   employee(id: ID!): Employee!
 }
 
-type Mutation {
+extend type Mutation {
   createEmployee(input: EmployeeInput!): Employee!
   updateEmployee(id: ID!, input: EmployeeInput!): Employee!
   archiveEmployee(id: ID!): Employee!
@@ -441,12 +441,12 @@ input EmployeeInput {
 ###############
 # TIME SHEETS #
 ###############
-type Query {
+extend type Query {
   timeSheetEntries(input: PaginationInput): TimeSheetEntries!
   timeSheetReports(input: PaginationInput): TimeSheetReports!
 }
 
-type Mutation {
+extend type Mutation {
   clockIn(input: ClockInOrOutInput!): TimeSheetEntry!
   clockOut(input: ClockInOrOutInput!): TimeSheetEntry!
 
@@ -519,13 +519,13 @@ input TimeSheetReportInput {
 ###########
 # ACCOUNT #
 ###########
-type Query {
+extend type Query {
   myAccount: Account!
   accounts(input: PaginationInput): Accounts!
   account(id: ID!): Account!
 }
 
-type Mutation {
+extend type Mutation {
   createAccount(workspace: String!, input: AccountInput!): Account!
   updateAccount(id: ID!, input: AccountInput!): Account!
   changeAccountWorkspace(id: ID!, newWorkspace: String!): Account!
@@ -603,12 +603,12 @@ input AccountPermissionInput {
 ############
 # MESSAGES #
 ############
-type Query {
+extend type Query {
   messages(input: PaginationInput): Messages!
   message(id: ID!): Message!
 }
 
-type Mutation {
+extend type Mutation {
   sendMessage(input: SendMessageInput!): Message!
   createMessageProvider: MessageProvider!
   archiveMessageProvider: MessageProvider!
@@ -663,7 +663,7 @@ input SendMessageInput {
 ################
 # RESERVATIONS #
 ################
-type Query {
+extend type Query {
   facility(id: ID!): Facility!
   facilities(input: PaginationInput): Facilities!
 
@@ -674,7 +674,7 @@ type Query {
   reservations(input: PaginationInput): Reservations!
 }
 
-type Mutation {
+extend type Mutation {
   createFacility(input: FacilityInput!): Facility!
   updateFacility(id: ID!, input: FacilityInput!): Facility!
   archiveFacility(id: ID!): Facility!
