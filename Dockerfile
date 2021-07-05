@@ -1,18 +1,17 @@
-FROM node:14-alpine
+# https://hub.docker.com/_/microsoft-dotnet
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /source
 
-RUN mkdir -p /usr/src/app/
+COPY *.csproj ./
+RUN dotnet restore
 
-WORKDIR /usr/src/app
-
+# copy everything else and build app
 COPY . .
+WORKDIR /source/
+RUN dotnet publish -c release -o /app --no-restore
 
-ARG COMMIT_SHA
-ENV SHA=${COMMIT_SHA}
-
-RUN yarn
-
-RUN REACT_APP_SHA=$SHA yarn build:web
-
-EXPOSE 8080
-
-CMD ["yarn", "start:in-container"]
+# final stage/image
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
+WORKDIR /app
+COPY --from=build /app ./
+ENTRYPOINT ["dotnet", "TennisShopGuru.dll"]

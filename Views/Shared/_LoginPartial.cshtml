@@ -1,0 +1,38 @@
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<TennisShopGuru.Models.User> SignInManager
+@inject UserManager<TennisShopGuru.Models.User> UserManager
+
+<ul class="navbar-nav">
+@if (User.IsInRole("SuperAdmin")) {
+  <li class="nav-item">
+    <a id="companies" class="nav-link text-dark" asp-area="" asp-controller="Company" asp-action="Index">Companies</a>
+  </li>
+}
+@if (SignInManager.IsSignedIn(User))
+{
+  <li class="nav-item">
+    <a id="customers" class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="Index">Customers</a>
+  </li>
+  <li class="nav-item">
+    <a id="jobs" class="nav-link text-dark" asp-area="" asp-controller="Job" asp-action="Index">Jobs</a>
+  </li>
+  <li class="nav-item">
+    <a id="time-sheet" class="nav-link text-dark" asp-area="" asp-controller="TimeSheetEntry" asp-action="Index">Time Sheet</a>
+  </li>
+  <li class="nav-item">
+    <form id="logoutForm" class="form-inline" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+      <button id="logout" type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+    </form>
+  </li>
+}
+else
+{
+  <li class="nav-item">
+    <a class="nav-link text-dark" id="register" asp-page="/Account/Register">Sign Up</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-dark" id="login" asp-page="/Account/Login">Login</a>
+  </li>
+}
+</ul>

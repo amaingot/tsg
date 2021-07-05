@@ -1,0 +1,249 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AccountStatus {
+  ACTIVE
+  PAYMENT_FAILED
+  CANCELED
+  PAUSED
+}
+
+enum AccountType {
+  CUSTOMER
+  DEMO
+  TRIAL
+}
+
+model Account {
+  id                 String              @id @default(uuid()) @db.Uuid
+  workspace          String
+  name               String
+  status             AccountStatus       @default(ACTIVE)
+  type               AccountType         @default(CUSTOMER)
+  businessPhone      String
+  address            String
+  addressSecondary   String
+  stripeCustomerId   String
+  createdAt          DateTime            @default(now()) @db.Timestamptz(6)
+  updatedAt          DateTime            @default(now()) @db.Timestamptz(6)
+  deletedAt          DateTime?           @db.Timestamptz(6)
+  accountPermissions AccountPermission[]
+  customers          Customer[]
+  employees          Employee[]
+  jobs               Job[]
+  timeSheetEntries   TimeSheetEntry[]
+}
+
+enum AccountPermissionType {
+  SMS_ENABLED
+  TIMESHEETS_ENABLED
+  RESERVATIONS_ENABLED
+}
+
+model AccountPermission {
+  id        String                @id @default(uuid()) @db.Uuid
+  type      AccountPermissionType
+  value     Boolean
+  createdAt DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime              @default(now()) @db.Timestamptz(6)
+  deletedAt DateTime?             @db.Timestamptz(6)
+  account   Account               @relation(fields: [accountId], references: [id])
+  accountId String                @db.Uuid
+}
+
+model Customer {
+  id              String            @id @default(uuid()) @db.Uuid
+  firstName       String?
+  lastName        String?
+  companyName     String?
+  createdAt       DateTime          @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime          @default(now()) @db.Timestamptz(6)
+  deletedAt       DateTime?         @db.Timestamptz(6)
+  account         Account           @relation(fields: [accountId], references: [id])
+  accountId       String            @db.Uuid
+  customerDetails CustomerDetail[]
+  customerHistory CustomerHistory[]
+  jobs            Job[]
+}
+
+enum CustomerDetailKey {
+  EMAIL
+  CELL_PHONE
+  HOME_PHONE
+  WORK_PHONE
+  DATE_OF_BIRTH
+  ADDRESS
+  ADDRESS_SECONDARY
+  CITY
+  ZIP_CODE
+  STATE
+  MEMBER_NUMBER
+  MIDDLE_INITIAL
+}
+
+model CustomerDetail {
+  id         String            @id @default(uuid()) @db.Uuid
+  key        CustomerDetailKey
+  value      String
+  createdAt  DateTime          @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime          @default(now()) @db.Timestamptz(6)
+  deletedAt  DateTime?         @db.Timestamptz(6)
+  customer   Customer          @relation(fields: [customerId], references: [id])
+  customerId String            @db.Uuid
+}
+
+model CustomerHistory {
+  id          String   @id @default(uuid()) @db.Uuid
+  snapshot    Json
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  createdBy   Employee @relation(fields: [createdById], references: [id])
+  createdById String   @db.Uuid
+  customer    Customer @relation(fields: [customerId], references: [id])
+  customerId  String   @db.Uuid
+}
+
+model Employee {
+  id               String            @id @default(uuid()) @db.Uuid
+  firstName        String
+  lastName         String
+  type             String
+  email            String            @unique
+  cellPhone        String?
+  createdAt        DateTime          @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime          @default(now()) @db.Timestamptz(6)
+  deletedAt        DateTime?         @db.Timestamptz(6)
+  account          Account           @relation(fields: [accountId], references: [id])
+  accountId        String            @db.Uuid
+  customerHistory  CustomerHistory[]
+  jobs             Job[]
+  jobHistory       JobHistory[]
+  timeSheetEntries TimeSheetEntry[]
+}
+
+enum JobType {
+  STRINGING_BASIC
+  STRINGING_HYBRID
+}
+
+enum JobStatus {
+  PENDING
+  FINISHED
+}
+
+model Job {
+  id            String       @id @default(uuid()) @db.Uuid
+  status        JobStatus    @default(PENDING)
+  type          JobType
+  completedAt   DateTime?    @db.Timestamptz(6)
+  createdAt     DateTime     @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime     @default(now()) @db.Timestamptz(6)
+  deletedAt     DateTime?    @db.Timestamptz(6)
+  account       Account      @relation(fields: [accountId], references: [id])
+  accountId     String       @db.Uuid
+  completedBy   Employee?    @relation(fields: [completedById], references: [id])
+  completedById String?      @db.Uuid
+  customer      Customer     @relation(fields: [customerId], references: [id])
+  customerId    String       @db.Uuid
+  jobDetails    JobDetail[]
+  jobHistory    JobHistory[]
+}
+
+enum JobDetailKey {
+  RACKET_BRAND
+  RACKET_NAME
+  RACKET_SIZE
+  RACKET_SKU
+  STRINGS_BRAND
+  STRINGS_NAME
+  STRINGS_TENSION
+  STRINGS_SKU
+  MAIN_STRINGS_BRAND
+  MAIN_STRINGS_NAME
+  MAIN_STRINGS_TENSION
+  MAIN_STRINGS_SKU
+  CROSS_STRINGS_BRAND
+  CROSS_STRINGS_NAME
+  CROSS_STRINGS_TENSION
+  CROSS_STRINGS_SKU
+}
+
+model JobDetail {
+  id        String       @id @default(uuid()) @db.Uuid
+  key       JobDetailKey
+  value     String
+  createdAt DateTime     @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime     @default(now()) @db.Timestamptz(6)
+  deletedAt DateTime?    @db.Timestamptz(6)
+  job       Job          @relation(fields: [jobId], references: [id])
+  jobId     String       @db.Uuid
+}
+
+model JobHistory {
+  id          String    @id @default(uuid()) @db.Uuid
+  snapshot    String
+  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime  @default(now()) @db.Timestamptz(6)
+  deletedAt   DateTime? @db.Timestamptz(6)
+  createdBy   Employee? @relation(fields: [createdById], references: [id])
+  createdById String?   @db.Uuid
+  job         Job       @relation(fields: [jobId], references: [id])
+  jobId       String    @db.Uuid
+}
+
+enum TimeSheetEntryStatus {
+  IN_PROGRESS
+  COMPLETED
+  NEEDS_APPROVAL
+  PAID
+}
+
+model TimeSheetEntry {
+  id           String               @id @default(uuid()) @db.Uuid
+  status       TimeSheetEntryStatus @default(IN_PROGRESS)
+  clockedInAt  DateTime             @db.Timestamptz(6)
+  clockedOutAt DateTime?            @db.Timestamptz(6)
+  createdAt    DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime             @default(now()) @db.Timestamptz(6)
+  deletedAt    DateTime?            @db.Timestamptz(6)
+  account      Account              @relation(fields: [accountId], references: [id])
+  accountId    String               @db.Uuid
+  employee     Employee             @relation(fields: [employeeId], references: [id])
+  employeeId   String               @db.Uuid
+  report       TimeSheetReport?     @relation(fields: [reportId], references: [id])
+  reportId     String?              @db.Uuid
+}
+
+model TimeSheetReport {
+  id               String           @id @default(uuid()) @db.Uuid
+  status           String           @default("PENDING")
+  payPeriodStart   DateTime         @db.Timestamptz(6)
+  payPeriodEnd     DateTime         @db.Timestamptz(6)
+  createdAt        DateTime         @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime         @default(now()) @db.Timestamptz(6)
+  deletedAt        DateTime?        @db.Timestamptz(6)
+  timeSheetEntries TimeSheetEntry[]
+}
+
+enum UserType {
+  SUPERADMIN
+  USER
+}
+
+model User {
+  id                          String    @id @default(uuid()) @db.Uuid
+  email                       String    @unique
+  cellPhone                   String?
+  type                        UserType
+  passwordHash                String
+  passwordResetCode           Int?
+  passwordResetCodeExpiration DateTime? @db.Timestamptz(6)
+  createdAt                   DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt                   DateTime  @default(now()) @db.Timestamptz(6)
+  deletedAt                   DateTime? @db.Timestamptz(6)
+}

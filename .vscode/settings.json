@@ -1,3 +1,34 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "sqltools.connections": [
+    {
+      "mssqlOptions": {
+        "appName": "SQLTools",
+        "useUTC": true,
+        "encrypt": true
+      },
+      "previewLimit": 50,
+      "server": "mssql.mssql",
+      "port": 1433,
+      "driver": "MSSQL",
+      "name": "Hmm MS SQL",
+      "username": "sa",
+      "password": "vlnp1ZnqbA8wJk8J",
+      "database": "master"
+    },
+    {
+      "mssqlOptions": {
+        "appName": "SQLTools",
+        "useUTC": true,
+        "encrypt": true
+      },
+      "previewLimit": 50,
+      "server": "mssql.mssql",
+      "port": 1433,
+      "driver": "MSSQL",
+      "name": "TSG Local",
+      "username": "sa",
+      "password": "vlnp1ZnqbA8wJk8J",
+      "database": "TennisShopGuruLocal"
+    }
+  ]
 }

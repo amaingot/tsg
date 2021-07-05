@@ -1,55 +1,24 @@
 # Tennis Shop Guru
 
-This repository is a lerna monorepo containing the front end web application and a back end api.
+## Creating a Model/Controller/View
 
-## Data Model
+```bash
+dotnet-aspnet-codegenerator controller -name CompanyController -m Company -dc TSGContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
 
-Roughly the data follows this data model:
+dotnet-aspnet-codegenerator controller -name CustomerController -m Customer -dc TSGContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
 
+dotnet-aspnet-codegenerator controller -name EmployeeController -m Employee -dc TSGContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
+
+dotnet-aspnet-codegenerator controller -name JobController -m Job -dc TSGContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
+
+dotnet-aspnet-codegenerator controller -name TimeSheetEntryController -m TimeSheetEntry -dc TSGContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
+
+
+dotnet aspnet-codegenerator identity --files "Account._StatusMessage;Account.AccessDenied;Account.ConfirmEmail;Account.ConfirmEmailChange;Account.ExternalLogin;Account.ForgotPassword;Account.ForgotPasswordConfirmation;Account.Lockout;Account.Login;Account.LoginWith2fa;Account.LoginWithRecoveryCode;Account.Logout;Account.Manage._Layout;Account.Manage._ManageNav;Account.Manage._StatusMessage;Account.Manage.ChangePassword;Account.Manage.DeletePersonalData;Account.Manage.Disable2fa;Account.Manage.DownloadPersonalData;Account.Manage.Email;Account.Manage.EnableAuthenticator;Account.Manage.ExternalLogins;Account.Manage.GenerateRecoveryCodes;Account.Manage.Index;Account.Manage.PersonalData;Account.Manage.ResetAuthenticator;Account.Manage.SetPassword;Account.Manage.ShowRecoveryCodes;Account.Manage.TwoFactorAuthentication;Account.Register;Account.RegisterConfirmation;Account.ResendEmailConfirmation;Account.ResetPassword;Account.ResetPasswordConfirmation" --userClass User
+
+kubectl get pods --all-namespaces -o jsonpath='{.items[*].metadata.name}{"\n"}' --field-selector=status.phase=Shutdown
+
+
+dotnet ef database update --context=TSGIdentityContext
 ```
-type Customer {
-  id: ID!
-  clientId: ID!
-  memNumber: String
-  lastName: String
-  firstName: String
-  middleInitial: String
-  email: String
-  address: String
-  address2: String
-  city: String
-  state: String
-  zip: String
-  homePhone: String
-  cellPhone: String
-  workPhone: String
-  lastUpdated: AWSDateTime
-  createdAt: AWSDateTime
-  jobs: [Job] @connection(name: "CustomerJobs")
-}
 
-
-type Job {
-  id: ID!
-  name: String
-  racket: String
-  tension: String
-  gauge: String
-  recieved: AWSDateTime
-  finished: String
-  stringName: String
-  lastUpdated: AWSDateTime
-  createdAt: AWSDateTime
-  customer: Customer @connection(name: "CustomerJobs")
-  employee: Employee @connection(name: "EmployeeJobs")
-}
-
-type Employee {
-  id: ID!
-  firstName: String
-  lastName: String
-  email: AWSEmail
-  owner: String!
-  jobs: [Job] @connection(name: "EmployeeJobs")
-}
-```
