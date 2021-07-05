@@ -25,7 +25,7 @@ namespace TennisShopGuru.Models
     [ForeignKey("CompanyID")]
     public Company Company { get; set; }
 
-    public int UserID { get; set; }
+    public string UserID { get; set; }
     [ForeignKey("UserID")]
     public User User { get; set; }
   }

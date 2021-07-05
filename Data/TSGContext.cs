@@ -37,4 +37,14 @@ public class TSGContext : IdentityDbContext<User>
     //     .WithMany(e => e.TimeSheetEntries)
     //     .OnDelete(DeleteBehavior.NoAction);
   }
+
+  public DbSet<TennisShopGuru.Models.Company> Company { get; set; }
+
+  public DbSet<TennisShopGuru.Models.Customer> Customer { get; set; }
+
+  public DbSet<TennisShopGuru.Models.Job> Job { get; set; }
+
+  public DbSet<TennisShopGuru.Models.TimeSheetEntry> TimeSheetEntry { get; set; }
+
+  public DbSet<TennisShopGuru.Models.TimeSheetReport> TimeSheetReport { get; set; }
 }
