@@ -110,7 +110,7 @@ fragment CustomerFragment on Customer {
 fragment CustomerHistoryFragment on CustomerHistory {
   id
   createdAt
-  createdByEmployeeId
+  createdById
   createdBy {
     ...EmployeeFragment
   }

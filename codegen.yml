@@ -2,7 +2,7 @@ overwrite: true
 schema: server/src/graphql/schema.graphql
 config:
   declarationKind: "interface"
-  maybeValue: T | undefined
+  maybeValue: T | null
   enumsAsTypes: true
   scalars:
     DateTime: Date

@@ -1,16 +1,27 @@
-import { getRepository } from "typeorm";
-import { buildPaginator } from "typeorm-cursor-pagination";
 import { UserInputError } from "apollo-server-express";
 
-import { CustomerResolvers, MutationResolvers, QueryResolvers } from "../types";
-import * as DB from "../../db";
+import {
+  ResolversTypes,
+  CustomerResolvers,
+  MutationResolvers,
+  QueryResolvers,
+} from "../types";
+import { DB } from "../../db";
+import { Customer as DatabaseCustomer } from "@prisma/client";
+
+const toGql = (dbCustomer: DatabaseCustomer): ResolversTypes["Customer"] => ({
+  ...dbCustomer,
+  archived: dbCustomer.deletedAt === null,
+});
 
 export const get: Required<QueryResolvers>["customer"] = async (
   _parent,
   { id },
   context
 ) => {
-  const customer = await getRepository(DB.Customer).findOne(id);
+  const customer = await DB.customer.findUnique({
+    where: { id },
+  });
 
   if (!customer) {
     throw new UserInputError("Cannot find customer");
@@ -18,15 +29,18 @@ export const get: Required<QueryResolvers>["customer"] = async (
 
   await context.isInAccount(customer.accountId);
 
-  return customer;
+  return toGql(customer);
 };
 
 export const getDetails: Required<CustomerResolvers>["details"] = async (
   parent
 ) => {
   const { id: customerId } = parent;
-  return getRepository(DB.CustomerDetail).find({
-    customerId,
+  return DB.customerDetail.findMany({
+    where: {
+      customerId,
+      deletedAt: null,
+    },
   });
 };
 
@@ -34,31 +48,18 @@ export const getHistory: Required<CustomerResolvers>["history"] = async (
   parent
 ) => {
   const { id: customerId } = parent;
-  const histories = await getRepository(DB.CustomerHistory).find({
-    customerId,
+  const history = await DB.customerHistory.findMany({
+    where: {
+      customerId,
+    },
   });
-
-  return histories.map((h) => ({
-    ...h,
-    snapshot: JSON.parse(h.snapshot) as any,
-  }));
+  return history.map((h) => ({ ...h, snapshot: h.snapshot as any }));
 };
 
 export const getRelationships: Required<CustomerResolvers>["relationships"] = async (
   parent
 ) => {
-  const { id: customerId } = parent;
-  const primaryRelationships = await getRepository(
-    DB.CustomerRelationship
-  ).find({
-    customerId,
-  });
-  const secondaryRelationships = await getRepository(
-    DB.CustomerRelationship
-  ).find({
-    relatedCustomerId: customerId,
-  });
-  return [...primaryRelationships, ...secondaryRelationships];
+  return [];
 };
 
 export const list: Required<QueryResolvers>["customers"] = async (
@@ -67,34 +68,25 @@ export const list: Required<QueryResolvers>["customers"] = async (
   context
 ) => {
   const { limit, order } = input || {};
-  const { value: cursorKey, type } = input?.cursor || {};
+  // const { value: cursorKey, type } = input?.cursor || {};
   const { id: accountId } = await context.getCurrentAccount();
-
-  const alias = "c";
-  const query = getRepository(DB.Customer)
-    .createQueryBuilder(alias)
-    .where({ accountId });
-
-  const count = await query.getCount();
-
-  const paginator = buildPaginator({
-    entity: DB.Customer,
-    query: {
-      limit,
-      order,
-      afterCursor: type === "AFTER" ? cursorKey : undefined,
-      beforeCursor: type === "BEFORE" ? cursorKey : undefined,
+  const query = {
+    where: {
+      accountId,
+      deletedAt: null,
     },
-    alias,
+  } as const;
+
+  const customers = await DB.customer.findMany({
+    ...query,
+    take: limit || 100,
   });
-  const { data, cursor } = await paginator.paginate(query);
+  const count = await DB.customer.count(query);
 
   return {
-    data,
+    data: customers.map(toGql),
     cursor: {
       count,
-      afterCursor: cursor.afterCursor || undefined,
-      beforeCursor: cursor.beforeCursor || undefined,
     },
   };
 };
@@ -106,19 +98,23 @@ export const create: Required<MutationResolvers>["createCustomer"] = async (
 ) => {
   const currentEmployee = await context.getCurrentEmployee();
   const currentAccount = await context.getCurrentAccount();
-  const customer = await getRepository(DB.Customer)
-    .create({ ...input, accountId: currentAccount.id })
-    .save();
 
-  await getRepository(DB.CustomerHistory)
-    .create({
+  const customer = await DB.customer.create({
+    data: {
+      ...input,
+      accountId: currentAccount.id,
+    },
+  });
+
+  await DB.customerHistory.create({
+    data: {
       customerId: customer.id,
       snapshot: JSON.stringify(customer),
-      createdByEmployeeId: currentEmployee.id,
-    })
-    .save();
+      createdById: currentEmployee.id,
+    },
+  });
 
-  return customer;
+  return toGql(customer);
 };
 
 export const update: Required<MutationResolvers>["updateCustomer"] = async (
@@ -127,7 +123,11 @@ export const update: Required<MutationResolvers>["updateCustomer"] = async (
   context
 ) => {
   const currentEmployee = await context.getCurrentEmployee();
-  const customer = await getRepository(DB.Customer).findOne(id);
+  let customer = await DB.customer.findUnique({
+    where: {
+      id,
+    },
+  });
 
   if (!customer) {
     throw new UserInputError("Cannot find customer");
@@ -135,18 +135,25 @@ export const update: Required<MutationResolvers>["updateCustomer"] = async (
 
   await context.isInAccount(customer.accountId);
 
-  await getRepository(DB.Customer).update(id, input);
-  await customer.reload();
+  customer = await DB.customer.update({
+    where: {
+      id,
+    },
+    data: {
+      ...input,
+      updatedAt: new Date(),
+    },
+  });
 
-  await getRepository(DB.CustomerHistory)
-    .create({
+  await DB.customerHistory.create({
+    data: {
       customerId: customer.id,
       snapshot: JSON.stringify(customer),
-      createdByEmployeeId: currentEmployee.id,
-    })
-    .save();
+      createdById: currentEmployee.id,
+    },
+  });
 
-  return customer;
+  return toGql(customer);
 };
 
 export const archive: Required<MutationResolvers>["archiveCustomer"] = async (
@@ -155,26 +162,37 @@ export const archive: Required<MutationResolvers>["archiveCustomer"] = async (
   context
 ) => {
   const currentEmployee = await context.getCurrentEmployee();
-  const customer = await getRepository(DB.Customer).findOne({ id });
+  let customer = await DB.customer.findUnique({
+    where: {
+      id,
+    },
+  });
 
   if (!customer) {
-    throw new UserInputError("Customer not found");
+    throw new UserInputError("Cannot find customer");
   }
 
   await context.isInAccount(customer.accountId);
 
-  await customer.softRemove();
-  await customer.reload();
+  customer = await DB.customer.update({
+    where: {
+      id,
+    },
+    data: {
+      updatedAt: new Date(),
+      deletedAt: new Date(),
+    },
+  });
 
-  await getRepository(DB.CustomerHistory)
-    .create({
+  await DB.customerHistory.create({
+    data: {
       customerId: customer.id,
       snapshot: JSON.stringify(customer),
-      createdByEmployeeId: currentEmployee.id,
-    })
-    .save();
+      createdById: currentEmployee.id,
+    },
+  });
 
-  return customer;
+  return toGql(customer);
 };
 
 export const unarchive: Required<MutationResolvers>["unarchiveCustomer"] = async (
@@ -183,23 +201,35 @@ export const unarchive: Required<MutationResolvers>["unarchiveCustomer"] = async
   context
 ) => {
   const currentEmployee = await context.getCurrentEmployee();
-  const customer = await getRepository(DB.Customer).findOne({ id });
+  let customer = await DB.customer.findUnique({
+    where: {
+      id,
+    },
+  });
 
   if (!customer) {
-    throw new UserInputError("Customer not found");
+    throw new UserInputError("Cannot find customer");
   }
 
   await context.isInAccount(customer.accountId);
 
-  const recoveredCustomer = customer.recover();
+  customer = await DB.customer.update({
+    where: {
+      id,
+    },
+    data: {
+      updatedAt: new Date(),
+      deletedAt: null,
+    },
+  });
 
-  await getRepository(DB.CustomerHistory)
-    .create({
+  await DB.customerHistory.create({
+    data: {
       customerId: customer.id,
-      snapshot: JSON.stringify(recoveredCustomer),
-      createdByEmployeeId: currentEmployee.id,
-    })
-    .save();
+      snapshot: JSON.stringify(customer),
+      createdById: currentEmployee.id,
+    },
+  });
 
-  return recoveredCustomer;
+  return toGql(customer);
 };

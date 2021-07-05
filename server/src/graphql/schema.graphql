@@ -267,7 +267,7 @@ type CustomerHistory {
   id: ID!
   snapshot: Customer!
   createdAt: DateTime!
-  createdByEmployeeId: String!
+  createdById: String!
   createdBy: Employee!
 }
 

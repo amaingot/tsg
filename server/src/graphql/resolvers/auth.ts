@@ -1,8 +1,14 @@
-import { getRepository } from "typeorm";
 import { UserInputError } from "apollo-server-express";
 
 import { MutationResolvers } from "../types";
-import * as DB from "../../db";
+import { DB } from "../../db";
+import {
+  createPasswordResetCode,
+  createUserToken,
+  encryptPassword,
+  isPasswordResetCodeValid,
+  verifyPassword,
+} from "../../utils/auth";
 
 export const login: Required<MutationResolvers>["login"] = async (
   _parent,
@@ -13,14 +19,17 @@ export const login: Required<MutationResolvers>["login"] = async (
 
   const { email, password } = input;
 
-  const user = await getRepository(DB.User).findOne({ email });
-  const isCorrectPassword = (await user?.isCorrectPassword(password)) || false;
-
-  if (!user || !isCorrectPassword) {
+  const user = await DB.user.findUnique({ where: { email } });
+  if (!user) {
     throw new UserInputError("Invalid email / password combination");
   }
 
-  const token = user.createUserToken();
+  const isCorrectPassword = (await verifyPassword(user, password)) || false;
+  if (!isCorrectPassword) {
+    throw new UserInputError("Invalid email / password combination");
+  }
+
+  const token = createUserToken(user);
   const employee = await getRepository(DB.Employee).findOne({ email });
 
   if (!employee) {
@@ -45,7 +54,7 @@ export const forgotPassword: Required<MutationResolvers>["forgotPassword"] = asy
   context.isAnonymous();
   const { email } = input;
 
-  const user = await getRepository(DB.User).findOne({ email });
+  const user = await DB.user.findUnique({ where: { email } });
 
   if (!user) {
     return {
@@ -57,8 +66,15 @@ export const forgotPassword: Required<MutationResolvers>["forgotPassword"] = asy
     };
   }
 
-  user.createPasswordResetCode();
-  await user.save();
+  const resetCode = createPasswordResetCode();
+
+  await DB.user.update({
+    where: { id: user.id },
+    data: {
+      ...resetCode,
+      updatedAt: new Date(),
+    },
+  });
 
   return {
     success: true,
@@ -73,24 +89,37 @@ export const resetPassword: Required<MutationResolvers>["resetPassword"] = async
   context.isAnonymous();
   const { email, code, newPassword } = input;
 
-  const user = await getRepository(DB.User).findOne({ email });
+  const user = await DB.user.findUnique({ where: { email } });
   if (!user) {
     throw new UserInputError(
       "Could not find a user with the supplied email address"
     );
   }
 
-  if (user.isPasswordResetCodeValid(code) !== "VALID") {
+  if (isPasswordResetCodeValid(user, code) !== "VALID") {
     throw new UserInputError("Password reset code is not valid");
   }
 
-  await user.encryptPassword(newPassword);
-  await user.save();
+  const passwordHash = await encryptPassword(newPassword);
 
-  const token = user.createUserToken();
+  await DB.user.update({
+    where: {
+      id: user.id,
+    },
+    data: {
+      passwordHash,
+      updatedAt: new Date(),
+    },
+  });
+
+  const token = createUserToken(user);
   // TODO: Set user token with res.cookie(token, {...tokenOptions})
 
-  const employee = await getRepository(DB.Employee).findOne({ email });
+  const employee = await DB.employee.findUnique({
+    where: {
+      email
+    },
+  });
 
   if (!employee) {
     throw new Error("User is not linked to an employee");
