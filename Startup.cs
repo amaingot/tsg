@@ -12,6 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using TennisShopGuru.Services;
 using TennisShopGuru.Models;
 
 namespace TennisShopGuru
@@ -36,14 +38,17 @@ namespace TennisShopGuru
         var connectionString = Configuration.GetConnectionString("TSGPostgres");
         options.UseNpgsql(connectionString);
       });
-      services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
-            .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<TSGContext>();
+      // services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
+      //       .AddRoles<IdentityRole>()
+      //       .AddEntityFrameworkStores<TSGContext>()
+      //       .AddDefaultTokenProviders();
 
-      services.AddIdentity<User, IdentityRole>()
+      services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<TSGContext>()
             .AddDefaultTokenProviders();
-
+      // requires
+      services.AddTransient<IEmailSender, EmailSender>();
+      services.Configure<AuthMessageSenderOptions>(Configuration);
       services.AddScoped<IUserClaimsPrincipalFactory<User>, AdditionalUserClaimsPrincipalFactory>();
 
       services.AddRazorPages();

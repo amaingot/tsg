@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,38 +14,42 @@ public class TSGContext : IdentityDbContext<User>
   {
   }
 
-  protected override void OnModelCreating(ModelBuilder builder)
+  public override int SaveChanges()
   {
-    base.OnModelCreating(builder);
-    // builder
-    //     .Entity<Job>()
-    //     .HasOne(e => e.Company)
-    //     .WithMany(e => e.Jobs)
-    //     .OnDelete(DeleteBehavior.NoAction);
-    // builder
-    //     .Entity<Job>()
-    //     .HasOne(e => e.User)
-    //     .WithMany(e => e.Jobs)
-    //     .OnDelete(DeleteBehavior.NoAction);
-    // builder
-    //     .Entity<Job>()
-    //     .HasOne(e => e.Customer)
-    //     .WithMany(e => e.Jobs)
-    //     .OnDelete(DeleteBehavior.NoAction);
-    // builder
-    //     .Entity<TimeSheetEntry>()
-    //     .HasOne(e => e.User)
-    //     .WithMany(e => e.TimeSheetEntries)
-    //     .OnDelete(DeleteBehavior.NoAction);
+    var entries = ChangeTracker
+        .Entries()
+        .Where(e => e.Entity is BaseEntity && (
+                e.State == EntityState.Added
+                || e.State == EntityState.Modified));
+
+    foreach (var entityEntry in entries)
+    {
+      ((BaseEntity)entityEntry.Entity).UpdatedDate = DateTime.Now;
+      // ((BaseEntity)entityEntry.Entity).UpdatedBy = Thread.CurrentPrincipal.Identity.Name;
+
+      if (entityEntry.State == EntityState.Added)
+      {
+        ((BaseEntity)entityEntry.Entity).CreatedDate = DateTime.Now;
+        // ((BaseEntity)entityEntry.Entity).CreatedBy = Thread.CurrentPrincipal.Identity.Name;
+      }
+    }
+
+    return base.SaveChanges();
   }
 
-  public DbSet<TennisShopGuru.Models.Company> Company { get; set; }
+  public DbSet<Company> Company { get; set; }
 
-  public DbSet<TennisShopGuru.Models.Customer> Customer { get; set; }
+  public DbSet<User> User { get; set; }
 
-  public DbSet<TennisShopGuru.Models.Job> Job { get; set; }
+  public DbSet<Customer> Customer { get; set; }
 
-  public DbSet<TennisShopGuru.Models.TimeSheetEntry> TimeSheetEntry { get; set; }
+  public DbSet<CustomerDetail> CustomerDetail { get; set; }
 
-  public DbSet<TennisShopGuru.Models.TimeSheetReport> TimeSheetReport { get; set; }
+  public DbSet<Job> Job { get; set; }
+
+  public DbSet<JobDetail> JobDetail { get; set; }
+
+  public DbSet<TimeSheetEntry> TimeSheetEntry { get; set; }
+
+  public DbSet<TimeSheetReport> TimeSheetReport { get; set; }
 }
