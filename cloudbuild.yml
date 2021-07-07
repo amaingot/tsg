@@ -18,6 +18,19 @@ steps:
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "gcr.io/hmm-dev/tsg:latest"]
 
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - "run"
+      - "deploy"
+      - "tsg"
+      - "--image"
+      - "gcr.io/hmm-dev/tsg:$COMMIT_SHA"
+      - "--region"
+      - "us-central1"
+      - "--platform"
+      - "managed"
+
 timeout: 3600s
 images:
   - "gcr.io/hmm-dev/tsg:$COMMIT_SHA"
