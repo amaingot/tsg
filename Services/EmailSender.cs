@@ -13,11 +13,11 @@ namespace TennisShopGuru.Services
       Options = optionsAccessor.Value;
     }
 
-    public AuthMessageSenderOptions Options { get; } //set only via Secret Manager
+    public AuthMessageSenderOptions Options { get; }
 
     public Task SendEmailAsync(string email, string subject, string message)
     {
-      return Execute(Options.SendGridKey, subject, message, email);
+      return Execute(Options.SendGridApiKey, subject, message, email);
     }
 
     public Task Execute(string apiKey, string subject, string message, string email)
@@ -25,7 +25,7 @@ namespace TennisShopGuru.Services
       var client = new SendGridClient(apiKey);
       var msg = new SendGridMessage()
       {
-        From = new EmailAddress("Joe@contoso.com", Options.SendGridUser),
+        From = new EmailAddress(Options.SendGridEmail, Options.SendGridUser),
         Subject = subject,
         PlainTextContent = message,
         HtmlContent = message

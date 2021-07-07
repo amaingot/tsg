@@ -1,0 +1,24 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "build"
+      - "-t"
+      - "gcr.io/hmm-dev/tsg:latest"
+      - "."
+
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "tag"
+      - "gcr.io/hmm-dev/tsg:latest"
+      - "gcr.io/hmm-dev/tsg:$COMMIT_SHA"
+
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/hmm-dev/tsg:$COMMIT_SHA"]
+
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/hmm-dev/tsg:latest"]
+
+timeout: 3600s
+images:
+  - "gcr.io/hmm-dev/tsg:$COMMIT_SHA"
+  - "gcr.io/hmm-dev/tsg:latest"

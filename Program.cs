@@ -23,9 +23,6 @@ namespace TennisShopGuru
 
         try
         {
-          var context = services.GetRequiredService<TSGContext>();
-          // context.Database.Migrate();
-
           SeedData.Initialize(services);
         }
         catch (Exception ex)

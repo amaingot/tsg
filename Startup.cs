@@ -38,15 +38,11 @@ namespace TennisShopGuru
         var connectionString = Configuration.GetConnectionString("TSGPostgres");
         options.UseNpgsql(connectionString);
       });
-      // services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
-      //       .AddRoles<IdentityRole>()
-      //       .AddEntityFrameworkStores<TSGContext>()
-      //       .AddDefaultTokenProviders();
 
       services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<TSGContext>()
             .AddDefaultTokenProviders();
-      // requires
+
       services.AddTransient<IEmailSender, EmailSender>();
       services.Configure<AuthMessageSenderOptions>(Configuration);
       services.AddScoped<IUserClaimsPrincipalFactory<User>, AdditionalUserClaimsPrincipalFactory>();
